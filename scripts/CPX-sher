@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Show error log and locate at the begin of last compilation error.
+
+SCRIPTS_DIR="$(dirname $(realpath -P $0))/"
+. "${SCRIPTS_DIR}CPX-common.sh"
+CPX_WORK_DIR=$(heal_DIR CPX_WORK_DIR)
+
+WORK_DIR="${CPX_WORK_DIR:-/tmp/cpx/}"
+while :
+ do less -NR '+?\|\-\-\-\[.*\]\-\-\-|\|build\ phase|\|hash\ phase'  ${WORK_DIR}/CPX-runner.log
+done
+

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Compile and execute program as soon any of the files specified on the command line change.
+#  -*- sh -*-
+
+# This version is cloned from ~/Projects/QtPrj-3/debug/watchmake
+# This version is customized to typical use in the test directory
+# where programs are created from one or a few sources.
+
+
+files_to_watch="$*"
+prog=$1
+
+ccache -C
+ccache -M 1.5G
+export CCACHE_NLEVELS=3
+export CCACHE_COMPILERCHECK=none
+export CCACHE_COMPRESS=1
+export CCACHE_NOSTATS=1
+export CCACHE_SLOPPINESS=time_macros
+
+while :
+do
+      cpx $prog
+
+      echo -e "\n\nwatch for changes in $files_to_watch\n\n...."
+      inotifywait -q -e modify -e attrib -e create -e move -e move_self -e moved_to -e moved_from -e delete -e delete_self \
+                  --timefmt '%Y.%02V.%02u %y-%02m-%02d %H:%M:%S' \
+                  --format  '%T  %w %e' $files_to_watch
+done
+

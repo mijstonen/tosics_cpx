@@ -1,0 +1,10 @@
+Example of cpx usage with printing character table
+
+michel@msi-kubuntu-1610:~$ 
+cpx<<EOF
+#|
+#(
+for(unsigned char i=1; i; ++i) {
+INFO(VARVAL((int)i),VARVAL(i)); }
+#)
+EOF

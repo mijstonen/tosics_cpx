@@ -1,0 +1,11 @@
+MT-2017-0425
+
+In this directory proto type programs are kept. There algoritms have
+been integrated into the tosics_util library but changed, optimized,
+removed checks e.g. from there on. Those versions are harder to 
+develop on. So when they need to be maintained, it is usefull to
+review and study the 1st-... versions again and possibly take some
+(checking) code from it.
+
+Sources ket here are not regualrly maintained.
+---

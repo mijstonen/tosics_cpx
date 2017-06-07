@@ -1,0 +1,923 @@
+/home/michel/tmp/cpx/CPX-runner.log
+ls: cannot access '*.cpp': No such file or directory
+ls: cannot access '*.x': No such file or directory
+ls: cannot access '*.s': No such file or directory
+ls: cannot access '*.o': No such file or directory
+ls: cannot access '*.ii': No such file or directory
+ls: cannot access '*temp*': No such file or directory
+ls: cannot access '*.unchanged.hpp': No such file or directory
+ls: cannot access '*.cpp.prehash': No such file or directory
+ls: cannot access '*.cpp.prehash.errors': No such file or directory
+ls: cannot access '*[0-9,a-z].hash': No such file or directory
+ls: cannot access '*[0-9,a-z].inc': No such file or directory
+Nothing to clean
++
+argCnt='0' ProgramArguments[argCnt]='/home/michel/tmp/cpx/CPX-a801cc046c058e42a753666f67805305882ff480.cpp.x'
+argCnt='1' ProgramArguments[argCnt]='3'
+Fri Jun  2 11:15:33 2017
+status= '3'
+hash<string>{}(string("Michel"))= '0x1030cb4ef1b9e23b'
+n='1' m='2' f='33.3330002' c='M' lsum(n,m)='3' s='Toonen' lsum(s,s)='ToonenToonen'
+cb.capacity()= '3'
+cb.size()= '0'
+cb.size()= '3'
+cb.size()= '3'
+i= '0' cb[i]= '3'
+i= '1' cb[i]= '4'
+i= '2' cb[i]= '5'
+int cpx::main()
+File:CPX-arg_output.cpp function:tosics::util::Output<OUT_T>::Output(tosics::util::Output<OUT_T>::out_type&) [with OUT_T = int; tosics::util::Output<OUT_T>::out_type = int] line:40: ===construct===
+File:CPX-arg_output.cpp function:void foo(tosics::util::Output<int>&&, std::vector<int>) line:84: ==== enter ====
+Addeing value= '1'
+Addeing value= '2'
+Addeing value= '3'
+Addeing value= '4'
+Addeing value= '5'
+File:CPX-arg_output.cpp function:foo(tosics::util::Output<int>&&, std::vector<int>)::<lambda(int*, int*, const char*)> line:98: ===Forward test--->  _msg='forwarded'
+spy= '16' File:CPX-arg_output.cpp function:void foo(tosics::util::Output<int>&&, std::vector<int>) line:105: ==== leaving ====
+File:CPX-arg_output.cpp function:tosics::util::Output<OUT_T>::~Output() [with OUT_T = int] line:52: ===destruct===
+sumtest= '16'
+
+---DROP---
+File:CPX-arg_output.cpp function:tosics::util::Output<OUT_T>::Output() [with OUT_T = int] line:47: ===dropped===
+File:CPX-arg_output.cpp function:void foo(tosics::util::Output<int>&&, std::vector<int>) line:84: ==== enter ====
+Addeing value= '8'
+Addeing value= '9'
+Addeing value= '10'
+spy= '0' File:CPX-arg_output.cpp function:void foo(tosics::util::Output<int>&&, std::vector<int>) line:105: ==== leaving ====
+File:CPX-arg_output.cpp function:tosics::util::Output<OUT_T>::~Output() [with OUT_T = int] line:52: ===destruct===
+[01;34m Fri Jun  2 11:15:35 2017
+ [00m
+sizeof(string)= '0x20'
+&c= '0x55ba5602aca0' -> 'm' &c= '0x55ba5602aca0' -> '0x6d' c= 'm' c= '0x6d' VARVALS for multiple arguments c='m' &c='mijstonen@hotmail.com'
+&c= '0x55ba5602aca1' -> 'i' &c= '0x55ba5602aca1' -> '0x69' c= 'i' c= '0x69' VARVALS for multiple arguments c='i' &c='ijstonen@hotmail.com'
+&c= '0x55ba5602aca2' -> 'j' &c= '0x55ba5602aca2' -> '0x6a' c= 'j' c= '0x6a' VARVALS for multiple arguments c='j' &c='jstonen@hotmail.com'
+&c= '0x55ba5602aca3' -> 's' &c= '0x55ba5602aca3' -> '0x73' c= 's' c= '0x73' VARVALS for multiple arguments c='s' &c='stonen@hotmail.com'
+&c= '0x55ba5602aca4' -> 't' &c= '0x55ba5602aca4' -> '0x74' c= 't' c= '0x74' VARVALS for multiple arguments c='t' &c='tonen@hotmail.com'
+&c= '0x55ba5602aca5' -> 'o' &c= '0x55ba5602aca5' -> '0x6f' c= 'o' c= '0x6f' VARVALS for multiple arguments c='o' &c='onen@hotmail.com'
+&c= '0x55ba5602aca6' -> 'n' &c= '0x55ba5602aca6' -> '0x6e' c= 'n' c= '0x6e' VARVALS for multiple arguments c='n' &c='nen@hotmail.com'
+&c= '0x55ba5602aca7' -> 'e' &c= '0x55ba5602aca7' -> '0x65' c= 'e' c= '0x65' VARVALS for multiple arguments c='e' &c='en@hotmail.com'
+&c= '0x55ba5602aca8' -> 'n' &c= '0x55ba5602aca8' -> '0x6e' c= 'n' c= '0x6e' VARVALS for multiple arguments c='n' &c='n@hotmail.com'
+&c= '0x55ba5602aca9' -> '@' &c= '0x55ba5602aca9' -> '0x40' c= '@' c= '0x40' VARVALS for multiple arguments c='@' &c='@hotmail.com'
+&c= '0x55ba5602acaa' -> 'h' &c= '0x55ba5602acaa' -> '0x68' c= 'h' c= '0x68' VARVALS for multiple arguments c='h' &c='hotmail.com'
+&c= '0x55ba5602acab' -> 'o' &c= '0x55ba5602acab' -> '0x6f' c= 'o' c= '0x6f' VARVALS for multiple arguments c='o' &c='otmail.com'
+&c= '0x55ba5602acac' -> 't' &c= '0x55ba5602acac' -> '0x74' c= 't' c= '0x74' VARVALS for multiple arguments c='t' &c='tmail.com'
+&c= '0x55ba5602acad' -> 'm' &c= '0x55ba5602acad' -> '0x6d' c= 'm' c= '0x6d' VARVALS for multiple arguments c='m' &c='mail.com'
+&c= '0x55ba5602acae' -> 'a' &c= '0x55ba5602acae' -> '0x61' c= 'a' c= '0x61' VARVALS for multiple arguments c='a' &c='ail.com'
+&c= '0x55ba5602acaf' -> 'i' &c= '0x55ba5602acaf' -> '0x69' c= 'i' c= '0x69' VARVALS for multiple arguments c='i' &c='il.com'
+&c= '0x55ba5602acb0' -> 'l' &c= '0x55ba5602acb0' -> '0x6c' c= 'l' c= '0x6c' VARVALS for multiple arguments c='l' &c='l.com'
+&c= '0x55ba5602acb1' -> '.' &c= '0x55ba5602acb1' -> '0x2e' c= '.' c= '0x2e' VARVALS for multiple arguments c='.' &c='.com'
+&c= '0x55ba5602acb2' -> 'c' &c= '0x55ba5602acb2' -> '0x63' c= 'c' c= '0x63' VARVALS for multiple arguments c='c' &c='com'
+&c= '0x55ba5602acb3' -> 'o' &c= '0x55ba5602acb3' -> '0x6f' c= 'o' c= '0x6f' VARVALS for multiple arguments c='o' &c='om'
+&c= '0x55ba5602acb4' -> 'm' &c= '0x55ba5602acb4' -> '0x6d' c= 'm' c= '0x6d' VARVALS for multiple arguments c='m' &c='m'
+OK
+void update(Out2*)
+void update(Out1*)
+void update(Dirived1*)
+void update(Out1*)
+void update(Out2*)
+s= 'XPR{ kaasboer, T(map, '99', p) },'q,q\', r', ",,,",f(a, g(b)), 1, 10, foo<r, r, -9.3>, endit'
+sizeof(string)= '0x20'
+i= '0' &vss[i]= '0x5632cd309fa0' -> 'XPR{ kaasboer, T(map, '99', p) }'
+i= '1' &vss[i]= '0x5632cd309fc0' -> ''q,q', r''
+i= '2' &vss[i]= '0x5632cd309fe0' -> ' ",,,"'
+i= '3' &vss[i]= '0x5632cd30a000' -> 'f(a, g(b))'
+i= '4' &vss[i]= '0x5632cd30a020' -> ' 1'
+i= '5' &vss[i]= '0x5632cd30a040' -> ' 10'
+i= '6' &vss[i]= '0x5632cd30a060' -> ' foo<r, r, -9.3>'
+i= '7' &vss[i]= '0x5632cd30a080' -> ' endit'
+back= '   a|bb   ||||c     cc|dd dd|   a|bb   ||||c     cc|dd dd||||a,bb|||,,,,c|||||cc,dd|dd'
+in= '   a,bb   ,,,,c     cc,dd dd'
+ostr= '   a'
+ostr= 'bb   '
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= 'c     cc'
+ostr= 'dd dd'
+ostr= '   a'
+ostr= 'bb   '
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= 'c     cc'
+ostr= 'dd dd'
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= 'a,bb'
+ostr= ''
+ostr= ''
+ostr= ',,,,c'
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= 'cc,dd'
+ostr= 'dd'
+[01;34m Fri Jun  2 11:15:37 2017
+ [00m count= '1'
+[01;34m Fri Jun  2 11:15:37 2017
+ [00m count= '-1'
+[01;34m Fri Jun  2 11:15:37 2017
+ [00m count= '0'
+Truth nullptr
+
+int              _v= '1'
+int              is_null(_v)= 'false'
+int              is_null_pointer<Value_T>::value= 'false'
+int              is_pointer<Value_T>::value= 'false'
+
+double           _v= '0.0099900000000000006'
+double           is_null(_v)= 'false'
+double           is_null_pointer<Value_T>::value= 'false'
+double           is_pointer<Value_T>::value= 'false'
+
+char const*      _v= 'Michel'
+char const*      is_null(_v)= 'false'
+char const*      is_null_pointer<Value_T>::value= 'false'
+char const*      is_pointer<Value_T>::value= 'true'
+
+nullptr          _v= 'nullptr'
+nullptr          is_null(_v)= 'true'
+nullptr          is_null_pointer<Value_T>::value= 'true'
+nullptr          is_pointer<Value_T>::value= 'false'
+
+(void*)nullptr  _v= '0'
+(void*)nullptr  is_null(_v)= 'true'
+(void*)nullptr  is_null_pointer<Value_T>::value= 'false'
+(void*)nullptr  is_pointer<Value_T>::value= 'true'
+
+(void*)&pc  _v= '0x7ffdab02281c'
+(void*)&pc  is_null(_v)= 'false'
+(void*)&pc  is_null_pointer<Value_T>::value= 'false'
+(void*)&pc  is_pointer<Value_T>::value= 'true'
+
+Compilation failed!  phc_script= 'CPX-preproces_hash_compile.sh' return_value= '1'
+[01;31mERROR: message: Something went wrong during compilation of CPX-compile^45errors.cpp. Check logfile.[00m
+
+-------------------------------------------------------------------------------------
+forcefail: testing segmentation error
+On_signal: Segmentation fault
+_signal= '11'
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(_ZN6tosics4util25DumpBacktraceInFileStreamEi+0x3f)[0x55cf82a1e985]
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(_ZN6tosics4util9On_signalEi+0x68)[0x55cf82a1f642]
+/lib/x86_64-linux-gnu/libc.so.6(+0x35860)[0x7fd4ff2d7860]
+/lib/x86_64-linux-gnu/libpthread.so.0(raise+0x9f)[0x7fd4ffc194ff]
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(_ZN3cpx4mainEv+0xe)[0x55cf82a1d97e]
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(main+0x2f)[0x55cf82a1d78f]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf1)[0x7fd4ff2c23f1]
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(_start+0x2a)[0x55cf82a1d65a]
+-------------------------------------------------------------------------------------
+
+message='Hello meta world' ::Greetings('*',10)='**********' compileTimeString='cccccccccccccccccccc' local_compileTimeString='llllllllllllllllllllllllllllll'
+ad.angle='0' ad.radius='100' ad.x='0' ad.y='100'
+ad.angle='15' ad.radius='100' ad.x='25.881904510252074' ad.y='96.592582628906825'
+ad.angle='30' ad.radius='100' ad.x='49.999999999999993' ad.y='86.602540378443877'
+ad.angle='45' ad.radius='100' ad.x='70.710678118654741' ad.y='70.710678118654755'
+ad.angle='60' ad.radius='100' ad.x='86.602540378443862' ad.y='50.000000000000014'
+ad.angle='75' ad.radius='100' ad.x='96.592582628906825' ad.y='25.881904510252074'
+ad.angle='90' ad.radius='100' ad.x='100' ad.y='6.1232339957367661e-15'
+ad.angle='105' ad.radius='100' ad.x='96.592582628906825' ad.y='-25.881904510252085'
+ad.angle='120' ad.radius='100' ad.x='86.602540378443877' ad.y='-49.999999999999979'
+ad.angle='135' ad.radius='100' ad.x='70.710678118654755' ad.y='-70.710678118654741'
+ad.angle='150' ad.radius='100' ad.x='49.999999999999993' ad.y='-86.602540378443877'
+ad.angle='165' ad.radius='100' ad.x='25.881904510252102' ad.y='-96.592582628906825'
+ad.angle='180' ad.radius='100' ad.x='1.2246467991473532e-14' ad.y='-100'
+ad.angle='195' ad.radius='100' ad.x='-25.881904510252081' ad.y='-96.592582628906825'
+ad.angle='210' ad.radius='100' ad.x='-50.000000000000014' ad.y='-86.602540378443862'
+ad.angle='225' ad.radius='100' ad.x='-70.710678118654741' ad.y='-70.710678118654769'
+ad.angle='240' ad.radius='100' ad.x='-86.602540378443834' ad.y='-50.000000000000043'
+ad.angle='255' ad.radius='100' ad.x='-96.592582628906825' ad.y='-25.881904510252063'
+ad.angle='270' ad.radius='100' ad.x='-100' ad.y='-1.8369701987210297e-14'
+ad.angle='285' ad.radius='100' ad.x='-96.59258262890684' ad.y='25.881904510252028'
+ad.angle='300' ad.radius='100' ad.x='-86.602540378443862' ad.y='50.000000000000014'
+ad.angle='315' ad.radius='100' ad.x='-70.710678118654769' ad.y='70.710678118654741'
+ad.angle='330' ad.radius='100' ad.x='-50.000000000000043' ad.y='86.602540378443834'
+ad.angle='345' ad.radius='100' ad.x='-25.881904510252067' ad.y='96.592582628906825'
+ad.angle='360' ad.radius='100' ad.x='-2.4492935982947064e-14' ad.y='100'
+Hello meta world
+one= 'Fri Jun  2 11:15:41 2017'
+one= 'Fri Jun  2 11:15:42 2017'
++
+argCnt='0' ProgramArguments[argCnt]='/home/michel/tmp/cpx/CPX-a801cc046c058e42a753666f67805305882ff480.cpp.x'
+argCnt='1' ProgramArguments[argCnt]='3'
+Fri Jun  2 11:15:42 2017
+status= '3'
+hash<string>{}(string("Michel"))= '0x1030cb4ef1b9e23b'
+n='1' m='2' f='33.3330002' c='M' lsum(n,m)='3' s='Toonen' lsum(s,s)='ToonenToonen'
+cb.capacity()= '3'
+cb.size()= '0'
+cb.size()= '3'
+cb.size()= '3'
+i= '0' cb[i]= '3'
+i= '1' cb[i]= '4'
+i= '2' cb[i]= '5'
+int cpx::main()
+File:CPX-arg_output.cpp function:tosics::util::Output<OUT_T>::Output(tosics::util::Output<OUT_T>::out_type&) [with OUT_T = int; tosics::util::Output<OUT_T>::out_type = int] line:40: ===construct===
+File:CPX-arg_output.cpp function:void foo(tosics::util::Output<int>&&, std::vector<int>) line:84: ==== enter ====
+Addeing value= '1'
+Addeing value= '2'
+Addeing value= '3'
+Addeing value= '4'
+Addeing value= '5'
+File:CPX-arg_output.cpp function:foo(tosics::util::Output<int>&&, std::vector<int>)::<lambda(int*, int*, const char*)> line:98: ===Forward test--->  _msg='forwarded'
+spy= '16' File:CPX-arg_output.cpp function:void foo(tosics::util::Output<int>&&, std::vector<int>) line:105: ==== leaving ====
+File:CPX-arg_output.cpp function:tosics::util::Output<OUT_T>::~Output() [with OUT_T = int] line:52: ===destruct===
+sumtest= '16'
+
+---DROP---
+File:CPX-arg_output.cpp function:tosics::util::Output<OUT_T>::Output() [with OUT_T = int] line:47: ===dropped===
+File:CPX-arg_output.cpp function:void foo(tosics::util::Output<int>&&, std::vector<int>) line:84: ==== enter ====
+Addeing value= '8'
+Addeing value= '9'
+Addeing value= '10'
+spy= '0' File:CPX-arg_output.cpp function:void foo(tosics::util::Output<int>&&, std::vector<int>) line:105: ==== leaving ====
+File:CPX-arg_output.cpp function:tosics::util::Output<OUT_T>::~Output() [with OUT_T = int] line:52: ===destruct===
+[01;34m Fri Jun  2 11:15:42 2017
+ [00m
+sizeof(string)= '0x20'
+&c= '0x55ee2d95cca0' -> 'm' &c= '0x55ee2d95cca0' -> '0x6d' c= 'm' c= '0x6d' VARVALS for multiple arguments c='m' &c='mijstonen@hotmail.com'
+&c= '0x55ee2d95cca1' -> 'i' &c= '0x55ee2d95cca1' -> '0x69' c= 'i' c= '0x69' VARVALS for multiple arguments c='i' &c='ijstonen@hotmail.com'
+&c= '0x55ee2d95cca2' -> 'j' &c= '0x55ee2d95cca2' -> '0x6a' c= 'j' c= '0x6a' VARVALS for multiple arguments c='j' &c='jstonen@hotmail.com'
+&c= '0x55ee2d95cca3' -> 's' &c= '0x55ee2d95cca3' -> '0x73' c= 's' c= '0x73' VARVALS for multiple arguments c='s' &c='stonen@hotmail.com'
+&c= '0x55ee2d95cca4' -> 't' &c= '0x55ee2d95cca4' -> '0x74' c= 't' c= '0x74' VARVALS for multiple arguments c='t' &c='tonen@hotmail.com'
+&c= '0x55ee2d95cca5' -> 'o' &c= '0x55ee2d95cca5' -> '0x6f' c= 'o' c= '0x6f' VARVALS for multiple arguments c='o' &c='onen@hotmail.com'
+&c= '0x55ee2d95cca6' -> 'n' &c= '0x55ee2d95cca6' -> '0x6e' c= 'n' c= '0x6e' VARVALS for multiple arguments c='n' &c='nen@hotmail.com'
+&c= '0x55ee2d95cca7' -> 'e' &c= '0x55ee2d95cca7' -> '0x65' c= 'e' c= '0x65' VARVALS for multiple arguments c='e' &c='en@hotmail.com'
+&c= '0x55ee2d95cca8' -> 'n' &c= '0x55ee2d95cca8' -> '0x6e' c= 'n' c= '0x6e' VARVALS for multiple arguments c='n' &c='n@hotmail.com'
+&c= '0x55ee2d95cca9' -> '@' &c= '0x55ee2d95cca9' -> '0x40' c= '@' c= '0x40' VARVALS for multiple arguments c='@' &c='@hotmail.com'
+&c= '0x55ee2d95ccaa' -> 'h' &c= '0x55ee2d95ccaa' -> '0x68' c= 'h' c= '0x68' VARVALS for multiple arguments c='h' &c='hotmail.com'
+&c= '0x55ee2d95ccab' -> 'o' &c= '0x55ee2d95ccab' -> '0x6f' c= 'o' c= '0x6f' VARVALS for multiple arguments c='o' &c='otmail.com'
+&c= '0x55ee2d95ccac' -> 't' &c= '0x55ee2d95ccac' -> '0x74' c= 't' c= '0x74' VARVALS for multiple arguments c='t' &c='tmail.com'
+&c= '0x55ee2d95ccad' -> 'm' &c= '0x55ee2d95ccad' -> '0x6d' c= 'm' c= '0x6d' VARVALS for multiple arguments c='m' &c='mail.com'
+&c= '0x55ee2d95ccae' -> 'a' &c= '0x55ee2d95ccae' -> '0x61' c= 'a' c= '0x61' VARVALS for multiple arguments c='a' &c='ail.com'
+&c= '0x55ee2d95ccaf' -> 'i' &c= '0x55ee2d95ccaf' -> '0x69' c= 'i' c= '0x69' VARVALS for multiple arguments c='i' &c='il.com'
+&c= '0x55ee2d95ccb0' -> 'l' &c= '0x55ee2d95ccb0' -> '0x6c' c= 'l' c= '0x6c' VARVALS for multiple arguments c='l' &c='l.com'
+&c= '0x55ee2d95ccb1' -> '.' &c= '0x55ee2d95ccb1' -> '0x2e' c= '.' c= '0x2e' VARVALS for multiple arguments c='.' &c='.com'
+&c= '0x55ee2d95ccb2' -> 'c' &c= '0x55ee2d95ccb2' -> '0x63' c= 'c' c= '0x63' VARVALS for multiple arguments c='c' &c='com'
+&c= '0x55ee2d95ccb3' -> 'o' &c= '0x55ee2d95ccb3' -> '0x6f' c= 'o' c= '0x6f' VARVALS for multiple arguments c='o' &c='om'
+&c= '0x55ee2d95ccb4' -> 'm' &c= '0x55ee2d95ccb4' -> '0x6d' c= 'm' c= '0x6d' VARVALS for multiple arguments c='m' &c='m'
+OK
+void update(Out2*)
+void update(Out1*)
+void update(Dirived1*)
+void update(Out1*)
+void update(Out2*)
+s= 'XPR{ kaasboer, T(map, '99', p) },'q,q\', r', ",,,",f(a, g(b)), 1, 10, foo<r, r, -9.3>, endit'
+sizeof(string)= '0x20'
+i= '0' &vss[i]= '0x564d9609cfa0' -> 'XPR{ kaasboer, T(map, '99', p) }'
+i= '1' &vss[i]= '0x564d9609cfc0' -> ''q,q', r''
+i= '2' &vss[i]= '0x564d9609cfe0' -> ' ",,,"'
+i= '3' &vss[i]= '0x564d9609d000' -> 'f(a, g(b))'
+i= '4' &vss[i]= '0x564d9609d020' -> ' 1'
+i= '5' &vss[i]= '0x564d9609d040' -> ' 10'
+i= '6' &vss[i]= '0x564d9609d060' -> ' foo<r, r, -9.3>'
+i= '7' &vss[i]= '0x564d9609d080' -> ' endit'
+back= '   a|bb   ||||c     cc|dd dd|   a|bb   ||||c     cc|dd dd||||a,bb|||,,,,c|||||cc,dd|dd'
+in= '   a,bb   ,,,,c     cc,dd dd'
+ostr= '   a'
+ostr= 'bb   '
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= 'c     cc'
+ostr= 'dd dd'
+ostr= '   a'
+ostr= 'bb   '
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= 'c     cc'
+ostr= 'dd dd'
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= 'a,bb'
+ostr= ''
+ostr= ''
+ostr= ',,,,c'
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= 'cc,dd'
+ostr= 'dd'
+[01;34m Fri Jun  2 11:15:43 2017
+ [00m count= '1'
+[01;34m Fri Jun  2 11:15:43 2017
+ [00m count= '-1'
+[01;34m Fri Jun  2 11:15:43 2017
+ [00m count= '0'
+Truth nullptr
+
+int              _v= '1'
+int              is_null(_v)= 'false'
+int              is_null_pointer<Value_T>::value= 'false'
+int              is_pointer<Value_T>::value= 'false'
+
+double           _v= '0.0099900000000000006'
+double           is_null(_v)= 'false'
+double           is_null_pointer<Value_T>::value= 'false'
+double           is_pointer<Value_T>::value= 'false'
+
+char const*      _v= 'Michel'
+char const*      is_null(_v)= 'false'
+char const*      is_null_pointer<Value_T>::value= 'false'
+char const*      is_pointer<Value_T>::value= 'true'
+
+nullptr          _v= 'nullptr'
+nullptr          is_null(_v)= 'true'
+nullptr          is_null_pointer<Value_T>::value= 'true'
+nullptr          is_pointer<Value_T>::value= 'false'
+
+(void*)nullptr  _v= '0'
+(void*)nullptr  is_null(_v)= 'true'
+(void*)nullptr  is_null_pointer<Value_T>::value= 'false'
+(void*)nullptr  is_pointer<Value_T>::value= 'true'
+
+(void*)&pc  _v= '0x7ffd10404bcc'
+(void*)&pc  is_null(_v)= 'false'
+(void*)&pc  is_null_pointer<Value_T>::value= 'false'
+(void*)&pc  is_pointer<Value_T>::value= 'true'
+
+Compilation failed!  phc_script= 'CPX-preproces_hash_compile.sh' return_value= '1'
+[01;31mERROR: message: Something went wrong during compilation of CPX-compile^45errors.cpp. Check logfile.[00m
+
+-------------------------------------------------------------------------------------
+forcefail: testing segmentation error
+On_signal: Segmentation fault
+_signal= '11'
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(_ZN6tosics4util25DumpBacktraceInFileStreamEi+0x3f)[0x559b2a81e985]
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(_ZN6tosics4util9On_signalEi+0x68)[0x559b2a81f642]
+/lib/x86_64-linux-gnu/libc.so.6(+0x35860)[0x7f9e9fa85860]
+/lib/x86_64-linux-gnu/libpthread.so.0(raise+0x9f)[0x7f9ea03c74ff]
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(_ZN3cpx4mainEv+0xe)[0x559b2a81d97e]
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(main+0x2f)[0x559b2a81d78f]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf1)[0x7f9e9fa703f1]
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(_start+0x2a)[0x559b2a81d65a]
+-------------------------------------------------------------------------------------
+
+message='Hello meta world' ::Greetings('*',10)='**********' compileTimeString='cccccccccccccccccccc' local_compileTimeString='llllllllllllllllllllllllllllll'
+ad.angle='0' ad.radius='100' ad.x='0' ad.y='100'
+ad.angle='15' ad.radius='100' ad.x='25.881904510252074' ad.y='96.592582628906825'
+ad.angle='30' ad.radius='100' ad.x='49.999999999999993' ad.y='86.602540378443877'
+ad.angle='45' ad.radius='100' ad.x='70.710678118654741' ad.y='70.710678118654755'
+ad.angle='60' ad.radius='100' ad.x='86.602540378443862' ad.y='50.000000000000014'
+ad.angle='75' ad.radius='100' ad.x='96.592582628906825' ad.y='25.881904510252074'
+ad.angle='90' ad.radius='100' ad.x='100' ad.y='6.1232339957367661e-15'
+ad.angle='105' ad.radius='100' ad.x='96.592582628906825' ad.y='-25.881904510252085'
+ad.angle='120' ad.radius='100' ad.x='86.602540378443877' ad.y='-49.999999999999979'
+ad.angle='135' ad.radius='100' ad.x='70.710678118654755' ad.y='-70.710678118654741'
+ad.angle='150' ad.radius='100' ad.x='49.999999999999993' ad.y='-86.602540378443877'
+ad.angle='165' ad.radius='100' ad.x='25.881904510252102' ad.y='-96.592582628906825'
+ad.angle='180' ad.radius='100' ad.x='1.2246467991473532e-14' ad.y='-100'
+ad.angle='195' ad.radius='100' ad.x='-25.881904510252081' ad.y='-96.592582628906825'
+ad.angle='210' ad.radius='100' ad.x='-50.000000000000014' ad.y='-86.602540378443862'
+ad.angle='225' ad.radius='100' ad.x='-70.710678118654741' ad.y='-70.710678118654769'
+ad.angle='240' ad.radius='100' ad.x='-86.602540378443834' ad.y='-50.000000000000043'
+ad.angle='255' ad.radius='100' ad.x='-96.592582628906825' ad.y='-25.881904510252063'
+ad.angle='270' ad.radius='100' ad.x='-100' ad.y='-1.8369701987210297e-14'
+ad.angle='285' ad.radius='100' ad.x='-96.59258262890684' ad.y='25.881904510252028'
+ad.angle='300' ad.radius='100' ad.x='-86.602540378443862' ad.y='50.000000000000014'
+ad.angle='315' ad.radius='100' ad.x='-70.710678118654769' ad.y='70.710678118654741'
+ad.angle='330' ad.radius='100' ad.x='-50.000000000000043' ad.y='86.602540378443834'
+ad.angle='345' ad.radius='100' ad.x='-25.881904510252067' ad.y='96.592582628906825'
+ad.angle='360' ad.radius='100' ad.x='-2.4492935982947064e-14' ad.y='100'
+Hello meta world
+one= 'Fri Jun  2 11:15:44 2017'
+one= 'Fri Jun  2 11:15:45 2017'
+ls: cannot access '*.o': No such file or directory
+ls: cannot access '*temp*': No such file or directory
+ls: cannot access '*[0-9,a-z].hash': No such file or directory
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47metagreetings.cpp'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47pure^45circle^45v2.cpp'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47sleepdatetime.cpp'
+removed 'CPX-arg_output.cpp'
+removed 'CPX-boocircbuf.cpp'
+removed 'CPX-bracecount.cpp'
+removed 'CPX-compile^45errors.cpp'
+removed 'CPX-cppstripws.cpp'
+removed 'CPX-cpx^45empty.cpp'
+removed 'CPX-dummy.cpp'
+removed 'CPX-forcefail.cpp'
+removed 'CPX-greetings.cpp'
+removed 'CPX-hello_meta_world.cpp'
+removed 'CPX-labelvaluezipper.cpp'
+removed 'CPX-outptroverload.cpp'
+removed 'CPX-rnr_source2.cpp'
+removed 'CPX-strangeloop.cpp'
+removed 'CPX-stream_nullptr.cpp'
+removed 'CPX-strhash.cpp'
+removed 'CPX-txtsplit.cpp'
+removed 'CPX-varvresearch.cpp'
+removed 'CPX-01e7287e261f781d51c47896c2341ec83f2ba22b.cpp.x'
+removed 'CPX-0720626044a490822c52e60e7eaca2b3f86384cf.cpp.x'
+removed 'CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x'
+removed 'CPX-32c06c4a22280cbcde5a3fcc9d0b5649db659ca4.cpp.x'
+removed 'CPX-40eefd7041f0c43fa76a7646d58b39c6dc476ffd.cpp.x'
+removed 'CPX-5ee213f1f04c2c26fac3360195539db0d61c6c56.cpp.x'
+removed 'CPX-5fd6b39d2c8586da9ad57ff3fe8f43acd3138dcc.cpp.x'
+removed 'CPX-62ed3e196848b7423a008899c3294731b78c646b.cpp.x'
+removed 'CPX-6497ca285494ff6426bbda97b505cfbf4ebb7650.cpp.x'
+removed 'CPX-662cd0027a8a3c452a01db02a4a5acf002cacaf3.cpp.x'
+removed 'CPX-8372193c98da2016c84f44d79f761f0cfe6afc55.cpp.x'
+removed 'CPX-865f3df8b4bee269bd41c6adda106e9995ee02b6.cpp.x'
+removed 'CPX-88f6eccc50818b9d75ed11ea22379c512e4f722c.cpp.x'
+removed 'CPX-8afaebe0adeddf07cd2dba3d142d84f61c00afa3.cpp.x'
+removed 'CPX-8fb11279efbc16a7ad40b763a70cf79e661cd9f4.cpp.x'
+removed 'CPX-95df3827085b4babc90e9edb0077af420008a529.cpp.x'
+removed 'CPX-a7bc6d432cffe495af763f70905746246cdd356c.cpp.x'
+removed 'CPX-a801cc046c058e42a753666f67805305882ff480.cpp.x'
+removed 'CPX-ad8643df5b6f6d0ac8e382110e47887a8a3b53df.cpp.x'
+removed 'CPX-d50cda7400534ca66334de0912a0371f7a23a85b.cpp.x'
+removed 'CPX-f7a0a6cd27282ee2a0938cea58ece912b8674144.cpp.x'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47metagreetings.s'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47pure^45circle^45v2.s'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47sleepdatetime.s'
+removed 'CPX-arg_output.s'
+removed 'CPX-boocircbuf.s'
+removed 'CPX-bracecount.s'
+removed 'CPX-compile^45errors.s'
+removed 'CPX-cppstripws.s'
+removed 'CPX-cpx^45empty.s'
+removed 'CPX-dummy.s'
+removed 'CPX-forcefail.s'
+removed 'CPX-greetings.s'
+removed 'CPX-hello_meta_world.s'
+removed 'CPX-labelvaluezipper.s'
+removed 'CPX-outptroverload.s'
+removed 'CPX-rnr_source2.s'
+removed 'CPX-strangeloop.s'
+removed 'CPX-stream_nullptr.s'
+removed 'CPX-strhash.s'
+removed 'CPX-txtsplit.s'
+removed 'CPX-varvresearch.s'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47metagreetings.ii'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47pure^45circle^45v2.ii'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47sleepdatetime.ii'
+removed 'CPX-arg_output.ii'
+removed 'CPX-boocircbuf.ii'
+removed 'CPX-bracecount.ii'
+removed 'CPX-compile^45errors.ii'
+removed 'CPX-cppstripws.ii'
+removed 'CPX-cpx^45empty.ii'
+removed 'CPX-dummy.ii'
+removed 'CPX-forcefail.ii'
+removed 'CPX-greetings.ii'
+removed 'CPX-hello_meta_world.ii'
+removed 'CPX-labelvaluezipper.ii'
+removed 'CPX-outptroverload.ii'
+removed 'CPX-rnr_source2.ii'
+removed 'CPX-strangeloop.ii'
+removed 'CPX-stream_nullptr.ii'
+removed 'CPX-strhash.ii'
+removed 'CPX-txtsplit.ii'
+removed 'CPX-varvresearch.ii'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47metagreetings.cpp.unchanged.hpp'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47pure^45circle^45v2.cpp.unchanged.hpp'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47sleepdatetime.cpp.unchanged.hpp'
+removed 'CPX-arg_output.cpp.unchanged.hpp'
+removed 'CPX-boocircbuf.cpp.unchanged.hpp'
+removed 'CPX-bracecount.cpp.unchanged.hpp'
+removed 'CPX-compile^45errors.cpp.unchanged.hpp'
+removed 'CPX-cppstripws.cpp.unchanged.hpp'
+removed 'CPX-cpx^45empty.cpp.unchanged.hpp'
+removed 'CPX-dummy.cpp.unchanged.hpp'
+removed 'CPX-forcefail.cpp.unchanged.hpp'
+removed 'CPX-greetings.cpp.unchanged.hpp'
+removed 'CPX-hello_meta_world.cpp.unchanged.hpp'
+removed 'CPX-labelvaluezipper.cpp.unchanged.hpp'
+removed 'CPX-outptroverload.cpp.unchanged.hpp'
+removed 'CPX-rnr_source2.cpp.unchanged.hpp'
+removed 'CPX-strangeloop.cpp.unchanged.hpp'
+removed 'CPX-stream_nullptr.cpp.unchanged.hpp'
+removed 'CPX-strhash.cpp.unchanged.hpp'
+removed 'CPX-txtsplit.cpp.unchanged.hpp'
+removed 'CPX-varvresearch.cpp.unchanged.hpp'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47metagreetings.cpp.prehash'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47pure^45circle^45v2.cpp.prehash'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47sleepdatetime.cpp.prehash'
+removed 'CPX-arg_output.cpp.prehash'
+removed 'CPX-boocircbuf.cpp.prehash'
+removed 'CPX-bracecount.cpp.prehash'
+removed 'CPX-compile^45errors.cpp.prehash'
+removed 'CPX-cppstripws.cpp.prehash'
+removed 'CPX-cpx^45empty.cpp.prehash'
+removed 'CPX-dummy.cpp.prehash'
+removed 'CPX-forcefail.cpp.prehash'
+removed 'CPX-greetings.cpp.prehash'
+removed 'CPX-hello_meta_world.cpp.prehash'
+removed 'CPX-labelvaluezipper.cpp.prehash'
+removed 'CPX-outptroverload.cpp.prehash'
+removed 'CPX-rnr_source2.cpp.prehash'
+removed 'CPX-strangeloop.cpp.prehash'
+removed 'CPX-stream_nullptr.cpp.prehash'
+removed 'CPX-strhash.cpp.prehash'
+removed 'CPX-txtsplit.cpp.prehash'
+removed 'CPX-varvresearch.cpp.prehash'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47metagreetings.cpp.prehash.errors'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47pure^45circle^45v2.cpp.prehash.errors'
+removed 'CPX-^47home^47michel^47Projects^47Kdevelop^47cpx^47test^47sleepdatetime.cpp.prehash.errors'
+removed 'CPX-arg_output.cpp.prehash.errors'
+removed 'CPX-boocircbuf.cpp.prehash.errors'
+removed 'CPX-bracecount.cpp.prehash.errors'
+removed 'CPX-compile^45errors.cpp.prehash.errors'
+removed 'CPX-cppstripws.cpp.prehash.errors'
+removed 'CPX-cpx^45empty.cpp.prehash.errors'
+removed 'CPX-dummy.cpp.prehash.errors'
+removed 'CPX-forcefail.cpp.prehash.errors'
+removed 'CPX-greetings.cpp.prehash.errors'
+removed 'CPX-hello_meta_world.cpp.prehash.errors'
+removed 'CPX-labelvaluezipper.cpp.prehash.errors'
+removed 'CPX-outptroverload.cpp.prehash.errors'
+removed 'CPX-rnr_source2.cpp.prehash.errors'
+removed 'CPX-strangeloop.cpp.prehash.errors'
+removed 'CPX-stream_nullptr.cpp.prehash.errors'
+removed 'CPX-strhash.cpp.prehash.errors'
+removed 'CPX-txtsplit.cpp.prehash.errors'
+removed 'CPX-varvresearch.cpp.prehash.errors'
+removed 'CPX-189fce6b3dc70d8dbcd390144f68a6783fe62cc9.inc'
+removed 'CPX-201697886cac95495e4dc68b479ea74d90aa5d68.inc'
+removed 'CPX-2d7fc6dcba6e0de17257a8a6dfea080140495ae4.inc'
+removed 'CPX-966275ba5c28f9de2e73b9148dfb8f950b98bd7a.inc'
+removed 'CPX-e377068503c9bb44a497a1daca17266bea2b0846.inc'
+removed 'CPX-ff53103354ea6bc4b9566f787c8d442d23a48a37.inc'
++
+argCnt='0' ProgramArguments[argCnt]='/home/michel/tmp/cpx/CPX-a801cc046c058e42a753666f67805305882ff480.cpp.x'
+argCnt='1' ProgramArguments[argCnt]='3'
+Fri Jun  2 11:15:46 2017
+status= '3'
+hash<string>{}(string("Michel"))= '0x1030cb4ef1b9e23b'
+n='1' m='2' f='33.3330002' c='M' lsum(n,m)='3' s='Toonen' lsum(s,s)='ToonenToonen'
+cb.capacity()= '3'
+cb.size()= '0'
+cb.size()= '3'
+cb.size()= '3'
+i= '0' cb[i]= '3'
+i= '1' cb[i]= '4'
+i= '2' cb[i]= '5'
+int cpx::main()
+File:CPX-arg_output.cpp function:tosics::util::Output<OUT_T>::Output(tosics::util::Output<OUT_T>::out_type&) [with OUT_T = int; tosics::util::Output<OUT_T>::out_type = int] line:40: ===construct===
+File:CPX-arg_output.cpp function:void foo(tosics::util::Output<int>&&, std::vector<int>) line:84: ==== enter ====
+Addeing value= '1'
+Addeing value= '2'
+Addeing value= '3'
+Addeing value= '4'
+Addeing value= '5'
+File:CPX-arg_output.cpp function:foo(tosics::util::Output<int>&&, std::vector<int>)::<lambda(int*, int*, const char*)> line:98: ===Forward test--->  _msg='forwarded'
+spy= '16' File:CPX-arg_output.cpp function:void foo(tosics::util::Output<int>&&, std::vector<int>) line:105: ==== leaving ====
+File:CPX-arg_output.cpp function:tosics::util::Output<OUT_T>::~Output() [with OUT_T = int] line:52: ===destruct===
+sumtest= '16'
+
+---DROP---
+File:CPX-arg_output.cpp function:tosics::util::Output<OUT_T>::Output() [with OUT_T = int] line:47: ===dropped===
+File:CPX-arg_output.cpp function:void foo(tosics::util::Output<int>&&, std::vector<int>) line:84: ==== enter ====
+Addeing value= '8'
+Addeing value= '9'
+Addeing value= '10'
+spy= '0' File:CPX-arg_output.cpp function:void foo(tosics::util::Output<int>&&, std::vector<int>) line:105: ==== leaving ====
+File:CPX-arg_output.cpp function:tosics::util::Output<OUT_T>::~Output() [with OUT_T = int] line:52: ===destruct===
+[01;34m Fri Jun  2 11:15:48 2017
+ [00m
+sizeof(string)= '0x20'
+&c= '0x562f4e1b2ca0' -> 'm' &c= '0x562f4e1b2ca0' -> '0x6d' c= 'm' c= '0x6d' VARVALS for multiple arguments c='m' &c='mijstonen@hotmail.com'
+&c= '0x562f4e1b2ca1' -> 'i' &c= '0x562f4e1b2ca1' -> '0x69' c= 'i' c= '0x69' VARVALS for multiple arguments c='i' &c='ijstonen@hotmail.com'
+&c= '0x562f4e1b2ca2' -> 'j' &c= '0x562f4e1b2ca2' -> '0x6a' c= 'j' c= '0x6a' VARVALS for multiple arguments c='j' &c='jstonen@hotmail.com'
+&c= '0x562f4e1b2ca3' -> 's' &c= '0x562f4e1b2ca3' -> '0x73' c= 's' c= '0x73' VARVALS for multiple arguments c='s' &c='stonen@hotmail.com'
+&c= '0x562f4e1b2ca4' -> 't' &c= '0x562f4e1b2ca4' -> '0x74' c= 't' c= '0x74' VARVALS for multiple arguments c='t' &c='tonen@hotmail.com'
+&c= '0x562f4e1b2ca5' -> 'o' &c= '0x562f4e1b2ca5' -> '0x6f' c= 'o' c= '0x6f' VARVALS for multiple arguments c='o' &c='onen@hotmail.com'
+&c= '0x562f4e1b2ca6' -> 'n' &c= '0x562f4e1b2ca6' -> '0x6e' c= 'n' c= '0x6e' VARVALS for multiple arguments c='n' &c='nen@hotmail.com'
+&c= '0x562f4e1b2ca7' -> 'e' &c= '0x562f4e1b2ca7' -> '0x65' c= 'e' c= '0x65' VARVALS for multiple arguments c='e' &c='en@hotmail.com'
+&c= '0x562f4e1b2ca8' -> 'n' &c= '0x562f4e1b2ca8' -> '0x6e' c= 'n' c= '0x6e' VARVALS for multiple arguments c='n' &c='n@hotmail.com'
+&c= '0x562f4e1b2ca9' -> '@' &c= '0x562f4e1b2ca9' -> '0x40' c= '@' c= '0x40' VARVALS for multiple arguments c='@' &c='@hotmail.com'
+&c= '0x562f4e1b2caa' -> 'h' &c= '0x562f4e1b2caa' -> '0x68' c= 'h' c= '0x68' VARVALS for multiple arguments c='h' &c='hotmail.com'
+&c= '0x562f4e1b2cab' -> 'o' &c= '0x562f4e1b2cab' -> '0x6f' c= 'o' c= '0x6f' VARVALS for multiple arguments c='o' &c='otmail.com'
+&c= '0x562f4e1b2cac' -> 't' &c= '0x562f4e1b2cac' -> '0x74' c= 't' c= '0x74' VARVALS for multiple arguments c='t' &c='tmail.com'
+&c= '0x562f4e1b2cad' -> 'm' &c= '0x562f4e1b2cad' -> '0x6d' c= 'm' c= '0x6d' VARVALS for multiple arguments c='m' &c='mail.com'
+&c= '0x562f4e1b2cae' -> 'a' &c= '0x562f4e1b2cae' -> '0x61' c= 'a' c= '0x61' VARVALS for multiple arguments c='a' &c='ail.com'
+&c= '0x562f4e1b2caf' -> 'i' &c= '0x562f4e1b2caf' -> '0x69' c= 'i' c= '0x69' VARVALS for multiple arguments c='i' &c='il.com'
+&c= '0x562f4e1b2cb0' -> 'l' &c= '0x562f4e1b2cb0' -> '0x6c' c= 'l' c= '0x6c' VARVALS for multiple arguments c='l' &c='l.com'
+&c= '0x562f4e1b2cb1' -> '.' &c= '0x562f4e1b2cb1' -> '0x2e' c= '.' c= '0x2e' VARVALS for multiple arguments c='.' &c='.com'
+&c= '0x562f4e1b2cb2' -> 'c' &c= '0x562f4e1b2cb2' -> '0x63' c= 'c' c= '0x63' VARVALS for multiple arguments c='c' &c='com'
+&c= '0x562f4e1b2cb3' -> 'o' &c= '0x562f4e1b2cb3' -> '0x6f' c= 'o' c= '0x6f' VARVALS for multiple arguments c='o' &c='om'
+&c= '0x562f4e1b2cb4' -> 'm' &c= '0x562f4e1b2cb4' -> '0x6d' c= 'm' c= '0x6d' VARVALS for multiple arguments c='m' &c='m'
+OK
+void update(Out2*)
+void update(Out1*)
+void update(Dirived1*)
+void update(Out1*)
+void update(Out2*)
+s= 'XPR{ kaasboer, T(map, '99', p) },'q,q\', r', ",,,",f(a, g(b)), 1, 10, foo<r, r, -9.3>, endit'
+sizeof(string)= '0x20'
+i= '0' &vss[i]= '0x5589098d6fa0' -> 'XPR{ kaasboer, T(map, '99', p) }'
+i= '1' &vss[i]= '0x5589098d6fc0' -> ''q,q', r''
+i= '2' &vss[i]= '0x5589098d6fe0' -> ' ",,,"'
+i= '3' &vss[i]= '0x5589098d7000' -> 'f(a, g(b))'
+i= '4' &vss[i]= '0x5589098d7020' -> ' 1'
+i= '5' &vss[i]= '0x5589098d7040' -> ' 10'
+i= '6' &vss[i]= '0x5589098d7060' -> ' foo<r, r, -9.3>'
+i= '7' &vss[i]= '0x5589098d7080' -> ' endit'
+back= '   a|bb   ||||c     cc|dd dd|   a|bb   ||||c     cc|dd dd||||a,bb|||,,,,c|||||cc,dd|dd'
+in= '   a,bb   ,,,,c     cc,dd dd'
+ostr= '   a'
+ostr= 'bb   '
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= 'c     cc'
+ostr= 'dd dd'
+ostr= '   a'
+ostr= 'bb   '
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= 'c     cc'
+ostr= 'dd dd'
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= 'a,bb'
+ostr= ''
+ostr= ''
+ostr= ',,,,c'
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= 'cc,dd'
+ostr= 'dd'
+[01;34m Fri Jun  2 11:15:50 2017
+ [00m count= '1'
+[01;34m Fri Jun  2 11:15:50 2017
+ [00m count= '-1'
+[01;34m Fri Jun  2 11:15:50 2017
+ [00m count= '0'
+Truth nullptr
+
+int              _v= '1'
+int              is_null(_v)= 'false'
+int              is_null_pointer<Value_T>::value= 'false'
+int              is_pointer<Value_T>::value= 'false'
+
+double           _v= '0.0099900000000000006'
+double           is_null(_v)= 'false'
+double           is_null_pointer<Value_T>::value= 'false'
+double           is_pointer<Value_T>::value= 'false'
+
+char const*      _v= 'Michel'
+char const*      is_null(_v)= 'false'
+char const*      is_null_pointer<Value_T>::value= 'false'
+char const*      is_pointer<Value_T>::value= 'true'
+
+nullptr          _v= 'nullptr'
+nullptr          is_null(_v)= 'true'
+nullptr          is_null_pointer<Value_T>::value= 'true'
+nullptr          is_pointer<Value_T>::value= 'false'
+
+(void*)nullptr  _v= '0'
+(void*)nullptr  is_null(_v)= 'true'
+(void*)nullptr  is_null_pointer<Value_T>::value= 'false'
+(void*)nullptr  is_pointer<Value_T>::value= 'true'
+
+(void*)&pc  _v= '0x7fff6fc06fec'
+(void*)&pc  is_null(_v)= 'false'
+(void*)&pc  is_null_pointer<Value_T>::value= 'false'
+(void*)&pc  is_pointer<Value_T>::value= 'true'
+
+Compilation failed!  phc_script= 'CPX-preproces_hash_compile.sh' return_value= '1'
+[01;31mERROR: message: Something went wrong during compilation of CPX-compile^45errors.cpp. Check logfile.[00m
+
+-------------------------------------------------------------------------------------
+forcefail: testing segmentation error
+On_signal: Segmentation fault
+_signal= '11'
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(_ZN6tosics4util25DumpBacktraceInFileStreamEi+0x3f)[0x558b80a9c985]
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(_ZN6tosics4util9On_signalEi+0x68)[0x558b80a9d642]
+/lib/x86_64-linux-gnu/libc.so.6(+0x35860)[0x7f411f64d860]
+/lib/x86_64-linux-gnu/libpthread.so.0(raise+0x9f)[0x7f411ff8f4ff]
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(_ZN3cpx4mainEv+0xe)[0x558b80a9b97e]
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(main+0x2f)[0x558b80a9b78f]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf1)[0x7f411f6383f1]
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(_start+0x2a)[0x558b80a9b65a]
+-------------------------------------------------------------------------------------
+
+message='Hello meta world' ::Greetings('*',10)='**********' compileTimeString='cccccccccccccccccccc' local_compileTimeString='llllllllllllllllllllllllllllll'
+ad.angle='0' ad.radius='100' ad.x='0' ad.y='100'
+ad.angle='15' ad.radius='100' ad.x='25.881904510252074' ad.y='96.592582628906825'
+ad.angle='30' ad.radius='100' ad.x='49.999999999999993' ad.y='86.602540378443877'
+ad.angle='45' ad.radius='100' ad.x='70.710678118654741' ad.y='70.710678118654755'
+ad.angle='60' ad.radius='100' ad.x='86.602540378443862' ad.y='50.000000000000014'
+ad.angle='75' ad.radius='100' ad.x='96.592582628906825' ad.y='25.881904510252074'
+ad.angle='90' ad.radius='100' ad.x='100' ad.y='6.1232339957367661e-15'
+ad.angle='105' ad.radius='100' ad.x='96.592582628906825' ad.y='-25.881904510252085'
+ad.angle='120' ad.radius='100' ad.x='86.602540378443877' ad.y='-49.999999999999979'
+ad.angle='135' ad.radius='100' ad.x='70.710678118654755' ad.y='-70.710678118654741'
+ad.angle='150' ad.radius='100' ad.x='49.999999999999993' ad.y='-86.602540378443877'
+ad.angle='165' ad.radius='100' ad.x='25.881904510252102' ad.y='-96.592582628906825'
+ad.angle='180' ad.radius='100' ad.x='1.2246467991473532e-14' ad.y='-100'
+ad.angle='195' ad.radius='100' ad.x='-25.881904510252081' ad.y='-96.592582628906825'
+ad.angle='210' ad.radius='100' ad.x='-50.000000000000014' ad.y='-86.602540378443862'
+ad.angle='225' ad.radius='100' ad.x='-70.710678118654741' ad.y='-70.710678118654769'
+ad.angle='240' ad.radius='100' ad.x='-86.602540378443834' ad.y='-50.000000000000043'
+ad.angle='255' ad.radius='100' ad.x='-96.592582628906825' ad.y='-25.881904510252063'
+ad.angle='270' ad.radius='100' ad.x='-100' ad.y='-1.8369701987210297e-14'
+ad.angle='285' ad.radius='100' ad.x='-96.59258262890684' ad.y='25.881904510252028'
+ad.angle='300' ad.radius='100' ad.x='-86.602540378443862' ad.y='50.000000000000014'
+ad.angle='315' ad.radius='100' ad.x='-70.710678118654769' ad.y='70.710678118654741'
+ad.angle='330' ad.radius='100' ad.x='-50.000000000000043' ad.y='86.602540378443834'
+ad.angle='345' ad.radius='100' ad.x='-25.881904510252067' ad.y='96.592582628906825'
+ad.angle='360' ad.radius='100' ad.x='-2.4492935982947064e-14' ad.y='100'
+Hello meta world
+one= 'Fri Jun  2 11:15:54 2017'
+one= 'Fri Jun  2 11:15:55 2017'
++
+argCnt='0' ProgramArguments[argCnt]='/home/michel/tmp/cpx/CPX-a801cc046c058e42a753666f67805305882ff480.cpp.x'
+argCnt='1' ProgramArguments[argCnt]='3'
+Fri Jun  2 11:15:56 2017
+status= '3'
+hash<string>{}(string("Michel"))= '0x1030cb4ef1b9e23b'
+n='1' m='2' f='33.3330002' c='M' lsum(n,m)='3' s='Toonen' lsum(s,s)='ToonenToonen'
+cb.capacity()= '3'
+cb.size()= '0'
+cb.size()= '3'
+cb.size()= '3'
+i= '0' cb[i]= '3'
+i= '1' cb[i]= '4'
+i= '2' cb[i]= '5'
+int cpx::main()
+File:CPX-arg_output.cpp function:tosics::util::Output<OUT_T>::Output(tosics::util::Output<OUT_T>::out_type&) [with OUT_T = int; tosics::util::Output<OUT_T>::out_type = int] line:40: ===construct===
+File:CPX-arg_output.cpp function:void foo(tosics::util::Output<int>&&, std::vector<int>) line:84: ==== enter ====
+Addeing value= '1'
+Addeing value= '2'
+Addeing value= '3'
+Addeing value= '4'
+Addeing value= '5'
+File:CPX-arg_output.cpp function:foo(tosics::util::Output<int>&&, std::vector<int>)::<lambda(int*, int*, const char*)> line:98: ===Forward test--->  _msg='forwarded'
+spy= '16' File:CPX-arg_output.cpp function:void foo(tosics::util::Output<int>&&, std::vector<int>) line:105: ==== leaving ====
+File:CPX-arg_output.cpp function:tosics::util::Output<OUT_T>::~Output() [with OUT_T = int] line:52: ===destruct===
+sumtest= '16'
+
+---DROP---
+File:CPX-arg_output.cpp function:tosics::util::Output<OUT_T>::Output() [with OUT_T = int] line:47: ===dropped===
+File:CPX-arg_output.cpp function:void foo(tosics::util::Output<int>&&, std::vector<int>) line:84: ==== enter ====
+Addeing value= '8'
+Addeing value= '9'
+Addeing value= '10'
+spy= '0' File:CPX-arg_output.cpp function:void foo(tosics::util::Output<int>&&, std::vector<int>) line:105: ==== leaving ====
+File:CPX-arg_output.cpp function:tosics::util::Output<OUT_T>::~Output() [with OUT_T = int] line:52: ===destruct===
+[01;34m Fri Jun  2 11:15:56 2017
+ [00m
+sizeof(string)= '0x20'
+&c= '0x55b19e8a1ca0' -> 'm' &c= '0x55b19e8a1ca0' -> '0x6d' c= 'm' c= '0x6d' VARVALS for multiple arguments c='m' &c='mijstonen@hotmail.com'
+&c= '0x55b19e8a1ca1' -> 'i' &c= '0x55b19e8a1ca1' -> '0x69' c= 'i' c= '0x69' VARVALS for multiple arguments c='i' &c='ijstonen@hotmail.com'
+&c= '0x55b19e8a1ca2' -> 'j' &c= '0x55b19e8a1ca2' -> '0x6a' c= 'j' c= '0x6a' VARVALS for multiple arguments c='j' &c='jstonen@hotmail.com'
+&c= '0x55b19e8a1ca3' -> 's' &c= '0x55b19e8a1ca3' -> '0x73' c= 's' c= '0x73' VARVALS for multiple arguments c='s' &c='stonen@hotmail.com'
+&c= '0x55b19e8a1ca4' -> 't' &c= '0x55b19e8a1ca4' -> '0x74' c= 't' c= '0x74' VARVALS for multiple arguments c='t' &c='tonen@hotmail.com'
+&c= '0x55b19e8a1ca5' -> 'o' &c= '0x55b19e8a1ca5' -> '0x6f' c= 'o' c= '0x6f' VARVALS for multiple arguments c='o' &c='onen@hotmail.com'
+&c= '0x55b19e8a1ca6' -> 'n' &c= '0x55b19e8a1ca6' -> '0x6e' c= 'n' c= '0x6e' VARVALS for multiple arguments c='n' &c='nen@hotmail.com'
+&c= '0x55b19e8a1ca7' -> 'e' &c= '0x55b19e8a1ca7' -> '0x65' c= 'e' c= '0x65' VARVALS for multiple arguments c='e' &c='en@hotmail.com'
+&c= '0x55b19e8a1ca8' -> 'n' &c= '0x55b19e8a1ca8' -> '0x6e' c= 'n' c= '0x6e' VARVALS for multiple arguments c='n' &c='n@hotmail.com'
+&c= '0x55b19e8a1ca9' -> '@' &c= '0x55b19e8a1ca9' -> '0x40' c= '@' c= '0x40' VARVALS for multiple arguments c='@' &c='@hotmail.com'
+&c= '0x55b19e8a1caa' -> 'h' &c= '0x55b19e8a1caa' -> '0x68' c= 'h' c= '0x68' VARVALS for multiple arguments c='h' &c='hotmail.com'
+&c= '0x55b19e8a1cab' -> 'o' &c= '0x55b19e8a1cab' -> '0x6f' c= 'o' c= '0x6f' VARVALS for multiple arguments c='o' &c='otmail.com'
+&c= '0x55b19e8a1cac' -> 't' &c= '0x55b19e8a1cac' -> '0x74' c= 't' c= '0x74' VARVALS for multiple arguments c='t' &c='tmail.com'
+&c= '0x55b19e8a1cad' -> 'm' &c= '0x55b19e8a1cad' -> '0x6d' c= 'm' c= '0x6d' VARVALS for multiple arguments c='m' &c='mail.com'
+&c= '0x55b19e8a1cae' -> 'a' &c= '0x55b19e8a1cae' -> '0x61' c= 'a' c= '0x61' VARVALS for multiple arguments c='a' &c='ail.com'
+&c= '0x55b19e8a1caf' -> 'i' &c= '0x55b19e8a1caf' -> '0x69' c= 'i' c= '0x69' VARVALS for multiple arguments c='i' &c='il.com'
+&c= '0x55b19e8a1cb0' -> 'l' &c= '0x55b19e8a1cb0' -> '0x6c' c= 'l' c= '0x6c' VARVALS for multiple arguments c='l' &c='l.com'
+&c= '0x55b19e8a1cb1' -> '.' &c= '0x55b19e8a1cb1' -> '0x2e' c= '.' c= '0x2e' VARVALS for multiple arguments c='.' &c='.com'
+&c= '0x55b19e8a1cb2' -> 'c' &c= '0x55b19e8a1cb2' -> '0x63' c= 'c' c= '0x63' VARVALS for multiple arguments c='c' &c='com'
+&c= '0x55b19e8a1cb3' -> 'o' &c= '0x55b19e8a1cb3' -> '0x6f' c= 'o' c= '0x6f' VARVALS for multiple arguments c='o' &c='om'
+&c= '0x55b19e8a1cb4' -> 'm' &c= '0x55b19e8a1cb4' -> '0x6d' c= 'm' c= '0x6d' VARVALS for multiple arguments c='m' &c='m'
+OK
+void update(Out2*)
+void update(Out1*)
+void update(Dirived1*)
+void update(Out1*)
+void update(Out2*)
+s= 'XPR{ kaasboer, T(map, '99', p) },'q,q\', r', ",,,",f(a, g(b)), 1, 10, foo<r, r, -9.3>, endit'
+sizeof(string)= '0x20'
+i= '0' &vss[i]= '0x55ad46ff3fa0' -> 'XPR{ kaasboer, T(map, '99', p) }'
+i= '1' &vss[i]= '0x55ad46ff3fc0' -> ''q,q', r''
+i= '2' &vss[i]= '0x55ad46ff3fe0' -> ' ",,,"'
+i= '3' &vss[i]= '0x55ad46ff4000' -> 'f(a, g(b))'
+i= '4' &vss[i]= '0x55ad46ff4020' -> ' 1'
+i= '5' &vss[i]= '0x55ad46ff4040' -> ' 10'
+i= '6' &vss[i]= '0x55ad46ff4060' -> ' foo<r, r, -9.3>'
+i= '7' &vss[i]= '0x55ad46ff4080' -> ' endit'
+back= '   a|bb   ||||c     cc|dd dd|   a|bb   ||||c     cc|dd dd||||a,bb|||,,,,c|||||cc,dd|dd'
+in= '   a,bb   ,,,,c     cc,dd dd'
+ostr= '   a'
+ostr= 'bb   '
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= 'c     cc'
+ostr= 'dd dd'
+ostr= '   a'
+ostr= 'bb   '
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= 'c     cc'
+ostr= 'dd dd'
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= 'a,bb'
+ostr= ''
+ostr= ''
+ostr= ',,,,c'
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= ''
+ostr= 'cc,dd'
+ostr= 'dd'
+[01;34m Fri Jun  2 11:15:56 2017
+ [00m count= '1'
+[01;34m Fri Jun  2 11:15:56 2017
+ [00m count= '-1'
+[01;34m Fri Jun  2 11:15:56 2017
+ [00m count= '0'
+Truth nullptr
+
+int              _v= '1'
+int              is_null(_v)= 'false'
+int              is_null_pointer<Value_T>::value= 'false'
+int              is_pointer<Value_T>::value= 'false'
+
+double           _v= '0.0099900000000000006'
+double           is_null(_v)= 'false'
+double           is_null_pointer<Value_T>::value= 'false'
+double           is_pointer<Value_T>::value= 'false'
+
+char const*      _v= 'Michel'
+char const*      is_null(_v)= 'false'
+char const*      is_null_pointer<Value_T>::value= 'false'
+char const*      is_pointer<Value_T>::value= 'true'
+
+nullptr          _v= 'nullptr'
+nullptr          is_null(_v)= 'true'
+nullptr          is_null_pointer<Value_T>::value= 'true'
+nullptr          is_pointer<Value_T>::value= 'false'
+
+(void*)nullptr  _v= '0'
+(void*)nullptr  is_null(_v)= 'true'
+(void*)nullptr  is_null_pointer<Value_T>::value= 'false'
+(void*)nullptr  is_pointer<Value_T>::value= 'true'
+
+(void*)&pc  _v= '0x7ffc58af44fc'
+(void*)&pc  is_null(_v)= 'false'
+(void*)&pc  is_null_pointer<Value_T>::value= 'false'
+(void*)&pc  is_pointer<Value_T>::value= 'true'
+
+Compilation failed!  phc_script= 'CPX-preproces_hash_compile.sh' return_value= '1'
+[01;31mERROR: message: Something went wrong during compilation of CPX-compile^45errors.cpp. Check logfile.[00m
+
+-------------------------------------------------------------------------------------
+forcefail: testing segmentation error
+On_signal: Segmentation fault
+_signal= '11'
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(_ZN6tosics4util25DumpBacktraceInFileStreamEi+0x3f)[0x559cb7786985]
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(_ZN6tosics4util9On_signalEi+0x68)[0x559cb7787642]
+/lib/x86_64-linux-gnu/libc.so.6(+0x35860)[0x7f7926ad6860]
+/lib/x86_64-linux-gnu/libpthread.so.0(raise+0x9f)[0x7f79274184ff]
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(_ZN3cpx4mainEv+0xe)[0x559cb778597e]
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(main+0x2f)[0x559cb778578f]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf1)[0x7f7926ac13f1]
+/home/michel/tmp/cpx/CPX-0b8772b6d27f7788e24211c2cff97ae7d5e0e9d0.cpp.x(_start+0x2a)[0x559cb778565a]
+-------------------------------------------------------------------------------------
+
+message='Hello meta world' ::Greetings('*',10)='**********' compileTimeString='cccccccccccccccccccc' local_compileTimeString='llllllllllllllllllllllllllllll'
+ad.angle='0' ad.radius='100' ad.x='0' ad.y='100'
+ad.angle='15' ad.radius='100' ad.x='25.881904510252074' ad.y='96.592582628906825'
+ad.angle='30' ad.radius='100' ad.x='49.999999999999993' ad.y='86.602540378443877'
+ad.angle='45' ad.radius='100' ad.x='70.710678118654741' ad.y='70.710678118654755'
+ad.angle='60' ad.radius='100' ad.x='86.602540378443862' ad.y='50.000000000000014'
+ad.angle='75' ad.radius='100' ad.x='96.592582628906825' ad.y='25.881904510252074'
+ad.angle='90' ad.radius='100' ad.x='100' ad.y='6.1232339957367661e-15'
+ad.angle='105' ad.radius='100' ad.x='96.592582628906825' ad.y='-25.881904510252085'
+ad.angle='120' ad.radius='100' ad.x='86.602540378443877' ad.y='-49.999999999999979'
+ad.angle='135' ad.radius='100' ad.x='70.710678118654755' ad.y='-70.710678118654741'
+ad.angle='150' ad.radius='100' ad.x='49.999999999999993' ad.y='-86.602540378443877'
+ad.angle='165' ad.radius='100' ad.x='25.881904510252102' ad.y='-96.592582628906825'
+ad.angle='180' ad.radius='100' ad.x='1.2246467991473532e-14' ad.y='-100'
+ad.angle='195' ad.radius='100' ad.x='-25.881904510252081' ad.y='-96.592582628906825'
+ad.angle='210' ad.radius='100' ad.x='-50.000000000000014' ad.y='-86.602540378443862'
+ad.angle='225' ad.radius='100' ad.x='-70.710678118654741' ad.y='-70.710678118654769'
+ad.angle='240' ad.radius='100' ad.x='-86.602540378443834' ad.y='-50.000000000000043'
+ad.angle='255' ad.radius='100' ad.x='-96.592582628906825' ad.y='-25.881904510252063'
+ad.angle='270' ad.radius='100' ad.x='-100' ad.y='-1.8369701987210297e-14'
+ad.angle='285' ad.radius='100' ad.x='-96.59258262890684' ad.y='25.881904510252028'
+ad.angle='300' ad.radius='100' ad.x='-86.602540378443862' ad.y='50.000000000000014'
+ad.angle='315' ad.radius='100' ad.x='-70.710678118654769' ad.y='70.710678118654741'
+ad.angle='330' ad.radius='100' ad.x='-50.000000000000043' ad.y='86.602540378443834'
+ad.angle='345' ad.radius='100' ad.x='-25.881904510252067' ad.y='96.592582628906825'
+ad.angle='360' ad.radius='100' ad.x='-2.4492935982947064e-14' ad.y='100'
+Hello meta world
+one= 'Fri Jun  2 11:15:58 2017'
+one= 'Fri Jun  2 11:15:59 2017'
+from_commandline: Default (logging off)
+from_commandline: Quiet (logging off)

@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+# shrink log file up to last compilation
+SCRIPTS_DIR="$(dirname $(realpath -P $0))/"
+. "${SCRIPTS_DIR}CPX-common.sh"
+CPX_WORK_DIR=$(heal_DIR CPX_WORK_DIR)
+
+WORK_DIR="${CPX_WORK_DIR:-/tmp/cpx/}"
+ filename="${WORK_DIR}/CPX-runner.log"
+  tempname="$filename$(date +%Y-%02V%02u_%02m%02d-%H%M%S).$PPID.temp"
+  last=$(gawk '$1 ~ "\033.01;37mCPX-runner.log" && $3==":" {last=NR} END{print last}' "$filename")
+  mv  "$filename" "$tempname"
+  tail -n +$last "$tempname" > "$filename"

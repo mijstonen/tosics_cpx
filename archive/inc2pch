@@ -1,0 +1,45 @@
+DEPRICATED: replacement is in util project
+
+#!/bin/sh
+
+#
+# clang seems to be less effective with precompiling, but this is possibly because  it is more advanced and needs
+# different treatment, so the script might diverge signifficatly from the g++ version, that is these sripst are not
+# unified and generalized. This version is not tested or maintained. 
+# It will be tested as soon clang is being used for compilation.
+#
+
+WORK_DIR="${CPX_WORK_DIR:-/tmp/cpx/}"
+
+if [ $# -lt 1 ]
+then
+    echo "Must specify the include file to precompile as first argument"
+    echo ""
+    echo "syntax:   inc2gch name_of_include_file"
+    exit 1
+fi
+
+THIS_SCRIPT=$0
+INCLUDE_INPUT=$1
+ INCLUDE_INPUT_PATH="${WORK_DIR}/${INCLUDE_INPUT}"
+  PRECOMPILED_OUT_PATH="${INCLUDE_INPUT_PATH}.pch"
+  
+
+Precompiled_header_is_outdated () {
+    [ ! -f "$PRECOMPILED_OUT_PATH" ] ||
+     [ "$INCLUDE_INPUT" -nt "$PRECOMPILED_OUT_PATH" ] || [ "$THIS_SCRIPT"   -nt "$PRECOMPILED_OUT_PATH" ]
+}
+
+########################################
+
+if  Precompiled_header_is_outdated
+then    
+    echo "Actializing (g++) precompiled header..."
+    cp "$INCLUDE_INPUT" "$INCLUDE_INPUT_PATH"  # only used if precompiled header can be used
+    ccache clang++ -Werror -Wall -Wextra -DSTDINC_PRECOMPILED -march=native -pipe -ggdb -O0 -std=c++14 -rdynamic -x c++-header "$INCLUDE_INPUT" -o "$PRECOMPILED_OUT_PATH"
+else
+    echo "Precompiled header $PRECOMPILED_OUT_PATH, is up to date"
+fi
+
+ls -lrth "$INCLUDE_INPUT" "$INCLUDE_INPUT_PATH" "$PRECOMPILED_OUT_PATH" 
+

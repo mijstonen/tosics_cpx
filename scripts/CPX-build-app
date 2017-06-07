@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+# CPX-build-app
+
+
+APPNAME=$1
+CPX_APPS_DIR="../../build/cpx_apps/"
+ BIN_NAME="${CPX_APPS_DIR}$APPNAME"  
+ SOURCE_NAME="${APPNAME}.cpp"
+
+cpx -o "$BIN_NAME" $SOURCE_NAME
+strip "$BIN_NAME"

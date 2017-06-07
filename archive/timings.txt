@@ -1,0 +1,115 @@
+tail -f CPX-runner.log | grep --color=auto -E milisecond
+
+    |Needed 221.935 miliseconds to complete.
+    |Needed 318.363 miliseconds to complete.
+    |Needed 374.785 miliseconds to complete.
+    |Needed 361.387 miliseconds to complete.
+    |Needed 835.839 miliseconds to complete.
+    |Needed 426.351 milisecond  to complete.
+    |Needed 380.611 miliseconds to complete.
+    |Needed 345.4 miliseconds to complete.
+    |Needed 473.102 miliseconds to complete.
+    |Needed 504.965 miliseconds to complete.
+    |Needed 328.82 miliseconds to complete.
+    |Needed 15.0865 miliseconds to complete.
+    |Needed 23.1929 miliseconds to complete.
+    |Needed 377.725 miliseconds to complete.
+    |Needed 396.106 miliseconds to complete.
+
+    |Needed 18.1318 miliseconds to complete.
+    |Needed 15.0751 miliseconds to complete.
+    |Needed 30.2165 miliseconds to complete.
+    |Needed 20.7835 miliseconds to complete.
+    |Needed 18.0582 miliseconds to complete.
+    |Needed 17.9954 miliseconds to complete.
+    |Needed 19.4794 miliseconds to complete.
+    |Needed 21.7967 miliseconds to complete.
+    |Needed 25.7609 miliseconds to complete.
+    |Needed 24.8785 miliseconds to complete.
+    |Needed 18.7198 miliseconds to complete.
+    |Needed 20.2863 miliseconds to complete.
+    |Needed 23.1341 miliseconds to complete.
+    |Needed 16.819 miliseconds to complete.
+    |Needed 17.4447 miliseconds to complete.
+
+    |Needed 177.104 miliseconds to complete.
+    |Needed 318.775 miliseconds to complete.
+    |Needed 372.17 miliseconds to complete.
+    |Needed 355.603 miliseconds to complete.
+    |Needed 774.916 miliseconds to complete.
+    |Needed 431.487 miliseconds to complete.
+    |Needed 367.611 miliseconds to complete.
+    |Needed 337.192 miliseconds to complete.
+    |Needed 443.09 miliseconds to complete.
+    |Needed 485.761 miliseconds to complete.
+    |Needed 361.973 miliseconds to complete.
+    |Needed 15.0246 miliseconds to complete.
+    |Needed 16.1546 miliseconds to complete.
+    |Needed 377.923 miliseconds to complete.
+    |Needed 454.596 miliseconds to complete.
+
+    |Needed 22.1766 miliseconds to complete.
+    |Needed 18.058 miliseconds to complete.
+    |Needed 19.2473 miliseconds to complete.
+    |Needed 25.2023 miliseconds to complete.
+    |Needed 23.7436 miliseconds to complete.
+    |Needed 18.9592 miliseconds to complete.
+    |Needed 24.7427 miliseconds to complete.
+    |Needed 16.0886 miliseconds to complete.
+    |Needed 26.2132 miliseconds to complete.
+    |Needed 23.2177 miliseconds to complete.
+    |Needed 21.4529 miliseconds to complete.
+    |Needed 20.1379 miliseconds to complete.
+    |Needed 20.9395 miliseconds to complete.
+    |Needed 19.0297 miliseconds to complete.
+    |Needed 15.0626 miliseconds to complete.
+
+    
+# Some times when using clang, without precompiling    
+    |Needed 807.644 miliseconds to complete.
+    |Needed 888.057 miliseconds to complete.
+    |Needed 920.202 miliseconds to complete.
+    |Needed 884.32 miliseconds to complete.
+    |Needed 963.137 miliseconds to complete.
+    |Needed 1175.18 miliseconds to complete.
+    |Needed 952.803 miliseconds to complete.
+    |Needed 935.743 miliseconds to complete.
+    |Needed 848.021 miliseconds to complete.
+    |Needed 1040.32 miliseconds to complete.
+    |Needed 1019.29 miliseconds to complete.
+    |Needed 872.794 miliseconds to complete.
+    |Needed 66.1717 miliseconds to complete.
+    |Needed 65.6617 miliseconds to complete.
+    |Needed 913.35 miliseconds to complete.
+    |Needed 963.844 miliseconds to complete.
+    |Needed 55.0016 miliseconds to complete.
+    |Needed 74.297 miliseconds to complete.
+    |Needed 51.2468 miliseconds to complete.
+    |Needed 65.8771 miliseconds to complete.
+    |Needed 66.7203 miliseconds to complete.
+    |Needed 59.2772 miliseconds to complete.
+    |Needed 66.4028 miliseconds to complete.
+    |Needed 60.1798 miliseconds to complete.
+    |Needed 81.5223 miliseconds to complete.
+    |Needed 70.5644 miliseconds to complete.
+    |Needed 59.9131 miliseconds to complete.
+    |Needed 60.1567 miliseconds to complete.
+    |Needed 65.958 miliseconds to complete.
+    |Needed 66.7073 miliseconds to complete.
+    |Needed 88.4697 miliseconds to complete.
+    |Needed 48.6837 miliseconds to complete.
+    |Needed 968.416 miliseconds to complete.
+    |Needed 876.788 miliseconds to complete.
+    |Needed 60.6975 miliseconds to complete.
+    
+    
+    secondary config      (readonly)    /etc/ccache.conf
+cache hit (direct)                     0
+cache hit (preprocessed)               0
+cache miss                             0
+files in cache                         0
+cache size                           0.0 kB
+max cache size                       1.5 GB
+
+    
+    

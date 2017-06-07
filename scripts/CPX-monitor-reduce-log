@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Monitor log file changes 
+
+SCRIPTS_DIR="$(dirname $(realpath -P $0))/"
+. "${SCRIPTS_DIR}CPX-common.sh"
+
+CPX_WORK_DIR=$(heal_DIR CPX_WORK_DIR)
+ WORK_DIR="${CPX_WORK_DIR:-/tmp/cpx/}"
+  FILE="${WORK_DIR}CPX-runner.log"
+   TEMPFILE="$FILE.$PPID.temp"
+  
+HISTSIZE=1000
+
+reduce_watch () {
+    if test -f
+    then
+        mv "$FILE" "$TEMPFILE"
+        tail -n $HISTSIZE "$TEMPFILE" > "$FILE"
+    else
+        # create empty file to be able to open it
+        > "$FILE"
+    fi
+    sync
+    echo "You got 1 second to abort with ^C"
+    sleep 1
+    # open file and start watching it. 
+    # By pressing :q  less is terminated, 
+    # $FILE is reduced and less is opening for watching again
+    less -R '+?\|\-\-\-\[.*\]\-\-\-|\|build\ phase|\|hash\ phase' '+F' "$FILE"
+    # echo $?
+    # sleep 1
+    # echo "---------------"
+}
+
+while true ; 
+do reduce_watch
+done
+
+#
+# To terminate: press ^Z and kill <jobnr>  ( k<jobnr>)
+# Notice that CPX-preproces_hash_compile.sh will remove all CPX-*temp* files 
+# and thereby also $TEMPFILE
+#

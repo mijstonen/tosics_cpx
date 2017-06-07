@@ -1,0 +1,29 @@
+In this folder, baby applications that started as a test or a script (aka in ../test)
+grew out to a small application. Priliminary in the sense of using it within cpx it self
+to enhance it.
+
+They differ fromn scripts in that their binary form is stored for reuse in ..Kdevelop/build/cpx_apps/  .
+The process should be as follows.
+
+1. Inception in...cpx/test
+    cpx appname.cpp testargs....
+
+2. State change to ...cpx/app
+    //depricated: cpx -o appname appname.cpp
+    CPX-build-app appname
+
+3. Use
+    in a directory that is in the path:
+        ln -s ...Kdevelop/build/cpx_apps/appname   (to the diretory containing the app)
+    Incubate, maintain and use it.
+
+4. Seniority and growing complexity.
+    Appname is going become a full blown application. With multiple sources and
+    library bindings.
+    Leave the app directory.
+    Cpx is not, and not meant to be, a full application developmnent environment,
+    there are better environments for large scale complex (C++) application development.
+    Take for example QTCreator, Eclipse or Visual studio.
+
+
+see also: ...Kdevelop/build/cpx_apps/dirinfo.txt

@@ -1,0 +1,4 @@
+/*
+This file implements funtionality to make it easier to use cpx for system scripting.
+The functionality is general applicable for any kind of script.
+*/

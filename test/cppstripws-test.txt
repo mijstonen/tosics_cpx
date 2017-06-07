@@ -1,0 +1,67 @@
+#pragma once
+//cpx-core.cpp
+#ifndef CPX_CORE_CPP_
+#define CPX_CORE_CPP_ 1
+
+#include "cpx-common-impl.cpp"
+
+namespace util {
+// Modern C++ style arguments
+// + Globally visible
+// + No need to repeat typing int _argC, char const* _argV  (or vector<string> ProgramArguments
+// + Can be queried and maniputlated in STL style (std::vector and std::string)
+// + Modern C++
+// - Extra resource usage
+std::vector<std::string> ProgramArguments;
+
+
+void/*Show*/Args()
+{
+    size_t argCnt{0};
+    for(auto argVal: ProgramArguments) {
+        INFO(VARVALS(argCnt,ProgramArguments[argCnt]));
+        ++argCnt;
+    }
+}
+
+int cpx_main();
+
+
+}
+
+// namespace util ...
+
+string text("This   is a \"text\" with   /*many*/   s  p  a c e s  ...");
+
+
+
+int main( int _argC, char const* _argV[] )
+{
+    int return_value_=EXIT_FAILURE;  // must be set by cpx_main()
+
+    try {
+        for( int argI=0; argI<_argC; ++argI ){
+            util::ProgramArguments.emplace_back( _argV[argI]);
+        }
+        return_value_ = util::cpx_main();
+    } // try
+    catch ( char const* _msg ) {
+        std::cerr<< "ERROR: message:   "<< _msg << std::endl;
+    }
+    catch ( int _errno ) {
+        std::cerr<< "ERROR: status:    "<< _errno << std::endl;
+        exit( _errno);
+    }
+    catch ( std::exception const& _e ) {
+        std::cerr<< "  ERROR: "<< ( typeid(_e).name() )<<" : "<< _e.what()<< std::endl;
+    }
+    catch ( ... ) {
+        std::cerr<< "ERROR: catched unknown exception"<< std::endl;
+
+        // For call of terminate() possibly providing information about the exception
+        throw;
+    }
+
+    return return_value_;
+}
+#endif // CPX_CORE_CPP_ 1
