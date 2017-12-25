@@ -31,7 +31,10 @@ But CPX is more, it can be used for several purposes. Its like a system programm
 9. Link your own library, test and experiment with it. Likewhise (dynamicly) link any library for (almost) interactive
    testing.
 10. A test suite for compilers to indicate what are the shortest possible achivable compilation times.
-
+11. cpx can be used to create advanced systems that are constructed from (relative) low complexity altough advanced
+    cpx apps as building blocks. This in contradiction to a single large application.
+    All the IPC, database and network power that is aviable in custom C(++) libraries can be put to use, to let these
+    cpx apps interact.
 N. ......
 
 
@@ -76,7 +79,7 @@ power to parse per character and a micro preprocessor command is already startin
 line, why not add some more usefull commands?
 
     #|
-includes the gory details any C++ program source desires
+includes the gory details any C++ program source requires.
 
     #{ #} #[ #] #( #)
 define entry and exit code in which you enclose your script code.
@@ -85,12 +88,15 @@ define entry and exit code in which you enclose your script code.
 will do the job in almost all cases, the other wrappers where historically implemented first.
 They allow more detailed control.
 
-The rest you can read in micro_preprocessor.txt (which less then 100 lines long) and proved to be usefull and desired.
+The rest you can read in micro_preprocessor.txt (which less then 100 lines long). In their you find additional commands
+that proved to be usefull and desired.
 
 We use cpp as extension because the syntax highlightning will be the same as in C++ files. But we set the execution
 bit (aka chmod +x <source>.cpp).
 
 In test/ you find cpx scripts, start with dumm.cpp, cpx-empty.cpp and rnr_source2.cpp .
+In scripts/ you find several helper scripts and the customizable CPX_preproces_hash_compile.sh which is part of the
+cpx execution.
 
 
 
@@ -230,6 +236,9 @@ If you are a C++ beginner, I recommend to use a online source compiler tool inst
 or professional (linux) C++ programmer, you will quickly find your use for cpx.
 Cpx is rather tightly coupled with my util library. You do not need to use it, but is has some usefull things,
 however that is not discussed and documented here. Most of the util library is documented with doxygen.
+I did not invent all the cpx wheels, many thanks to SAURAV MOHAPATRA for TinySHA1.hpp and certainly for pstream.h
+by Jonathan Wakely, without it, cpx would - at leat - a lot harder to realize. See deps/ .
+
 
 Sure, cpx has bugs ;-) please report them when you find them. But I would like to read any positive
 or (respectfull) negative feedback. Any questions are welcome.
