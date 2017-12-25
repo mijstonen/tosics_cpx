@@ -49,3 +49,6 @@ Start With=FrameStack
 Use External Terminal=false
 Working Directory=file:///home/michel/Projects/Kdevelop/cpx/test
 isExecutable=true
+
+[Project]
+VersionControlSupport=kdevgit
