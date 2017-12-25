@@ -97,6 +97,7 @@ bit (aka chmod +x <source>.cpp).
 In test/ you find cpx scripts, start with dumm.cpp, cpx-empty.cpp and rnr_source2.cpp .
 In scripts/ you find several helper scripts and the customizable CPX_preproces_hash_compile.sh which is part of the
 cpx execution.
+Most usefull are CPX-sher, CPX-shrink-runner, CPX-common.sh, CPX_preproces_hash_compile and CPX-build-app.
 
 
 
