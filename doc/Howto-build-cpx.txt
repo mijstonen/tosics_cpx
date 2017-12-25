@@ -1,0 +1,69 @@
+How to build
+------------
+
+Note that the util library needs to be build first, in similar way as described
+here for cpx.
+
+Generate ninja build system from CMakeLists.txt in the ../cpx source directory.
+To do that, run cmake-gui.
+
+Where is the source code: /home/michel/Projects/Kdevelop/cpx
+Where to build the binaries: /home/michel/Projects/Kdevelop/build/cpx
+
+Changes to cmake settings  (CMakeCache.txt)
+These are importand because cpx apps are build in Debug mode.
+
+util
+  CMAKE_BUILD_TYPE:STRING=Debug
+  CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=ON
+
+cpx
+
+
+----------------------------------------------------------------------------
+Importand: do NOT manually backup or save files within the build tree and its
+project subdirectories. To reset the build system, it is allowed to enirely delete
+these directories, so any manual modifications will be lost.
+----------------------------------------------------------------------------
+
+press Generate
+
+from a console in ../../build/cpx  run ninja
+
+aka
+
+    ninja -v clean
+    ninja -v all
+
+
+
+BUGS
+----
+At this moment, cpx and util need to be compiled with gcc (actuall gcc version is 6.2.0 20161005)
+Use update-alternatives --query c++ to figure out the setting and veryfy that g++ is used as c++).
+There are some unresolved issues with clang that prevent building cpx out of the
+box, possibly orinate in the util library.
+There are some manual - but commented ) swithches (aka #if 0  or #if 1 ) in util, but it will limit
+the functionallity somewhat.
+
+
+Testing
+-------
+in /home/michel/Projects/Kdevelop/cpx/test/
+
+Among others you find test scripts with a cpp extension. Notice that many of them have the executable bit set.
+If current directory is prepended to the path (alias cupas on my own system, will do that and shows all directories in
+the path after that), you can enter these executable scripts direct on the commandline.
+
+example
+-------
+michel@msi-kubuntu-1610:~/Projects/Kdevelop/cpx/test$ ./ rnr_source2.cpp -3
+argCnt='0' ProgramArguments[argCnt]='/home/michel/tmp/cpx/CPX-23cd072ffdfcb922c8c7239dce50894792e519de.cpp.x'
+argCnt='1' ProgramArguments[argCnt]='-3'
+Mon Dec 25 11:11:35 2017
+
+STATEREPORT>>>Unhandled  ERROR returning= '-3' state_msg= 'State(-3)' _callee= 'status' _file= 'CPX-^46^47rnr_source2.cpp' _line= '21' _caller= 'int cpx::main()'
+
+status= '-3'
+
+bash test.sh
