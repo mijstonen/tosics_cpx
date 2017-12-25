@@ -1,10 +1,13 @@
-#!/usr/bin/env sh
-# CPX-build-app
+#!/usr/bin/env bash
+# CPX-build-app, creates a named binary executable from the specified script
+# syntax: CPX-build-app source-ident
+# example CPX-build-app cppstripws
+#         builds executable ../../build/cpx_apps/cppstripws  from cppstripws.cpp in current directory.
 
 
 APPNAME=$1
 CPX_APPS_DIR="../../build/cpx_apps/"
- BIN_NAME="${CPX_APPS_DIR}$APPNAME"  
+ BIN_NAME="${CPX_APPS_DIR}$APPNAME"
  SOURCE_NAME="${APPNAME}.cpp"
 
 cpx -o "$BIN_NAME" $SOURCE_NAME
