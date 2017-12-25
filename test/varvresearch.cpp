@@ -47,11 +47,11 @@ if ( !STATEREPORT(  Append_splitted(&vss, s)  ) ) {
 #if 0
 // test error checking
 string nothing; //= __VSTRINGS();
-STATEREPORT(  append_splitted(&vss, nothing, ",", asj)  );
+STATEREPORT(  Append_splitted(&vss, nothing, ",", asj)  );
 
 vector<string> * undefined = nullptr;
-STATEREPORT(  append_splitted(undefined, s, asj)  );
-STATEREPORT(  append_splitted(undefined, s, " ,;/-")  );
+STATEREPORT(  Append_splitted(undefined, s, asj)  );
+STATEREPORT(  Append_splitted(undefined, s, " ,;/-")  );
 #endif
 
 

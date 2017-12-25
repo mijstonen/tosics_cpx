@@ -17,9 +17,9 @@ STATEREPORT(  Append_splitted( &out, in, ","),'A' );
 
 STATEREPORT(  Append_splitted( &out, in, ",")  );
 STATEREPORT(  Append_splitted( &out, in, " ")  );
-//STATEREPORT(  append_splitted( &out, in, " ",true)  );
-//STATEREPORT(  append_splitted( &out, in, ",",true)  );
-//STATEREPORT(  append_splitted( &out, "P,Q,RE", ",",true)  );
+//STATEREPORT(  Append_splitted( &out, in, " ",true)  );
+//STATEREPORT(  Append_splitted( &out, in, ",",true)  );
+//STATEREPORT(  Append_splitted( &out, "P,Q,RE", ",",true)  );
 
 // mini test, can I get the type name of a lambda
 // INFO(VARVAL(type_name_of(out)));
