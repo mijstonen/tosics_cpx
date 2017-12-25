@@ -1,4 +1,3 @@
-.........|.........|.........|.........|.........|.........|.........|.........|.........|.........|.........|.........|
 CPX Philosophy
 ==============
 CPX shortcut stands for ComPile and eXecute. CPX is the core building block for code generation based meta programming.
@@ -81,10 +80,16 @@ line, why not add some more usefull commands?
     #|
 includes the gory details any C++ program source requires.
 
-    #{ #} #[ #] #( #)
+    #{ 
+    #} 
+    #[ 
+    #] 
+    #( 
+    #)
 define entry and exit code in which you enclose your script code.
 
-    #( #)
+    #( 
+    #)
 will do the job in almost all cases, the other wrappers where historically implemented first.
 They allow more detailed control.
 
@@ -114,7 +119,7 @@ So with next iteration, next option is processed.
 <description>0+   optional to multiple args
 <description>1+   one or more args
 
->                 command prompt
+    >             command prompt
                   ((( Right oriented instruction(s) for interactive actions )))
 
 
@@ -128,22 +133,26 @@ general:
 Runs code from the commandline. However to make this practical, you need some preprocessor commands
 that handle standard definitions and declarations.
 
-#| will include the std namespace and the tosics::util namespace and most common std functions
-   and all util Functionalillity.
+    #| 
+will include the std namespace and the tosics::util namespace and most common std functions
+and all util Functionalillity.
 
-#( and
-#) each starting at first column of the line wrap your code from the standard input within entry and exit code,
-   so you do not need to write it.
+    #( 
+and
+    #) 
+each starting at first column of the line wrap your code from the standard input within entry and exit code,
+so you do not need to write it.
 
 **example**
-    > cpx
-    #|
-    #(
-    cout<<"Plain simple iostream printing"<<endl;
-    #)
-    Plain simple iostream printing
-    >
-
+```
+> cpx
+#|
+#(
+cout<<"Plain simple iostream printing"<<endl;
+#)
+Plain simple iostream printing
+>
+```
 
 This mode is particulair usefull when the code is generated in a scripting system (aka sh, php, python, perl scipts)
 
@@ -180,8 +189,8 @@ Other options
    Be quiter in the logging output, only show what's really essential.
 
 
-How CPX internals
-=================
+CPX internals
+=============
 Despite the princieples of CPX look desceptively simple, it is not easy to get it done right. The 2 mayor components
 are:
     * main.cpp and runner2.cpp are the C++ coded portions
