@@ -1,5 +1,7 @@
 #!/usr/bin/env cpx
 
+// produce string variable of repeated chars,used in hello_meta_world.cpp
+
 #|
 
 #(

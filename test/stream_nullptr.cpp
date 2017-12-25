@@ -1,6 +1,9 @@
 #!/usr/bin/env cpx
 #|
 
+// Demonstrates tosics::util::Is_null() and std::is_null_pointer() and std::is_pointer() .
+
+
 template <typename Value_T>
   void show(char const* _lab, Value_T _v)
 {

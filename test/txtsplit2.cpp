@@ -1,6 +1,9 @@
 #!/usr/bin/env cpx
 #|
 
+// Testing Append_splitted(), with special options for Append_splitted() and Append_joined()
+// to handle custom situations.
+// NOTE: Minimal testing frame (to demands), extension candidate in future.
 
 #(
 

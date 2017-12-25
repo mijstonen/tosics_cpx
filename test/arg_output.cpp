@@ -119,5 +119,5 @@ INFO(ENDL,"---DROP---");
 foo( DROP_OUTPUT(int),{8,9,10});
 
 
-INFO(HBLUE,DateTvarreime(),NOCOLOR);
+INFO(HBLUE,DateTime(),NOCOLOR);
 #)

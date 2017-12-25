@@ -3,6 +3,8 @@
 #+generator.cpp
 #(
 // Genarate table representing circle positions.
+// This script is superseded by pure-circle-v2.cpp
+
 
 //info_ProgramArguments();
 //INFO(VARVAL(getenv("CPX_WORK_DIR")));

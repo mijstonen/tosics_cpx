@@ -13,7 +13,7 @@ state_t file_in_path( fs::path* canonical_path_,  fs::path _filename)
     }
     vector<string> directories;
 
-    state_t as= append_splitted( &directories, string(envvar_path_content), ":");
+    state_t as= Append_splitted( &directories, string(envvar_path_content), ":");
     if ( STATEREPORT(as) ) {
         return State(-2); // Error during splitting.
     }
@@ -30,6 +30,8 @@ state_t file_in_path( fs::path* canonical_path_,  fs::path _filename)
     return State(-3); // File not found in any of the directories of the PATH environment variable.
 }
 
+
+//NOTICE: state_t PathWriteTime(std::time_t *time_,__TU_FS::path _path); replaces this local function.
 std::time_t pathWriteTime(fs::path _path)
 {
     auto ftime = fs::last_write_time( _path);

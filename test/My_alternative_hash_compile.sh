@@ -1,6 +1,8 @@
 # must be sh (man 1 dash) compatible
 ########################################################
 
+# test alternative CPX-preproces_hash_compile.sh  (not in test.sh)
+
 # files and directories / depended settings
 PRJ_PARENT_DIR="/home/michel/Projects/Kdevelop/"
  CPX_INCLUDES_DIR="${PRJ_PARENT_DIR}cpx/inc/"
@@ -14,7 +16,7 @@ CMDARGS_ERROR=16
 # initialize from commandline arguments
 if test $# -ne 4
 then echo "$0: commandline argument retrieval failed." \
-          "    ${HRED}Got $# arguments, but expected 4 arguments:" \ 
+          "    ${HRED}Got $# arguments, but expected 4 arguments:" \
           "<sourcefile> <source directory>" \
           "<logging ( = on|off ) > <rebuild ( = auto|off )>${NOCOLOR}"
     exit "$CMDARGS_ERROR"
@@ -29,7 +31,7 @@ REBUILD="$4"
 
 HASH_PREPROCESSOR=g++
 #compiler configuration
-CPPCOMPILER=g++ 
+CPPCOMPILER=g++
 #Notice that there are some small issues with clang++ but I got it working with small workarrounds
 #CPPCOMPILER=clang++
 WRAPPER="nice -20 ccache"  # use empty value if not used, ccache effectiveness needs to increase before using it
@@ -51,7 +53,7 @@ LINK_LIBRARIES_OPTIONS="-lstdc++fs -lpthread -ldl -lutil"
 LOG_FILE="CPX-runner.log"
  WORK_DIR="${CPX_WORK_DIR:-/tmp/cpx/}"
   LOG_PATH="${WORK_DIR}${LOG_FILE}"
- 
+
 WORK_PATH_PREFIX="${WORK_DIR}CPX-"
 WORK_INPUT="${SOURCE_FILE}";
 WORK_INPUT_UNCHANGED_HPP="$WORK_INPUT.unchanged.hpp"
@@ -188,7 +190,7 @@ LS_PATTERNS="$0 ${UTILS_BIN_DIR}libutil.a ${CPX_BIN_DIR}cpx ${PREPROC_INCLUDE_PA
             P=!($3 ~ /"<.*>"|"\/usr\/include\/.*"|\/Projects\/Kdevelop\/cpx\/inc\/cpx-|\/Projects\/Kdevelop\/util\// )
         } #1
 
-    
+
     #-3-------- if it is not a directive, pass line to hash proces if P is enabled
         P { #3
             if (  ($1 !~ "^#.*") || ($1 ~ "^#.*" && $2 !~ "^[[:digit:]]+$") ) {
@@ -199,8 +201,8 @@ LS_PATTERNS="$0 ${UTILS_BIN_DIR}libutil.a ${CPX_BIN_DIR}cpx ${PREPROC_INCLUDE_PA
     #---- debugging output
     #{   printf("%-2d:%s\n",P,$0) > "awk_dbg.txt"
     #}
-    
-    
+
+
     END {
         while ( (DepsProces | getline )>0 ) {
            print | HashProces
@@ -208,7 +210,7 @@ LS_PATTERNS="$0 ${UTILS_BIN_DIR}libutil.a ${CPX_BIN_DIR}cpx ${PREPROC_INCLUDE_PA
     }
     ' "$TMP_PP_WORK_PATH"
 )
-# gawk: What is used to calc the hash: -v HashProces="tee input_to.hash | md5sum | cut -c -32" 
+# gawk: What is used to calc the hash: -v HashProces="tee input_to.hash | md5sum | cut -c -32"
 # gawk: extra arg when enabling #-2- -v discarded_before_hash="discarded_before.hash" \
     #-2-------- copy line to file if P is disabled
     #    { #2
@@ -240,7 +242,7 @@ then
     dumpvars '' "CPX_WORK_DIR WORK_DIR SOURCE_FILE \
         SOURCE_DIR PRJ_PARENT_DIR CPX_INCLUDES_DIR \
         UTILS_INCLUDES_DIR UTILS_BIN_DIR PREPROC_INCLUDE_PATH \
-        CPX_STACKLEVELCOUNT WORK_INPUT WORK_INPUT_UNCHANGED_HPP 
+        CPX_STACKLEVELCOUNT WORK_INPUT WORK_INPUT_UNCHANGED_HPP
         LOG_PATH HASH TARGET_PROG ACTION_CNT LS_PATTERNS \
         ENV_CPX_HASH_COMPILE"
 fi

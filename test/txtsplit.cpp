@@ -1,4 +1,7 @@
 #!/usr/bin/env cpx
+
+// Testing Append_splitted()
+
 #^ "../inc/cpx-unchanged.hpp"
 #|
 #(

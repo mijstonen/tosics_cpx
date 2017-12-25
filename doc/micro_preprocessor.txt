@@ -14,7 +14,7 @@ The implementation is in cpx/runner2.cpp:runner() .
 
 tag     usage
 --      -----
-#!      Only on the first line: Hash bang    #!/usr/bin/env cpx   makes the C++ program run like a script (aka, so 
+#!      Only on the first line: Hash bang    #!/usr/bin/env cpx   makes the C++ program run like a script (aka, so
 named; cpx-scripts)
         See also Meta programming
 #|      #include "cpx-file-begin.hpp"   incorporating standard includes for cpx scripts
@@ -48,14 +48,23 @@ named; cpx-scripts)
 
 Meta programming
 #!!      Not on the first line: Execute child program. This can be even a cpx script, but that is a special case.
+            plain execution (depricated, puts to much responsibility in called executable)
+
+................................................
+Update of meta programming commands
+#!? querying meta command, every call might produce different results despite equal arguments, alayas execute
+#!= pure execution if previously arguments and generated output file differ
+
+................................................
+
 #!&      [reserved]Asynchronely execute child program
 #!,      [reserved]Wait for all child programs to complete
 
 Executing programs output is a single line in the source to be interpreted by the cpx parent program.
-Most likely, the output is another include or micro preprocessor line. The child executable is 
+Most likely, the output is another include or micro preprocessor line. The child executable is
 responsable for creating the output line. Executing child programs should be highly independed from each
-other so they may executed in random order and asynchronely. However, their independence is not 
-enforced (priliminary because use of asyncrhone processing does not contribute signifficant 
+other so they may executed in random order and asynchronely. However, their independence is not
+enforced (priliminary because use of asyncrhone processing does not contribute signifficant
 functionallity and implementation is defered till their is signifficant demand. Its only said that
 child processes should take it into account).
 
@@ -70,21 +79,21 @@ Differntiating with PID of the running cpx is technically a solution but with un
 
 Solution
 ========
-The toplevel cpx process will log to the main log file (aka:CPX-runner.log). It will also export environment variable 
-CPX_STACKLEVELCOUNT to the environment. The nested cpx executions, check and increase CPX_STACKLEVELCOUNT. They append 
-its value to the logfile name and so will append log messages to another logfile. However, all logs of multiple cpx 
-scripts are still collected in the same logfile. 
+The toplevel cpx process will log to the main log file (aka:CPX-runner.log). It will also export environment variable
+CPX_STACKLEVELCOUNT to the environment. The nested cpx executions, check and increase CPX_STACKLEVELCOUNT. They append
+its value to the logfile name and so will append log messages to another logfile. However, all logs of multiple cpx
+scripts are still collected in the same logfile.
 
-Notice: The presumtion is made that in this case executed nested cpx scripts are tested independedly before, so that 
-compilation error representation was as with a single cpx file. This reduces the representation demands on nested cpx 
-execution, altough it has to be present. It should be the common case that the nested cpx scripts run without producing 
+Notice: The presumtion is made that in this case executed nested cpx scripts are tested independedly before, so that
+compilation error representation was as with a single cpx file. This reduces the representation demands on nested cpx
+execution, altough it has to be present. It should be the common case that the nested cpx scripts run without producing
 (compile) errors.
 
-Notice: that when executing scripts concurrently, aka: with #!& ,this will not work anymore, then we need the script 
-identification, aka: WORK_INPUT it self, but then logs cannot be collected and another log information presentation 
+Notice: that when executing scripts concurrently, aka: with #!& ,this will not work anymore, then we need the script
+identification, aka: WORK_INPUT it self, but then logs cannot be collected and another log information presentation
 mechnism will be required.
 
-Notice: Nested cpx script executions, should never use the same script source, because with several dirived files the 
+Notice: Nested cpx script executions, should never use the same script source, because with several dirived files the
 cpx processes could get in conflict. Possibly it can be avoided when using CPX_STACKLEVELCOUNT in other filenames too.
 
 

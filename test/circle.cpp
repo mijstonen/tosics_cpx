@@ -4,6 +4,8 @@
 
 #(
 
+// Demonstrating trivial code generation for meta programming support.
+
 //info_ProgramArguments();
 
 //INFO(VARVAL(getenv("CPX_WORK_DIR")));

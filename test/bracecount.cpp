@@ -1,6 +1,8 @@
 #!/usr/bin/env cpx
 #|
 
+// Trivial brace counter from standard input. Sometimes usefull. But for inspecting mismatches, a more advanced method
+// is desired.
 
 #(
     char char_from_source=0, prior_cfs=0, next_cfs=0;

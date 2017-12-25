@@ -1,4 +1,7 @@
 #!/usr/bin/env cpx
+
+// Testing Append_splitted() and (in util) VSTRINS macro cases, during its development.
+
 #|
 
 #(

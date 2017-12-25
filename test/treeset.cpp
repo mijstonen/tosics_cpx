@@ -1,5 +1,7 @@
 #include "treeset.h"
 
+// Not to compile or run as cpx test. Here is some complex code to use test cppstripws.cpp during its development.
+
 namespace Qnode
 {
 using namespace util;

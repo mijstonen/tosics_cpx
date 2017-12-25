@@ -5,13 +5,19 @@
 #|
 
 /*
-Strips all comments and most of the whitespace without changing the meaning of source code with C++ syntax and 
+Strips all comments and most of the whitespace without changing the meaning of source code with C++ syntax and
 calculates a (SHA1) hash code. This can be used to detect changes to a source code that effects the functioning
 of the code. However, most changes to whitespaces and comments do not effect the hash code. This is usefull when
 sources are generated and may slightly vary in format or comments, but not in the essential source code.
-A different hash causes recompilation of the source and that increases runtime. By stripping the source code 
+A different hash causes recompilation of the source and that increases runtime. By stripping the source code
 that effect is minimized.
-*/ 
+
+build: CPX-build-app cppstripws
+install: /home/michel/Projects/Kdevelop/build/cpx_apps/cppstripws
+link: /usr/local/bin/cppstriws
+
+Used by CPX-preproces_hash_compile.sh  (which is executed by cpx)
+*/
 
 
 #define SOURCE_NOT_HASH 0
@@ -19,14 +25,14 @@ that effect is minimized.
 class StripContext
 {
     struct EndOfSourceFileEvent{};
-    
+
     istream *pIn= &cin;
     char char_from_source=0, prior_cfs=0, next_cfs=0, last_to_target=0;
     bool in_text=false;
     sha1::SHA1 pure_src_sha;
-    
-  public:    
-    
+
+  public:
+
         void
     selectInput(istream* _pIn)
     {
@@ -54,14 +60,14 @@ class StripContext
         if ( isspace(_c) ) {
             return true;
         }
-            
+
         switch ( _c){
             case '_': case '$': return false;
         }
-            
+
         return ispunct(_c);
     };
-        bool 
+        bool
     isIdentChar(auto _c)
     {
         if ( isalnum( _c) ) {
@@ -85,7 +91,7 @@ class StripContext
     {
         while ( get_char_from_source(), next_cfs!='\n' );
     };
-        void 
+        void
     skip_multi_line_comment()  // NOTE: Does not handle nested comments
     {
         get_char_from_source(); // because /*/ is not complete, minimal /**/ is complete
@@ -100,13 +106,13 @@ class StripContext
     output(char _c)
     {
         last_to_target= _c;
-#if SOURCE_NOT_HASH        
+#if SOURCE_NOT_HASH
         cout.put(last_to_target);
-#else        
+#else
         pure_src_sha.processByte(last_to_target);
 #endif
     };
-    
+
         void
     parse()
     {
@@ -130,7 +136,7 @@ class StripContext
                         // else '"' shall not effect in_text
                     }
                 }
-                if ( !in_text ) { 
+                if ( !in_text ) {
                     if ( char_from_source=='/' ){
                         // could be start of // or /*
                         auto keep_prior=prior_cfs;
@@ -161,14 +167,14 @@ class StripContext
                             auto isSeparatorNoSingleQuote=[this](char _cfs)->bool
                             {
                                 return (_cfs!='\'')&& isSeparator(_cfs);
-                            };                            
-                            if ((( char_from_source!= '\n' )&&  
+                            };
+                            if ((( char_from_source!= '\n' )&&
                                  ( isSeparatorNoSingleQuote( prior_cfs)|| isSeparatorNoSingleQuote( next_cfs) )
                                 )||
-                                (( prior_cfs==/*same whitespace as*/char_from_source )|| 
+                                (( prior_cfs==/*same whitespace as*/char_from_source )||
                                  (  next_cfs==/*same whitespace as*/char_from_source )
-                                )) 
-                            {   // no need to print space between identifiers and keywords 
+                                ))
+                            {   // no need to print space between identifiers and keywords
                                 char_from_source= prior_cfs;
                                 continue;
                             }
@@ -176,19 +182,19 @@ class StripContext
                         // else whitespace is surrounded by identifiers or keywords, keep appart
                     }
                     // no space character is treated normally
-                } 
+                }
                 // Normal treatment.
                 // Unless continue was called to filter spaces and comments
                 // the source characters are copied here
                 output(char_from_source);
             } //for
-        } 
-        catch (EndOfSourceFileEvent){          
+        }
+        catch (EndOfSourceFileEvent){
         }
 
-#if SOURCE_NOT_HASH        
+#if SOURCE_NOT_HASH
         cout.flush();
-#else        
+#else
         sha1::SHA1::digest32_t digest;
         pure_src_sha.getDigest(digest);
         {
@@ -202,8 +208,8 @@ class StripContext
                flush;
         cout.flags(flgs);
         }
-        
-#endif        
+
+#endif
     }
 } //class StripContext
 ;

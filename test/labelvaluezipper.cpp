@@ -2,6 +2,7 @@
 #^ "../inc/cpx-unchanged.hpp"
 #|
 #(
+// Demonstrates VARVALS  capability to produce labes for the variables and function result values.
 auto n=1;
 auto m=2;
 float f=33.333;

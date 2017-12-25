@@ -3,7 +3,7 @@
 #|
 
 #(
-// test code generation calling and use.
+// test code generation calling and use, see hello_meta_world.cpp
 cout
     << "string Greetings(char _char, int _count)\n"
     << "{\n"
