@@ -18,6 +18,8 @@ util
   CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=ON
 
 cpx
+  CMAKE_BUILD_TYPE:STRING=Debug
+  CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=ON
 
 
 ----------------------------------------------------------------------------
@@ -66,4 +68,16 @@ STATEREPORT>>>Unhandled  ERROR returning= '-3' state_msg= 'State(-3)' _callee= '
 
 status= '-3'
 
-bash test.sh
+Like the example above you can (and it is recommended) to call each script manually.
+All te the (test)scripts have comments that describe the purpose of the script.
+
+
+To run automated testing (result is not verified), run:
+> bash test.sh 2>&1 | tee test-tee-<some unique id>.log
+and compare test-tee-<some unique id>.log with a similair prior log file.
+
+These file may differ due to changes in time, diretory path settings and changes in hashes.
+Except for compile-errors.cpp - which demonstrates logging of compilation errors - none of the scripts should
+cause compile warnings or compile errors.
+
+-----
