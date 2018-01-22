@@ -10,7 +10,7 @@
  */
 
 
-namespace util {
+namespace cpx {
 // #include ...
 // global functions and classes
 
@@ -18,6 +18,6 @@ namespace util {
 
 //_______________________________________________________________________________________
 
-} // namespace util
+} // namespace cpx
 
 #endif // CPX_COMMON_IMPL_CPP
