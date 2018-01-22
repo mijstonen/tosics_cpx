@@ -14,7 +14,7 @@ CMDARGS_ERROR=16
 # initialize from commandline arguments
 if test $# -ne 4
 then echo "$0: commandline argument retrieval failed." \
-          "    ${HRED}Got $# arguments, but expected 4 arguments:" \ 
+          "    ${HRED}Got $# arguments, but expected 4 arguments:" \
           "<sourcefile> <source directory>" \
           "<logging ( = on|off ) > <rebuild ( = auto|off )>${NOCOLOR}"
     exit "$CMDARGS_ERROR"
@@ -29,14 +29,17 @@ REBUILD="$4"
 
 HASH_PREPROCESSOR=g++
 #compiler configuration
-CPPCOMPILER=g++ 
+CPPCOMPILER=g++
 #Notice that there are some small issues with clang++ but I got it working with small workarrounds
 #CPPCOMPILER=clang++
 WRAPPER="nice -20 ccache"  # use empty value if not used, ccache effectiveness needs to increase before using it
 #WRAPPER="nice -20"  # use empty value if not used
-PRE_PPSRC_OPTIONS="-C -H -nostdinc -march=native -O0 -std=c++14"  # -P (no include directives)  -C (keep comments)
+# STD_OF_CPP="c++14" # uncomment desired standard selection, c++14 should be default
+#STD_OF_CPP="c++1z"   # see man gcc , search: -std   near line 817
+STD_OF_CPP="gnu++1z"  # experimental c++17
+PRE_PPSRC_OPTIONS="-C -H -nostdinc -march=native -O0 -std=$STD_OF_CPP"  # -P (no include directives)  -C (keep comments)
 
-PRE_SRC_OPTIONS="-march=native -save-temps -DDEBUG -ggdb -H -O0 -DDEBUG -std=c++14 -Wall -Wextra -fdiagnostics-color=always"
+PRE_SRC_OPTIONS="-march=native -save-temps -DDEBUG -ggdb -H -O0 -DDEBUG -std=$STD_OF_CPP -fconcepts -Wall -Wextra -fdiagnostics-color=always"
 # -Wno-unused
 
 PRE_TARGET_OPTIONS="-rdynamic -fuse-ld=gold -Winvalid-pch"
@@ -51,7 +54,7 @@ LINK_LIBRARIES_OPTIONS="-lutil -lstdc++fs -lpthread -ldl"
 LOG_FILE="CPX-runner.log"
  WORK_DIR="${CPX_WORK_DIR:-/tmp/cpx/}"
   LOG_PATH="${WORK_DIR}${LOG_FILE}"
- 
+
 WORK_PATH_PREFIX="${WORK_DIR}CPX-"
 WORK_INPUT="${SOURCE_FILE}";
 WORK_INPUT_UNCHANGED_HPP="$WORK_INPUT.unchanged.hpp"
@@ -156,11 +159,12 @@ cd $WORK_DIR
 
 # ansi color management
 
+echo "/* -*- C++ -*- syntax highlight */" > $TMP_PP_WORK_PATH
   PCMD=" \
 $WRAPPER ${HASH_PREPROCESSOR} -Werror -DSTDINC_PRECOMPILED $PRE_PPSRC_OPTIONS \
  -fdirectives-only \
  -I ${SOURCE_DIR} -I ${CPX_INCLUDES_DIR} -I ${UTILS_INCLUDES_DIR} \
- -C -E $WORK_INPUT > $TMP_PP_WORK_PATH 2>$TMP_PP_WORK_PATH.errors"
+ -C -E $WORK_INPUT >> $TMP_PP_WORK_PATH 2>$TMP_PP_WORK_PATH.errors"
 logged_eval "hash phase" "$PCMD"
 PREPROC_STATUS=$?
 
@@ -188,7 +192,7 @@ LS_PATTERNS="$0 ${UTILS_BIN_DIR}libutil.a ${CPX_BIN_DIR}cpx ${PREPROC_INCLUDE_PA
             P=!($3 ~ /"<.*>"|"\/usr\/include\/.*"|\/Projects\/Kdevelop\/cpx\/inc\/cpx-|\/Projects\/Kdevelop\/util\// )
         } #1
 
-    
+
     #-3-------- if it is not a directive, pass line to hash proces if P is enabled
         P { #3
             if (  ($1 !~ "^#.*") || ($1 ~ "^#.*" && $2 !~ "^[[:digit:]]+$") ) {
@@ -199,8 +203,8 @@ LS_PATTERNS="$0 ${UTILS_BIN_DIR}libutil.a ${CPX_BIN_DIR}cpx ${PREPROC_INCLUDE_PA
     #---- debugging output
     #{   printf("%-2d:%s\n",P,$0) > "awk_dbg.txt"
     #}
-    
-    
+
+
     END {
         while ( (DepsProces | getline )>0 ) {
            print | HashProces
@@ -208,7 +212,7 @@ LS_PATTERNS="$0 ${UTILS_BIN_DIR}libutil.a ${CPX_BIN_DIR}cpx ${PREPROC_INCLUDE_PA
     }
     ' "$TMP_PP_WORK_PATH"
 )
-# gawk: What is used to calc the hash: -v HashProces="tee input_to.hash | md5sum | cut -c -32" 
+# gawk: What is used to calc the hash: -v HashProces="tee input_to.hash | md5sum | cut -c -32"
 # gawk: extra arg when enabling #-2- -v discarded_before_hash="discarded_before.hash" \
     #-2-------- copy line to file if P is disabled
     #    { #2
@@ -240,16 +244,18 @@ then
     dumpvars '' "CPX_WORK_DIR WORK_DIR SOURCE_FILE \
         SOURCE_DIR PRJ_PARENT_DIR CPX_INCLUDES_DIR \
         UTILS_INCLUDES_DIR UTILS_BIN_DIR PREPROC_INCLUDE_PATH \
-        CPX_STACKLEVELCOUNT WORK_INPUT WORK_INPUT_UNCHANGED_HPP 
+        CPX_STACKLEVELCOUNT WORK_INPUT WORK_INPUT_UNCHANGED_HPP
         LOG_PATH HASH TARGET_PROG ACTION_CNT LS_PATTERNS"
 fi
+
+W_ERROR=""  # " -Werror "
 
 if test "$REBUILD" = "force" ||  test ! -f "${TARGET_PROG}"
 then
     maybe_echo "=== Compiling ${SOURCE_FILE} ==="
     maybe_printf "${HBLUE}(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~${NOCOLOR}\n"
     CCMD="\
- $WRAPPER ${CPPCOMPILER} -Werror -DSTDINC_PRECOMPILED \
+ $WRAPPER ${CPPCOMPILER} ${W_ERROR} -DSTDINC_PRECOMPILED \
  $PRE_SRC_OPTIONS \
  -include  $PREPROC_INCLUDE_PATH \
  -include $WORK_INPUT_UNCHANGED_HPP \
