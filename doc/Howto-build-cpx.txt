@@ -42,11 +42,14 @@ aka
 BUGS
 ----
 At this moment, cpx and util need to be compiled with gcc (actuall gcc version is 6.2.0 20161005)
-Use update-alternatives --query c++ to figure out the setting and veryfy that g++ is used as c++).
+Use update-alternatives --query c++ to figure out the setting and verify that g++ is used as c++).
 There are some unresolved issues with clang that prevent building cpx out of the
 box, possibly orinate in the util library.
 There are some manual - but commented ) swithches (aka #if 0  or #if 1 ) in util, but it will limit
 the functionallity somewhat.
+
+tosicsutil MUST be linked with the full absolute path in CMakeLists.txt in order to relink whaen tosicsutil changes.
+This (to me) a Cmake defect and completely defeating the purpuse of cmake (rrr I hate it).
 
 
 Testing

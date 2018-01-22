@@ -25,8 +25,8 @@ But CPX is more, it can be used for several purposes. Its like a system programm
 4. Program caching....
 5. Automatic dependency analyzing build system.....
 6. Multicompiler project building....
-7. Testing compiles and research fastest possible compilation, not comprimizing runtime performance.
-8. Try doing things with tosics_util.
+7. Testing compiles and research fastest possible compilation, not compromising runtime performance.
+8. Try doing things with tosics_util, being the 'interactive' test tool for it. i.s.o. creating wrappers for python.
 9. Link your own library, test and experiment with it. Likewhise (dynamicly) link any library for (almost) interactive
    testing.
 10. A test suite for compilers to indicate what are the shortest possible achivable compilation times.
@@ -66,6 +66,9 @@ also designed such that is very easily integrates with shellscripts like php, py
 CPX will be a essential component in a PHP code generator and build system evnvironment (discussion of is outside the
 scope of this document.
 
+CPX and util
+
+
 
 CPX basics
 ==========
@@ -80,15 +83,15 @@ line, why not add some more usefull commands?
     #|
 includes the gory details any C++ program source requires.
 
-    #{ 
-    #} 
-    #[ 
-    #] 
-    #( 
+    #{
+    #}
+    #[
+    #]
+    #(
     #)
 define entry and exit code in which you enclose your script code.
 
-    #( 
+    #(
     #)
 will do the job in almost all cases, the other wrappers where historically implemented first.
 They allow more detailed control.
@@ -133,13 +136,13 @@ general:
 Runs code from the commandline. However to make this practical, you need some preprocessor commands
 that handle standard definitions and declarations.
 
-    #| 
+    #|
 will include the std namespace and the tosics::util namespace and most common std functions
 and all util Functionalillity.
 
-    #( 
+    #(
 and
-    #) 
+    #)
 each starting at first column of the line wrap your code from the standard input within entry and exit code,
 so you do not need to write it.
 

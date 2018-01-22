@@ -19,8 +19,8 @@ named; cpx-scripts)
         See also Meta programming
 #|      #include "cpx-file-begin.hpp"   incorporating standard includes for cpx scripts
 
-#(      Starts body of util::cpx_main()  (inc..cpx-all-before-script.hpp)
-#)      ends body of util::cpx_main()    (inc..cpx-all-after-script.hpp)
+#(      Starts body of cpx::cpx_main()  (inc..cpx-all-before-script.hpp)
+#)      Ends   body of cpx::cpx_main()  (inc..cpx-all-after-script.hpp)
 
 #{      Starts main  (include cpx-main-definition-signature.hpp), prefere use of #(  and  #)
 #}      Ends main (inc.. cpx-main-and-file-end.hpp), prefere use of #(  and  #)
