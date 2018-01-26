@@ -324,13 +324,21 @@ execute(std::string const& _program, int _argc, char const* _argv[], int _start 
     }
     return execute( program_and_args_vec);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:runner:// main functional routine. prepares the files, compiles and executes with arguments
-
-void test_it()
-{
-    tu::Info_ProgramArguments();
-}
 
 // TODO: split runner(), make a class out of it.
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -354,7 +362,7 @@ int runner()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    // Log commandline arguments  (TODO: refactor using using::ProgramArguments)
+    // Log commandline arguments parcing
     std::ostringstream args_stream;
 
     for( auto arg: tu::ProgramArguments ) {
@@ -452,21 +460,21 @@ int runner()
         fromfile.reset(new std::ifstream(source_name));
         if (!(*fromfile)) {
             ErrorMsg=STREAM2STR("Failed to open source file: '"<< source_name<< "'");
-            tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
+            tu::ThrowBreak( ErrorMsg.c_str(), tu::eBC_handled);
         }
         psource = fromfile.get();
         fs::path source_path = source_name;
-        orginal_source_dir = fs::canonical(source_path.parent_path());
+        orginal_source_dir = fs::canonical( source_path.parent_path());
     }
 
     // append orginal source dir to child process executions PATH, create PATH=orginal_source_dir when needed.
-    char const* current_path= getenv(ENV_PATH);
-    std::string new_path(orginal_source_dir);
-    if ( !tu::Is_null(current_path) ) {
+    char const* current_path= getenv( ENV_PATH);
+    std::string new_path( orginal_source_dir);
+    if ( !tu::Is_null( current_path) ) {
         new_path+= ':';
         new_path+= current_path;
     }
-    if( STATEREPORT(setenv(ENV_PATH,new_path.c_str(), /* overwrite= */true))) {
+    if( STATEREPORT(setenv( ENV_PATH, new_path.c_str(), /* overwrite= true*/1))) {
         perror("setenv() failed");
         ErrorMsg= STREAM2STR("Unable to set environment variable "<< ENV_PATH);
         tu::ThrowBreak(ErrorMsg.c_str());
