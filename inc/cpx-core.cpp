@@ -6,18 +6,18 @@
 #include "cpx-common-impl.cpp"
 
 
-namespace cpx 
+namespace cpx
 {
     int main();
 } // nameapce cpx
 
 
-    int 
+    int
 main( int _argC, char const* _argV[] )
 {
     namespace tu=tosics::util;
-    
-    int return_value=EXIT_FAILURE;  // shall be set by cpx::main()
+
+    int return_value=EXIT_FAILURE;  // shall be set by cpx::main() unless a exception is thrown
 
     try {
         tu::Initialize( _argC, _argV);

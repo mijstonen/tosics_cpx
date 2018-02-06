@@ -589,7 +589,7 @@ int runner()
                 STREAM2STR( Work_Dir<< WORK_PATH_PREFIX<< std::hex<< std::setfill('0')<<
                     std::setw(8)<< digest[0]<< std::setw(8)<< digest[1]<< std::setw(8)<< digest[2]<<
                     std::setw(8)<< digest[3]<<std::setw(8)<< digest[4]<< ".inc" );
-            if ( ForceRebuild || !( _predicatble && fs::exists(execute_results_path) ) ) {
+            if ( ForceRebuild || !( _predicatble && fs::exists( execute_results_path) ) ) {
                 std::ofstream execute_results( execute_results_path);
                 if ( !execute_results ) {
                     ErrorMsg = STREAM2STR("Metacommand (#!=) running '"<< cmd_and_args<< "' at line:"<< (line-1)<<
