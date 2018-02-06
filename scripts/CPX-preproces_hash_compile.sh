@@ -39,7 +39,7 @@ WRAPPER="nice -20 ccache"  # use empty value if not used, ccache effectiveness n
 STD_OF_CPP="gnu++1z"  # experimental c++17
 PRE_PPSRC_OPTIONS="-C -H -nostdinc -march=native -O0 -std=$STD_OF_CPP"  # -P (no include directives)  -C (keep comments)
 
-PRE_SRC_OPTIONS="-march=native -save-temps -DDEBUG -ggdb -H -O0 -DDEBUG -std=$STD_OF_CPP -fconcepts -Wall -Wextra -fdiagnostics-color=always"
+PRE_SRC_OPTIONS="-march=native -save-temps -DDEBUG -ggdb -H -O0 -DDEBUG -std=$STD_OF_CPP -fconcepts -fopenmp -Wall -Wextra -fdiagnostics-color=always"
 # -Wno-unused
 
 PRE_TARGET_OPTIONS="-rdynamic -fuse-ld=gold -Winvalid-pch"
@@ -183,7 +183,7 @@ fi
 # else KEEP_HASH_INPUT=""
 # fi
 
-LS_PATTERNS="$0 ${UTILS_BIN_DIR}libutil.a ${CPX_BIN_DIR}cpx ${PREPROC_INCLUDE_PATH}* ${CPX_INCLUDES_DIR}*"
+LS_PATTERNS="$0 ${UTILS_BIN_DIR}libutil.a ${CPX_BIN_DIR}cpx ${PREPROC_INCLUDE_PATH}* ${CPX_INCLUDES_DIR}* ${UTILS_INCLUDES_DIR}*"
  HASH=$( nice -12 gawk -v HashProces="nice -11 cppstripws" \
              -v DepsProces="nice -11 ls -lrtha --full-time ${LS_PATTERNS}" \
     '
