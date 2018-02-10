@@ -6,7 +6,6 @@
 #|
 #(
 
-using namespace util;
 
 string in{"   a,bb   ,,,,c     cc,dd dd"};
 vector<string> out;
