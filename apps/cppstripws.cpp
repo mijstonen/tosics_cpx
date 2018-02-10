@@ -29,7 +29,7 @@ class StripContext
     istream *pIn= &cin;
     char char_from_source=0, prior_cfs=0, next_cfs=0, last_to_target=0;
     bool in_text=false;
-    sha1::SHA1 pure_src_sha;
+    SHA1 pure_src_sha;
 
   public:
 
@@ -197,18 +197,7 @@ class StripContext
 #else
         sha1::SHA1::digest32_t digest;
         pure_src_sha.getDigest(digest);
-        {
-        auto flgs= std::cout.flags();
-        cout<< hex<< setfill('0')<<
-                setw(8)<< digest[0]<<
-                setw(8)<< digest[1]<<
-                setw(8)<< digest[2]<<
-                setw(8)<< digest[3]<<
-                setw(8)<< digest[4]<<
-               flush;
-        cout.flags(flgs);
-        }
-
+        cout<<pure_src_sha.make_digest_string();
 #endif
     }
 } //class StripContext
