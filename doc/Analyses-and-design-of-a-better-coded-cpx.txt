@@ -24,6 +24,7 @@ Extension directions
 ----------------------
 A build system written in C++, so no other syntax and command effects need to be studied.
 Option to start cpx script in a debugger with some preset breakpoints.
+Options for Multi compiler building and sanitation by static checkers.
 Integration of conducers.
 
 TODO & DONE
