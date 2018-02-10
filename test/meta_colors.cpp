@@ -10,9 +10,9 @@ vector<string> colors;
 if( STATEREPORT(Append_splitted(&colors,tu_ansi_colors)) ) {
     ThrowBreak("Could not split string with color names.");
 }
+
+INFO("#pragma once");
 for( auto color: colors ) {
-    //string color_name=STREAM2STR('"'<<color<<'"');
-    //INFO("INFO","(",color,",",color_name,")",";");
-    cout<< "INFO( "<<color<<", "<<'"'<<color<<'"'<<");\n";
+    INFO("INFO(",color,",",STREAM2STR('"'<<color<<'"'),");");
 }
 #)
