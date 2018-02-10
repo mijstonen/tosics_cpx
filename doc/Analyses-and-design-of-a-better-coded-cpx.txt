@@ -1,0 +1,33 @@
+Analyses and design of a better coded cpx
+-----------------------------------------
+
+Introduction
+
+cpx.1 has been developped empirically and is more procedural and script alike, rather then bein object oriented.
+This was also on purpose as the new tendency in the C++ community is to move away from the depending class
+hierarchies and favour generics over object orientation.
+
+However it has grown to a size that it becomes hard to read and maintain. And this document will provide analyzes
+and design for readability, extendebility and maintainability of cpx.
+
+
+Objectives
+
++ Improve cpx by splitting functionallity.
++ Make class data and class member functions i.s.o. lambda's as nested functions.
++ Generalize functionallity into the tosix::util library.
++ Strive to provide all functionallity in cpx being usable from cpx scripts (aka by migrating that
+  functionality from cpx to tosix::util)
+
+
+Extension directions
+----------------------
+A build system written in C++, so no other syntax and command effects need to be studied.
+Option to start cpx script in a debugger with some preset breakpoints.
+Integration of conducers.
+
+TODO & DONE
+>    starting with moving tinySha1.h and pstream.h to tosix::util:stdinc.hpp.   XXX
+
+
+
