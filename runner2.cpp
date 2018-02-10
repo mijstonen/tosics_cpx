@@ -18,8 +18,6 @@ namespace tu = tosics::util;  // prepare for renamiming util to tosics::util
 #include "runner2.hpp"
 
 
-//#include <pstream.h>
-//#include <TinySHA1.hpp>
 
 
 #define IS_COMPILED 64
@@ -554,8 +552,9 @@ int runner()
             fs::path command_canonical_path;
             std::time_t command_file_time=0; // undetermined
             auto directories= new_path.c_str();
+            // determine
             switch ( STATEREPORT(tu::FileInPATH( &command_canonical_path, command, directories),SR_EXCLUDE_0_AND(-3)) ) {
-              case 0: // Ok
+              case 0: // Ok, determine command_file_time
                 if ( STATEREPORT( tu::PathWriteTime( &command_file_time, command_canonical_path) ) ) {
                     ErrorMsg= STREAM2STR("Unable to determine last write time for "<< command_canonical_path);
                     tu::ThrowBreak( ErrorMsg.c_str());
@@ -563,7 +562,9 @@ int runner()
                 break;
 
               case -3: // Possible error, see ErrorMsg
-                ErrorMsg= STREAM2STR("Command: "<<command<<" could not be found in PATH with directories: "<<directories);
+                ErrorMsg= STREAM2STR("Command: "<<command
+                                   <<" unrecognized! Could not be found in PATH with following directories: "
+                                   <<directories);
                 tu::ThrowBreak( ErrorMsg.c_str(), tu::eBC_handled);
 
               default: // All other are unexpected
@@ -572,23 +573,23 @@ int runner()
             }
 
             //check previous pure argument depended results
-            sha1::SHA1 s;
-            s.processBytes( &command_file_time, sizeof command_file_time);
-            s.processBytes( cmd_and_args.c_str(), cmd_and_args.length());
-            sha1::SHA1::digest32_t digest;
+            tu::SHA1 content_hash;
+            content_hash.processBytes( &command_file_time, sizeof command_file_time);
+            content_hash.processBytes( cmd_and_args.data(), cmd_and_args.length());
+            content_hash.processBytes( command_canonical_path);
 
             if ( !_predicatble ) {
                 // ensure unique include file names by including path and line number into the hash
                 char const* work_input_path_name= work_input_path.c_str();
-                s.processBytes( work_input_path_name, strlen(work_input_path_name));
-                s.processBytes( &line, sizeof line);
+                content_hash.processBytes( work_input_path_name, strlen(work_input_path_name));
+                content_hash.processBytes( &line, sizeof line);
             }
 
-            s.getDigest(digest);
+            //{@ TODO: test metaCommand usage again
             fs::path execute_results_path=
-                STREAM2STR( Work_Dir<< WORK_PATH_PREFIX<< std::hex<< std::setfill('0')<<
-                    std::setw(8)<< digest[0]<< std::setw(8)<< digest[1]<< std::setw(8)<< digest[2]<<
-                    std::setw(8)<< digest[3]<<std::setw(8)<< digest[4]<< ".inc" );
+                STREAM2STR( Work_Dir<< WORK_PATH_PREFIX<< content_hash.make_digest_string()<< ".inc" );
+            //}@
+
             if ( ForceRebuild || !( _predicatble && fs::exists( execute_results_path) ) ) {
                 std::ofstream execute_results( execute_results_path);
                 if ( !execute_results ) {
