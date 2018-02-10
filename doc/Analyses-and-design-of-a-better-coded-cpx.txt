@@ -22,13 +22,15 @@ Objectives
 
 Extension directions
 ----------------------
-A build system written in C++, so no other syntax and command effects need to be studied.
-Option to start cpx script in a debugger with some preset breakpoints.
-Options for Multi compiler building and sanitation by static checkers.
-Integration of conducers.
+- A build system written in C++, so no other syntax and command effects need to be studied.
+- Option to start cpx script in a debugger with some preset breakpoints.
+- Options for Multi compiler building and sanitation by static checkers.
+- Integration of conducers.
+- smart - per script - library binding  (see micro-preprocessor.txt -> Planned -> smart library binding)
 
 TODO & DONE
 >    starting with moving tinySha1.h and pstream.h to tosix::util:stdinc.hpp.   XXX
+    rename runner2.cpp
 
 
 

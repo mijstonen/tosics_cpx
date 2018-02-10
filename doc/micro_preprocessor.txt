@@ -77,6 +77,27 @@ cpx programs run concurrently? And what to do when the parent cpx already uses t
 Logging is a special case, because we want to predict which log to monitor and collect all logs.
 Differntiating with PID of the running cpx is technically a solution but with undesired side effects.
 
+
+Planned
+=======
+Smart library binding allows to specify in the libraries
+#$ {pkg-config_library>)0+
+
+
+Prerequisites: You MUST export PKG_CONFIG_PATH wich is a (:/;) separated list of directories
+                where *.pc files can be found. The libray names are specified as with pkg-config.
+                if pkg-config ..... <pkg-config_library> succeeds, so has cpx to succeed.
+example:
+
+#$ Qt5Core
+
+#^ <QFileSystemWatcher>
+
+
+
+
+
+
 Solution
 ========
 The toplevel cpx process will log to the main log file (aka:CPX-runner.log). It will also export environment variable
