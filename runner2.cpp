@@ -18,8 +18,8 @@ namespace tu = tosics::util;  // prepare for renamiming util to tosics::util
 #include "runner2.hpp"
 
 
-#include <pstream.h>
-#include <TinySHA1.hpp>
+//#include <pstream.h>
+//#include <TinySHA1.hpp>
 
 
 #define IS_COMPILED 64
