@@ -260,7 +260,7 @@ by Jonathan Wakely, without it, cpx would - at least - a lot harder to realize. 
 
 FINALLY
 =======
-Sure, cpx has bugs ;-) please report them when you find them. And sure, I dislike some parts of the (emperical)
+Sure, cpx has bugs ;-) please report them when you find them. And sure, I dislike some parts of the (empirical)
 coding style me my self. It was the required method to get the job done ASAP. I intend to refactor it, plans to do
 that are made right now. I would like to read any positive or (respectfull) negative feedback.
 All suggestions and questions are very welcome, mail to mijstonen@hotmail.com with CPX in the subject field.
