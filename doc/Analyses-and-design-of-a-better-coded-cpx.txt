@@ -34,3 +34,16 @@ TODO & DONE
 
 
 
+
+
+
+class Runner  (object)
+
+    private:
+        // member functions shared data
+
+  protected:
+    ProcessCommandlineArguments()
+    MicroPreprocess();
+    PreProcessHashCompile();
+    HandleExecutable(); // write run debug .....
