@@ -68,9 +68,18 @@ scope of this document.
 cpx and util
 ============
 The util library is not specific for cpx. It is a general purpose collection and extraction of small definitions,
-macro's as well (prefered and mostly inline or generic templated) plain C++ code. However, over time code from cpx will be
-migrated to util. The role of cpx to util is to provide a emperical, experimental proving ground for those definitions
-in util.
+macro's as well (prefered and mostly inline or generic templated) plain C++ code. However, over time code from cpx will
+be migrated to util. The role of cpx to util is to provide a emperical, experimental proving ground for those
+definitions in util.
+
+cpx in scripts
+==============
+Cpx is designed to coorporate with other scripting languages. It reads the sourcecode from standard if no source name
+is specified or the source name = '--' which is a common concept for unix commands. This also makes it easy to use
+"HERE" documents in shell scripts, php, perl etc. to let cpx perform a specific "C++" task while the "HERE" document
+may contain scrip variables that are substituted according the rules of the acting scripting language.
+Cpx option -o is used to write the executable with specified name (or source file name derived name). So a script could
+"prepare" small cpx executables and use them repeatly.
 
 
 CPX basics

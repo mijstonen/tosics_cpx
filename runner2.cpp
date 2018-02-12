@@ -271,7 +271,7 @@ preproces_hash_compile(std::string* target_prog_, std::string const& _source, fs
         if ( !consistant ) {
             LOCAL_MODIFIED(INFO_STREAM_PTR); std::stringstream smsg; INFO_TO(smsg);
 
-            INFO("Software corporation error. Last line of script is inconsistant",
+            INFO("Software cooporation error. Last line of script is inconsistant",
                  VARVALS(selector,phc_script,return_value,status_word,same_as_return_value));
             ErrorMsg= std::move(smsg.str());
             tu::ThrowBreak(std::runtime_error(ErrorMsg), tu::eBC_fatal);
@@ -377,8 +377,8 @@ int runner()
         switch ( selector) {
           case 1: // -o <targetname> Save compiled target output to given destination (relative to current directory)
             if ( tu::ProgramArguments.size()< 3) {
-                tu::ThrowBreak(std::runtime_error("After arg1 is -o expecting arg2 is target "
-                                        "name and (optional) arg3 is source name!"),
+                tu::ThrowBreak(std::runtime_error("After arg1 is -o expecting arg2 to be the target "
+                                        "name and optionally arg3 to be the source name!"),
                     tu::eBC_handled);
             } // else
             if ( tu::ProgramArguments.size()> 4) {
@@ -423,7 +423,8 @@ int runner()
                 tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_default);
             }
             //else {
-                // It's OK, there where no (explicit) commandline options
+                // It's OK, there where no (explicit) commandline options left to be processed.
+                // anyOfOptions[0]==tu::ProgramArguments[1].c_str()
                 // LoggingEnabled=  ... see declaration above or get it from environment variable
                 // if there was no ProgramArguments[1], source code is red from stdin
             //}
