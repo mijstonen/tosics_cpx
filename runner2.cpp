@@ -174,13 +174,12 @@ logged_popen(std::vector<std::string>* outlines_, std::vector<std::string> const
     //std::ostream_iterator<std::string> outItr(allargs, " ");
     //copy(_cmd_args.begin(), _cmd_args.end(), outItr);
     std::string program_and_args;
-    tu::Append_joined( &program_and_args, _cmd_args);
+    STATEREPORT(tu::Append_joined( &program_and_args, _cmd_args));
     return logged_popen(outlines_, program_and_args, output_dest_, _label);
 }
     template <typename LAMBDA_T>
     int
-logged_popen(std::string const& _cmd_args, LAMBDA_T output_dest_,
-    char const* _label = nullptr)
+logged_popen(std::string const& _cmd_args, LAMBDA_T output_dest_,char const* _label = nullptr)
 {
     return logged_popen(nullptr, _cmd_args, output_dest_, _label);
 }
@@ -224,7 +223,7 @@ preproces_hash_compile(std::string* target_prog_, std::string const& _source, fs
                         , WORK_PATH_PREFIX LOGFILE_NAME_IDENTIFICATION);
 
     // get return_status_ and target_prog_
-    if ( valid_phc_status(return_value) ) {
+    if ( valid_phc_status( return_value) ) {
         (*target_prog_) = "";
         if (outlines.size() < 1) {
             ErrorMsg = phc_script;
