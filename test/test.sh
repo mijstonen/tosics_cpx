@@ -3,12 +3,12 @@
 
 # set -e
 # files and directories / depended settings
-PRJ_PARENT_DIR="/home/michel/Projects/Kdevelop/"
- CPX_SCRIPTS_DIR="${PRJ_PARENT_DIR}cpx/scripts/"
+PRJ_PARENT_DIR="/home/michel/Projects/Kdevelop"
+ CPX_SCRIPTS_DIR="${PRJ_PARENT_DIR}cpx/scripts"
  . ${CPX_SCRIPTS_DIR}CPX-common.sh
 
 # NOTICE: the currect directory has to be in the path (use alias: cupas)
-WORK_DIR="${CPX_WORK_DIR:-/tmp/cpx/}"
+WORK_DIR="${CPX_WORK_DIR:-/tmp/cpx}"
  WORK_DIR=$(heal_DIR WORK_DIR)
   LOGFILE="${WORK_DIR}CPX-runner.log"
 
@@ -30,7 +30,7 @@ run_scripts () {
     ${CPX_WITH_OPTIONS} varvresearch.cpp
     ${CPX_WITH_OPTIONS} txtsplit.cpp
 
-    # programs with test input 
+    # programs with test input
     # 1
     ${CPX_WITH_OPTIONS} bracecount.cpp <<EOF
 {{{ }}
@@ -42,14 +42,14 @@ EOF
 {{{ }}}
 EOF
     # 2
-    ${CPX_WITH_OPTIONS} cppstripws.cpp  < cppstripws.cpp > cppstripws.test-output 
+    # OBSOLETED ${CPX_WITH_OPTIONS} cppstripws.cpp  < cppstripws.cpp > cppstripws.test-output
 
     # what is to be known about a pointer with a null value
     ${CPX_WITH_OPTIONS} stream_nullptr.cpp
-    
+
     # taste
     # ${CPX_WITH_OPTIONS} taste-tosics_util.cpp
-    
+
     # test what happens when compilation fails
     ${CPX_WITH_OPTIONS} compile-errors.cpp
     # deliberately fails to test backtrace

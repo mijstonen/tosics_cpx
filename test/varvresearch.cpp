@@ -7,19 +7,22 @@
 #(
 
 
-//namespace fs = std::experimental::filesystem;
+//namespace fs = std::filesystem;
 
 using namespace experimental;
 namespace tu=tosics::util;
 
 optional<tu::ASJ_special> optAsj;
 
-
-string s = VSTRINGS(XPR{ kaasboer, T(map, '99', p) },'q,q\', r', ",,,",f(a, g(b)), 1, 10, foo<r, r, -9.3>, endit);
-//string s = __VSTRINGS(X{k,T(map,99,p)},q,r,f(a,g(b)),1,10,foo<r,r,-9.3>, e);
+string s;
+// s = VSTRINGS(XPR{ kaasboer, T(map, '99', p) },'q,q\', r', ",,,",f(a, g(b)), 1, 10, foo<r, r, -9.3>, endit);
+// s = __VSTRINGS(X{k,T(map,99,p)},q,r,f(a,g(b)),1,10,foo<r,r,-9.3>, e);
 //Unbalanced:  string s = "(a({[<M>])}b,c),a({[<M>]})b,c)";
-//string s = __VSTRINGS(a({[<Michel>]})b,{},c,a({[<M>]})b,c);
-//string s = __VSTRINGS(a<M>b,c);
+// s = __VSTRINGS(a({[<Michel>]})b,{},c,a({[<M>]})b,c);
+// s = __VSTRINGS(a<M>b,c);
+
+s="aa   bb   cc d e f";
+
 INFO(VARVAL(s));
 vector<string> vss;
 

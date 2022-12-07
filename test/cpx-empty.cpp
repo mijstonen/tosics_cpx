@@ -16,4 +16,5 @@
 //@{ script
 //@} script
 
+// Note: this will become cpx::main()  NOT ::main(), ::main() sets up the environment context and calls cpx::main().
 #)

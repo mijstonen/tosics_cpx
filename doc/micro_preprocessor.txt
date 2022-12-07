@@ -1,11 +1,61 @@
 The Micro preprocessor
 ----------------------
-Needed for #! anyway
-Makes easy shortcuts for complexer configurable included sources.
+
+Usage abstract
+--------------
+The abstract simply straight tells what to do, not how or why. It should be enough to know about the micropreprocessor
+for most common cases. To know all of it, however you should read the rest. So lets start.
+
+All micropreprocessor tags are detected by a # character on the first column, in any other case they are ignored.
+Common valid tags to use are
+#!
+#|
+#(
+#)
+#+
+#^
+Less common
+#!=
+#!?
+Deprecated/non-functioning/obsolete. It is discouraged to use/exploit them.
+#{
+#}
+#!!
+#!&
+#!,
+#!.
+
+Never '# ' : It guarantees that it never processes when the 2nd column is a SPACE.
+
+
+#! are the first 2 characters on the first line of the script.
+On any other file location it will not work.
+The first line should be "#!/usr/bin/env cpx" analog to use with shell scripts.
+
+Use #| to include many of the commonly needed includes.
+It will also use the std namespace and the tosics::util namespace.
+
+Use #( to starts a function body which are using for the the entry execution code.
+It is not the main function, but cpx::main(). The standard main is defined by
+cpx when using #| and handles initialization(s) and exceptions.
+#) will end the scope of cpx::main().
+
+Use #+ to include custom files and extend cpx (headers, cpp or php source inside the domain cpx of changes)
+Use #^ to include read-only include headers, aka: those standard headers that do not change.
+
+That's it.
+
+
+Why a micropreprocessor?
+
+     Needed for #! anyway for analog to shell script hash bang.
+     Reduce builerplate code which could be substantial in a small/few lines script.
+     Makes easy shortcuts for complexer configurable included sources.
+
 It ONLY works in the intended cpx script, not in other involved sources also compiled or included files.
 The preprocessor command tags ALL and ONLY have
-  1.  A # on the FIRST COLUMN of the line (# on other columsn will be ignored)
-  2.  A command selector character that determinis the action to take. Use of punctuation characters is prefered.
+  1.  A # on the FIRST COLUMN of the line (# on other columns will be ignored)
+  2.  A command selector character that determines the action to take. Use of punctuation characters is prefered.
       And some characters can not be used (easily) because of the cpp preprocessor key words (aka: d of #define,
       i of #if and #include).
 
@@ -20,12 +70,18 @@ named; cpx-scripts)
 #|      #include "cpx-file-begin.hpp"   incorporating standard includes for cpx scripts
 
 #(      Starts body of cpx::cpx_main()  (inc..cpx-all-before-script.hpp)
+Your main execution (C++) code is here,
 #)      Ends   body of cpx::cpx_main()  (inc..cpx-all-after-script.hpp)
 
-#{      Starts main  (include cpx-main-definition-signature.hpp), prefere use of #(  and  #)
-#}      Ends main (inc.. cpx-main-and-file-end.hpp), prefere use of #(  and  #)
-#[      Starts main exception block (inc.. cpx-main-outer-try.hpp), prefere use of #(  and  #)
+#[      Starts main exception block (inc.. cpx-main-outer-try.hpp), prefere use of #(  and  #), see #{
 #]      Ends main exception block (inc..cpx-main-outer-catch-block.hpp), prefere use of #(  and  #)
+
+#{      Starts main  (include cpx-main-definition-signature.hpp), prefere use of #(  and  #)
+NOT RECOMMENDED: Your ::main(...) function execution (C++) code is here, ONLY use it when
+not using #| #( #) #[ #] because in that case there is a standard main() function already defined.
+see cpx-core.cpp
+#}      Ends main (inc.. cpx-main-and-file-end.hpp), prefere use of #(  and  #)
+
 #+ <name>   include a named cpx include  aka:  #+ myowninc.h   -> #include "cpx-myowninc.h"
 
 #^<rest of line>
@@ -46,19 +102,34 @@ named; cpx-scripts)
 #^<boost/circular_buffer.hpp>  places "#include <boost/circular_buffer.hpp>" in SOURCE_FILE.unchanged.hpp
 
 
+Never interpret '# ' : It guarantees that it never processes when the 2nd column is a SPACE. The programmer so can distinct
+C/++ preprocessor commands from the micropreprocessor.
+
+Example
+#d          could be the first of '#define' or could be a (future #d microprocessor command, altough unlikely), but
+# define    is guaranteed never to be interpreted. If it would doi so it is a reportable BUG.
+
+
 Meta programming
+DEPRICATED
 #!!      Not on the first line: Execute child program. This can be even a cpx script, but that is a special case.
             plain execution (depricated, puts to much responsibility in called executable)
 
 ................................................
 Update of meta programming commands
-#!? querying meta command, every call might produce different results despite equal arguments, alayas execute
-#!= pure execution if previously arguments and generated output file differ
+#!? querying meta command, every call might produce different results despite equal arguments, unconditionally always execute
+#!= pure execution, if previously arguments 
+[needs verification] where the same (=), the result of current execution is assumed to b e the
+same, hence, reuse cached result of previous execution. So, the given command must me stateless.
+
+example: 
+#!= xxd -n aPicture -i picture.png     # incorporate picture.img file bytes into unsiged char aPicture[]  
 
 ................................................
 
-#!&      [reserved]Asynchronely execute child program
-#!,      [reserved]Wait for all child programs to complete
+#!&      [reserved] Asynchronous execute child program
+#!,      [reserved] ANY:Wait for one of Asynchronous child programs to complete
+#!.      [reserved] AND:Wait for all Asynchronous child programs to complete
 
 Executing programs output is a single line in the source to be interpreted by the cpx parent program.
 Most likely, the output is another include or micro preprocessor line. The child executable is
@@ -69,7 +140,7 @@ functionallity and implementation is defered till their is signifficant demand. 
 child processes should take it into account).
 
 Besides the name of the child process, also arguments can be given, similar as a commandline.
-#! childprocess a b c
+#!=childprocess a b c
 
 A special case of child program execution is when it's main process is cpx it self.
 If cpx does writes to a single file or object (aka CPX-runner.log) what to do when
@@ -77,6 +148,18 @@ cpx programs run concurrently? And what to do when the parent cpx already uses t
 Logging is a special case, because we want to predict which log to monitor and collect all logs.
 Differntiating with PID of the running cpx is technically a solution but with undesired side effects.
 
+The purpuse of meta commands
+============================
+One of the main benefits of cpx is that it can quickly create small generator programs.
+These can be very easily tested in a edit-run cycle. Previously I designed GAPP (Generic
+Advanced Programmable Preprocessor) that uses S-lang scripting language. It's very
+powerfull but debugging is hard and painfull. The nice thing about cpx is that its scripts
+are always pure C++ and is easy to debug with a common debuggers, while it still has the
+capabillity of multiple level meta abstractions, like GAPP does. It is also much simpeler
+to use existing libraries since no interfacing to a special scripting language needs to be
+made (aka: SWIG or sip). Add linking of the library to the link options in
+cpx/scripts/CPX-preproces_hash_compile.sh and add the required header file to the source
+and you're done.
 
 Planned
 =======

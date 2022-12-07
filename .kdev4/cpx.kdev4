@@ -2,24 +2,26 @@
 BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x06\x00c\x00p\x00x)
 
 [CMake]
-Build Directory Count=2
-Current Build Directory Index=1
+Build Directory Count=3
+Current Build Directory Index=0
 
 [CMake][CMake Build Directory 0]
+Build Directory Path=/home/michel/Projects/Kdevelop/build/cpx
+Build Type=Debug
+CMake Binary=/usr/bin/cmake
+CMake Executable=/usr/bin/cmake
+Environment Profile=
+Extra Arguments=
+Install Directory=/usr/local
+Runtime=Host System
+
+[CMake][CMake Build Directory 1]
 Build Directory Path=/home/michel/Projects/Kdevelop/cpx/build
 Build Type=Debug
 CMake Binary=/usr/bin/cmake
 Environment Profile=
 Extra Arguments=
 Install Directory=
-
-[CMake][CMake Build Directory 1]
-Build Directory Path=/home/michel/Projects/Kdevelop/build/cpx
-Build Type=Debug
-CMake Binary=/usr/bin/cmake
-Environment Profile=
-Extra Arguments=
-Install Directory=/usr/local
 
 [Launch]
 Launch Configurations=Launch Configuration 0
@@ -31,24 +33,22 @@ Name=cpx
 Type=Native Application
 
 [Launch][Launch Configuration 0][Data]
-Arguments=colors.cpp
-Debugger Shell=
+Arguments=../../Projects/test/michel.cpp
 Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x02\x00\x00\x00\x06\x00c\x00p\x00x\x00\x00\x00\x06\x00c\x00p\x00x)
 Dependency Action=Build
-Display Demangle Names=true
-Display Static Members=false
 EnvironmentGroup=
-Executable=file:///home/michel/Projects/Kdevelop/build/cpx/cpx
+Executable=file:///mnt/usbDrive/aDataUdf/home/michel/Projects/Kdevelop/cpx
 External Terminal=konsole --noclose --workdir %workdir -e %exe
-GDB Path=
+Kill Before Executing Again=4194304
 Project Target=cpx,cpx
-Remote GDB Config Script=
-Remote GDB Run Script=
-Remote GDB Shell Script=
-Start With=FrameStack
 Use External Terminal=false
-Working Directory=file:///home/michel/Projects/Kdevelop/cpx/test
-isExecutable=true
+Working Directory=file:///home/michel/Projects/test
+isExecutable=false
+
+[MakeBuilder]
+Make Binary=ninja
+Number Of Jobs=4
+Override Number Of Jobs=true
 
 [Project]
 VersionControlSupport=kdevgit

@@ -3,12 +3,12 @@
 #|
 
 /*
-Researching a Output class to make function arguments that act as a outoput from a function explicit during the call.
+Researching a Output class to make function arguments that act as a output from a function explicit during the call.
 Intended to follow the 'zero overhead abstraction' policy. This should be a dropin replacement for &output var.
 So foo( &outvar,... ) becomes foo( OUT(outvar),...).
 
 Output automates checking the (optional) output.
-Additionally I implemented INFO_FUNC and FUNC_MSG macro's in tosics_util and the are used/tested here.
+Additionally I implemented INFO_FUNC and FUNC_MSG macro's in tosics_util and they are used/tested here.
 
 
 DETAILS
@@ -84,7 +84,7 @@ void foo(Output<int>&& sum_, vector<int> values)
     INFO(FUNC_MSG("==== enter ===="));
     int adding_result=0;
     for( auto value: values) {
-        INFO("Addeing",VARVAL(value));
+        INFO("Addeing",VARVALS(adding_result,value));
         adding_result+= value;
     }
     sum_= adding_result;
@@ -107,17 +107,17 @@ void foo(Output<int>&& sum_, vector<int> values)
 
 #(
 INFO_FUNC;
-int sumtest;
+int sumtest{0};
 ////
 int *psumtest=&sumtest;
 FAKE_USE(psumtest);
-
-foo( OUT(sumtest), {1,2,3,4,5} );
+INFO(VARVAL(sumtest));
+foo( OUT(sumtest), {1,2,3,4,5,10} );
 INFO(VARVAL(sumtest));
 
 INFO(ENDL,"---DROP---");
 foo( DROP_OUTPUT(int),{8,9,10});
-
+INFO(VARVAL(sumtest));
 
 INFO(HBLUE,DateTime(),NOCOLOR);
 #)

@@ -1,8 +1,9 @@
 #pragma once
-//cpx-all-before-script
-#include "cpx-core.cpp"
+//cpx-all-before-script.hpp
+
+// wrapping code before #(
 namespace cpx{
 int main()
 {
     {
-        // Entered scope where the cpx script starts
+        // Entered scope where the cpx script starts after: 

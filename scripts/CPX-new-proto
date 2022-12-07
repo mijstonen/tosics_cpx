@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+printf '#!/usr/local/bin/cpx\n#|\n#(\n#)\n' > $1.cpp
+/usr/local/bin/cpx $1.cpp
+chmod +x $1.cpp
+if [ "$2" = "ek" ]
+then exec kate -b $1.cpp &
+fi
+#
+#  syntax CPX-new-proto <file_identifier> {ek}
+#  Create a empty program file in current directory and compile+execute it.
+#  If optional 'ek' is given, the source file is emmediately loaded in kate.
+#
+#  Note: this is to automate the very repetitive action of making a new experimentation source in Projects/test
+#

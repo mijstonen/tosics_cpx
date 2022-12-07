@@ -7,7 +7,8 @@ CPX_WORK_DIR=$(heal_DIR CPX_WORK_DIR)
  WORK_DIR="${CPX_WORK_DIR:-/tmp/cpx/}"
   cd $WORK_DIR
 
-CPX_files=$(ls -1f *.cpp *.x *.s *.o *.ii *temp* *.unchanged.hpp *.cpp.prehash *.cpp.prehash.errors *[0-9,a-z].hash *[0-9,a-z].inc| grep '^CPX-')
+CPX_files=$(ls -1f *.cpp *.x *.s *.o *.ii *.ii~ *.ii.orig *temp* *.unchanged.hpp *.cpp.prehash *.cpp.prehash.errors *.cpp.prehash.transformed \ 
+*.cpp.prehash.transformed.errors *.cpp.errors *[0-9,a-z].hash *[0-9,a-z].inc| grep '^CPX-')
 if test -z "$CPX_files"
 then echo "Nothing to clean"
 else rm -v $CPX_files

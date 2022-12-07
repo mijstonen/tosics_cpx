@@ -44,3 +44,4 @@
 
 build*.log
 test/test-tee*.log
+.directory

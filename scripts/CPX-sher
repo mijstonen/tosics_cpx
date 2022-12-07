@@ -6,7 +6,12 @@ SCRIPTS_DIR="$(dirname $(realpath -P $0))/"
 CPX_WORK_DIR=$(heal_DIR CPX_WORK_DIR)
 
 WORK_DIR="${CPX_WORK_DIR:-/tmp/cpx/}"
+if [ ! -f ${WORK_DIR}/CPX-runner.log ]
+then
+    # make following 'less' wait
+    echo "" > ${WORK_DIR}/CPX-runner.log
+fi
 while :
- do less -NR '+?\|\-\-\-\[.*\]\-\-\-|\|build\ phase|\|hash\ phase'  ${WORK_DIR}/CPX-runner.log
+  do less -R '+?\-\-\-\[.*\]\-\-\-|\ Transforming' $(ls -1t ${WORK_DIR}/CPX-runner*.log)
 done
 

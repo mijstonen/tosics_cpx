@@ -34,15 +34,15 @@
     }
 
     INFO("Hello meta world");
-
+#if 0
     {
-#!?sleepdatetime.cpp one 1
+//#!?sleepdatetime.cpp one 1
         INFO(VARVAL(one));
     }
     {
 //#?sleepdatetime.cpp one 1
-#!?sleepdatetime.cpp one 1
         INFO(VARVAL(one));
     }
+#endif    
 #)
     

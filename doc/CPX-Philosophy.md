@@ -108,6 +108,12 @@ define entry and exit code in which you enclose your script code.
 Will do the job in almost all cases, the other wrappers where historically implemented first.
 They allow more detailed control.
 
+    #!!
+    #!?
+    #!=
+Meta commands a executable, script or cpx script will run (in case of cpx; eventually compiled before ran) and the
+resulting output replaces the command. The output is intended to be on the fly generated source code.
+
 The rest you can read in micro_preprocessor.txt (which less then 100 lines long). In their you find additional commands
 that proved to be useful and desired.
 
@@ -118,6 +124,8 @@ In test/ you find cpx scripts, start with dumm.cpp, cpx-empty.cpp and rnr_source
 In scripts/ you find several helper scripts and the customizable CPX_preproces_hash_compile.sh which is part of the
 cpx execution.
 Most useful are CPX-sher, CPX-shrink-runner, CPX-common.sh, CPX_preproces_hash_compile and CPX-build-app.
+
+
 
 
 
@@ -178,7 +186,8 @@ Is the same, but you explicit indicate to use stdin as code.
 
 Compiling to named target, target may not start with '-'
 
-    cpx <options>0+ -o  <relative target path>1 <source|-->0+      (do not put <option>0+ after <source|-->)
+    cpx <options>0+  ( -o  <relative target path>1 <source|-->0+ | -p <source|-->0+     (do not put <option>0+ after <source|-->)
+    The Idea is be able to store the target path in a shell variable for later (repeated) execution.
 
 
 Compile and execute
@@ -192,16 +201,40 @@ Or enter the source (if execute bit is set by chmod...+x...) with its arguments.
     <source_path> <arguments>
 
 Other options
+ ```note: explonary long arguments are not yet (@2019-0304) implemented, they are mentioned here to ease understanding. that is why they are in braces )```
 
-    -f
+    -p    ( --print )
+   Instead of running, print the path of the target binary. This in turn can be used in scripts or passed
+   as command argument, for example to copy it or debug it. It makes no sense to combine it with -o.
+
+    -f    ( --force )
    Force compilation, even no changes where detected. For example, when you want to recompile after editing comments
    or white space in the source file.
 
-    -v
+    -v    ( --verbose )
    Be verbose in the logging output,this is by default.
 
-    -q
+    -q    ( --quieter )
    Be quieter in the logging output, only show what's really essential.
+
+   -C <configuration_name> ( --configuration ) where configuration_name= default | release | debugging | ....
+
+   default: minimize compilation time and maximize debugabillity
+   In particular when creating cpx apps, you want them to be optimized and stripped
+
+
+   Planned
+   -------
+   -a  'preprocessor arguments passed as single argument'  (--arguments (for preprocessing = prehash->[(php)transform)]->transformed)
+   or by env variable : PRE_ARGS='preprocessor arguments passed as single argument'
+
+   -E (ake: line gcc -E) output transformed source i.s.o compiling and running it.
+   -E is intended for integration with other build systems, where the source is prefetched by cpx.
+    This makes it possible to use cpx as a preprocessor, not only to execute, but also generate code
+    for library sources. Particularly, it could be used for it self.
+    ( maybe sub options a:amalgamate b:beautify, order dependend => -E -Ea -Eb -Eab -Eba )
+
+
 
 
 CPX internals
@@ -273,6 +306,13 @@ Sure, cpx has bugs ;-) please report them when you find them. And sure, I dislik
 coding style me my self. It was the required method to get the job done ASAP. I intend to refactor it, plans to do
 that are made right now. I would like to read any positive or (respectfull) negative feedback.
 All suggestions and questions are very welcome, mail to mijstonen@hotmail.com with CPX in the subject field.
+
+
+PHP integration
+===============
+TBD:
+IMPORTANT: Works with C++ style inclusion. Do not use php style include/require because it corrupts cccp line counting,
+hence compile errors will be reported incorrectly.
 
 
 

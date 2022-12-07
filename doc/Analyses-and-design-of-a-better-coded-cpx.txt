@@ -47,3 +47,14 @@ class Runner  (object)
     MicroPreprocess();
     PreProcessHashCompile();
     HandleExecutable(); // write run debug .....
+
+
+
+class Hierarchie
+
+File
+   Source               // generic program sourcecode
+      CppSource         // C++ sourcecode
+         CpxSource      // Cpx micro preprocessor source code
+
+

@@ -5,16 +5,18 @@
 
 #include "cpx-common-impl.cpp"
 
-
 namespace cpx
 {
     int main();
 } // nameapce cpx
 
-
     int
 main( int _argC, char const* _argV[] )
 {
+    /* defined later in cpx script source file */void app_debugging_main_entry();
+    app_debugging_main_entry();  // should be void function defined in the cpa app, to enter debugging in main
+    CPX_VALIDATE_WITH_SOURCE;
+
     namespace tu=tosics::util;
 
     int return_value=EXIT_FAILURE;  // shall be set by cpx::main() unless a exception is thrown

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+MAX_COUNTED_BACKUPS=${MULTIBACKUP_MAX:-9}
+
+function backupcounted
+# $1 is (backup)filename that gets a count suffix
+# $2 is the count number
+{
+    [ "$2" -ge "$MAX_COUNTED_BACKUPS" ] && return
+    local nextBkcnt=$(expr "$2" + 1)
+    [ -f "$1$nextBkcnt" ] && backupcounted "$1" "$nextBkcnt"
+    mv "$1$2" "$1$nextBkcnt"
+}
+
+function backup
+# $1 is filename
+{
+    bkcnt="$1~"
+    if [ -f "$bkcnt" ]
+    then
+        local backupname="${bkcnt}1"
+        [ -f "$backupname" ] && backupcounted "$bkcnt" 1
+        mv "${bkcnt}" "$backupname"
+    fi
+    cp --preserve=all "$1" "$1~"
+}
+
+if [ -a "$1" ] ; then
+    backup "$1"
+fi
+
+
+

@@ -1,4 +1,4 @@
-// syntax
+//// s  y n t a x
 //  runner       (READ FROM STDIN)
 //       | -o <targetname> source|--    (implicit -v)
 //       | source|-- arguments...
@@ -11,10 +11,10 @@
 #include <tosics_util.hpp>
 
 
-namespace fs = std::experimental::filesystem;
-namespace tu = tosics::util;  // prepare for renamiming util to tosics::util
+namespace fs = std::filesystem;
+namespace tu = tosics::util;
 
-#include "cpx-config.h"
+#include "inc/cpx-config.h"
 #include "runner2.hpp"
 
 
@@ -24,7 +24,6 @@ namespace tu = tosics::util;  // prepare for renamiming util to tosics::util
 
 
 //@{  Global program data
-
 // shared with main.cpp
 std::ofstream* PLogStream = nullptr;  // see logref()
 std::ostream* PNullStream = nullptr;  // see logref()
@@ -32,30 +31,22 @@ std::string Work_Dir;
 bool ForceRebuild=false;
 //:ErrorMsg:// must persist against scopes due to its use for exceptions and it needs to outlive function main()
 std::string ErrorMsg;
-
 //@}  Global program data
 
-
-
-
-namespace {
-//:LoggingEnabled://
-// Bad & Ugly! Global. Please refactor!
-// TODO: get from envinonment variable CPX_LOGGING_DEFAULT
-// + if false executable scrips mimimally log (possibly prefered in production environment),
-// turn on with -v, however that is only possible if by explicitely use cpx  (aka cpx -v dummy.cpp i.s.o. dummy.cpp)
-// + if true it is easier to lean cpx and take advantage of logged data, turn off with -q
-// turn off with -q, however that is only possible if by explicitely use cpx  (aka cpx -q dummy.cpp i.s.o. dummy.cpp)
-bool LoggingEnabled=true;
-
+namespace OccasionallyModified {
+    //:LoggingEnabled://
+    bool LoggingEnabled=true;
+    //:FlushLogging://
+    bool FlushLogging=false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:logref:// log activity of compiling and executing to desdicated stream (aka
 // file), distinguisch messages with label
-std::ostream& logref(char const* _label = nullptr)
+    std::ostream&
+logref(char const* _label = nullptr)
 {
-    if ( !LoggingEnabled ) {
+    if ( !OccasionallyModified::LoggingEnabled ) {
         static tu::onullstream sink;
         return sink;
     }
@@ -70,17 +61,18 @@ std::ostream& logref(char const* _label = nullptr)
 #endif
     if (_label) {
         ( *PLogStream ) << std::endl
-                        << tu::HWHITE << std::setw(20) << std::left << _label
-                        << tu::WHITE << " : " << tu::DateTime() << tu::NOCOLOR;
+                        << HWHITE << std::setw(20) << std::left << _label
+                        << WHITE << " : " << tu::DateTime() << NOCOLOR;
     }
-    ( *PLogStream ) << tu::YELLOW << "    "
-                    << "|" << tu::WHITE << tu::NOCOLOR;
+    ( *PLogStream ) << YELLOW << "/**/"
+                    /*<< "|" */ << WHITE << NOCOLOR;
     return ( *PLogStream );
 }
 
 //////////////////////////////////////////////////      ////////////////////////////////////////////////////////////////
 //:mkname:// substitute characters that make bad file names
-int mkname(std::string* name_, char const* _path_in_arg, char _subst = '^')
+    tu::state_t
+mkname(std::string* name_, char const* _path_in_arg, char _subst = '^')
 {
     *name_ = WORK_PATH_PREFIX;
     bool convert = false;
@@ -105,8 +97,7 @@ int mkname(std::string* name_, char const* _path_in_arg, char _subst = '^')
         }
     }
 
-    int return_value = (name_->length() ? 0 : -1);
-    return return_value;
+    return tu::State( name_->length() ? 0 : -1 );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,6 +122,12 @@ logged_popen(std::vector<std::string>* outlines_, std::string const& _allargs, L
     // LAMBDA_T output_dest_ should be a function or lambda that returns a ostream&, aka: ;logref()
     //
     logref(_label) << _allargs << "\n";
+    if ( /* true || "byCpxProgramArgumen(?)" || */ OccasionallyModified::LoggingEnabled && OccasionallyModified::FlushLogging ) {
+        logref().flush();
+    }
+    /*
+     * Or close logfile (and null PLogStream) and reopen it set search tag:OpenLogFileAgain
+     */
     redi::ipstream popen_out(_allargs);
     if (!popen_out) {
         tu::ThrowBreak("logged_popen(): coud not open stream to process, see log.", tu::eBC_assertion_failed);
@@ -138,7 +135,7 @@ logged_popen(std::vector<std::string>* outlines_, std::string const& _allargs, L
     if (outlines_) {
         for (std::string line; std::getline(popen_out, line);) {
             //output_dest_() << line << '\n';
-            outlines_->push_back(line);
+            outlines_->push_back( line);
         }
     } // if
     else {
@@ -148,15 +145,16 @@ logged_popen(std::vector<std::string>* outlines_, std::string const& _allargs, L
     }
     popen_out.close();
     int tmp = popen_out.rdbuf()->status();
-    int child_process_exit_status = static_cast<int>(static_cast<signed char>(WEXITSTATUS(tmp)));
+    int  child_process_exit_status= static_cast<int>(static_cast<signed char>(WEXITSTATUS(tmp)));
 
-    {LOCAL_MODIFIED(LoggingEnabled);
+    {LOCAL_MODIFIED(OccasionallyModified::LoggingEnabled);
     // when something went wrong, logging will be enabled to present the output of the
     // child process in case of compiling it will make the compilation errors visable.
     if ( !valid_phc_status(child_process_exit_status) ) {
-        LoggingEnabled= true;
+        OccasionallyModified::LoggingEnabled= true;
     }
 
+    // tag:OpenLogFileAgain
     if ( outlines_ ) {
         for(std::string line: *outlines_) {
             output_dest_()<< line << '\n';
@@ -170,9 +168,6 @@ logged_popen(std::vector<std::string>* outlines_, std::string const& _allargs, L
 logged_popen(std::vector<std::string>* outlines_, std::vector<std::string> const& _cmd_args, LAMBDA_T output_dest_,
     char const* _label = nullptr)
 {
-    //std::ostringstream allargs;
-    //std::ostream_iterator<std::string> outItr(allargs, " ");
-    //copy(_cmd_args.begin(), _cmd_args.end(), outItr);
     std::string program_and_args;
     STATEREPORT(tu::Append_joined( &program_and_args, _cmd_args));
     return logged_popen(outlines_, program_and_args, output_dest_, _label);
@@ -192,7 +187,9 @@ logged_popen(std::vector<std::string> const& _cmd_args, LAMBDA_T output_dest_, c
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:preproces_hash_compile:// run script to preprocess then hash and eventually compile using pstream popen mechanism
     int
-preproces_hash_compile(std::string* target_prog_, std::string const& _source, fs::path const& _orginal_source_dir)
+preproces_hash_compile(std::string* target_prog_, std::string* runtimeValidationHash_,
+                       std::string const& _source, fs::path const& _orginal_source_dir,
+                       std::string const& _build_config_name)
 {
     char const* phc_script = getenv( ENV_CPX_HASH_COMPILE);
     if ( tu::Is_null( phc_script) ) {
@@ -213,8 +210,9 @@ preproces_hash_compile(std::string* target_prog_, std::string const& _source, fs
     {   phc_script_path
     ,   _source
     ,   _orginal_source_dir
-    ,   (LoggingEnabled? "on": "off")
+    ,   (OccasionallyModified::LoggingEnabled? "on": "off")
     ,   (ForceRebuild? "force": "auto")
+    ,   _build_config_name
     };
     /* clang-format on */
     // Run it
@@ -236,7 +234,7 @@ preproces_hash_compile(std::string* target_prog_, std::string const& _source, fs
         std::istringstream lastOutputLine(outlines[outlines.size() - 1]);
         std::string status_word;
         int same_as_return_value=-1;
-        if (!(lastOutputLine >> status_word >> (*target_prog_) >> same_as_return_value)) {
+        if (!(lastOutputLine >> status_word >> (*target_prog_) >> (*runtimeValidationHash_) >> same_as_return_value )) {
             ErrorMsg = phc_script;
             ErrorMsg += " failed reading <compiling|available> <target_prog> on the "
                         "last line of its output";
@@ -285,19 +283,29 @@ preproces_hash_compile(std::string* target_prog_, std::string const& _source, fs
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    char const*
+colored( char const* _color, char const* _label )
+{
+    /* BAD AND UGGLYYYYY */
+    static char buf[256];
+    buf[0]=0;
+    return strcat(strcat(strcat(buf,_color),_label),RESET);
+}
+
 //:execute:// Execute given program where its arguments is offset _start to the given argument list.
     int
 execute(std::ostream* pOs_, std::string const& _program_and_args)
 {
     // Run it
-    int return_value = logged_popen( _program_and_args, [pOs_]() -> std::ostream& { return ( *pOs_ ); }, "execute");
+    int return_value = logged_popen( _program_and_args, [pOs_]() -> std::ostream& { return ( *pOs_ ); }, colored(HGREEN,"execute"));
     return return_value;
 }
     int
 execute(std::ostream* pOs_, std::vector<std::string> const& _program_and_args_vec)
 {
     // Run it
-    int return_value = logged_popen(_program_and_args_vec, [pOs_]() -> std::ostream& { return ( *pOs_ ); }, "execute");
+    int return_value = logged_popen(_program_and_args_vec, [pOs_]() -> std::ostream& { return ( *pOs_ ); }, colored(HGREEN,"execute"));
     return return_value;
 }
     int
@@ -329,11 +337,6 @@ execute(std::string const& _program, int _argc, char const* _argv[], int _start 
 
 
 
-
-
-
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:runner:// main functional routine. prepares the files, compiles and executes with arguments
 
@@ -341,11 +344,12 @@ execute(std::string const& _program, int _argc, char const* _argv[], int _start 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  lines as here above mark locatioons where to break up runner() is separate methods.
 
-int runner()
+    int
+runner()
 {
 #if DEBUG  // provide local that is a reference to global, this is a gdb cxx11:abi globals problem work arround
-    decltype(tu::ProgramArguments) &prog_args= tu::ProgramArguments;
-    FAKE_USE(prog_args);
+//    decltype(tu::ProgramArguments) &prog_args= tu::ProgramArguments;
+//    FAKE_USE(prog_args);
 #endif
     auto start = std::chrono::system_clock::now();
 
@@ -354,8 +358,11 @@ int runner()
     std::string source_name="";
     fs::path orginal_source_dir;
 
-    std::string named_target="";
+    std::string named_target="", build_config_name="";
     int status = EXIT_FAILURE;
+
+    // Detects use of -o and -p options and .?., for either option, only ' ' is allowed, others are incorrect
+    char one_of_the_options=' ';
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -368,26 +375,42 @@ int runner()
 
     logref("cpx-start")<< args_stream.str()<< std::endl<< std::flush;
 
+
+
     for ( bool process_more_options=true; process_more_options && tu::ProgramArguments.size()> 1 ;
          /* tu::ProgramArguments changes in body*/) {
-        char const* anyOfOptions[]={tu::ProgramArguments[1].c_str(),"-o","-q", "-v" ,"-f"/*,"-",*/};
+        char const* anyOfOptions[]={tu::ProgramArguments[1].c_str(),"-o","-q", "-v" ,"-f","-","-C", "-p", "-a","-E"};
         int selector=/*number of*/ITEMS_IN(anyOfOptions);
         tu::FindIndex( &selector, anyOfOptions);
+
+        decltype( tu::ProgramArguments.size() ) option_param_count=0;
         switch ( selector) {
+        //_____________________________________________________________________________________________________________
           case 1: // -o <targetname> Save compiled target output to given destination (relative to current directory)
             if ( tu::ProgramArguments.size()< 3) {
-                tu::ThrowBreak(std::runtime_error("After arg1 is -o expecting arg2 to be the target "
-                                        "name and optionally arg3 to be the source name!"),
+                tu::ThrowBreak(std::runtime_error("Expecting -o <target_name> <source_name>, but only got -o"),
                     tu::eBC_handled);
             } // else
+            if ( one_of_the_options!= ' ' ) {
+                if ( one_of_the_options == 'o' ) {
+                    std::cerr << std::endl
+                        << "WARNING: option: -o <target name> detected more then once !"
+                        "Any other -o <target name> then the first - and, so this one - is ignored !" << std::endl;
+                }
+                break; // the case 1
+            }
             if ( tu::ProgramArguments.size()> 4) {
                 std::cerr << std::endl
                     << "WARNING: When -o <target name> ..., then "
-                       "the options after the source will be ignored !" << std::endl;
+                       "the options after the source will be ignored !"
+                       " Best is to put all option in front of -o" << std::endl;
             }
+            // get target name, if you forgot but added the source name, it may go (horribly) wrong
             named_target = std::move( tu::ProgramArguments[2]);
             if ( named_target[0]=='-' ) {
-                ErrorMsg= STREAM2STR( "Target name seem to start with '-' this conflicts with the option syntax!");
+                ErrorMsg= STREAM2STR( "Target shouldn't start with '-'."
+                " Expecting -o <target_name> <source_name>,"
+                " it looks -o was followed by another option (starting with '-')");
                 tu::ThrowBreak( ErrorMsg.c_str(), tu::eBC_handled);
             }
             if ( ! named_target.length() ) {
@@ -395,33 +418,104 @@ int runner()
                            "the target name should be made of at least of one character, but not start with '-' .";
                 tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
             }
-            tu::ProgramArguments.erase( tu::ProgramArguments.begin()+ 1 , tu::ProgramArguments.begin()+ 3 );
+            one_of_the_options= 'o';
+            option_param_count=1;  // for the target name
             break;
-
+        //_____________________________________________________________________________________________________________
           case 2: // -q quiet mode, mimimize logging, except for compiler errors and warnings (also errors)
-            LoggingEnabled=false;
-            tu::ProgramArguments.erase( tu::ProgramArguments.begin()+ 1 );
+            OccasionallyModified::LoggingEnabled=false;
             break;
-
           case 3: // -v :  opposite of -q, when running script as executable, and logging would be off by default
-            LoggingEnabled=true;
-            tu::ProgramArguments.erase( tu::ProgramArguments.begin()+ 1 );
+            OccasionallyModified::LoggingEnabled=true;
             break;
-
           case 4: // -f : Force rebuild
             ForceRebuild=true;
-            tu::ProgramArguments.erase( tu::ProgramArguments.begin()+ 1 );
             break;
+          case 5: // - : source is standard input
+              // this command does (jet) nothing, presuming correct commandline construction with source comming from standard input
+            break;
+        //_____________________________________________________________________________________________________________
+          case 6: // -C <build_configuration_name>
+                // Here: tu::ProgramArguments[1]=="-C"
+          {
+                bool build_cfg_default = false;
+                if ( tu::ProgramArguments.size()< 3 ) {
+                    std::cerr<< "WARNING: build configuration name missing, expected -C <build_configuration_name>, nothing came after -C"<<std::endl;
+                    build_cfg_default= true;
+                }
+                else if ( tu::ProgramArguments[2][0]=='-' ) {
+                    std::cerr << "WARNING: build configuration name shouldn't start with '-'."
+                    " Expecting -C <build_configuration_name> <source_name>,"
+                    " it looks -C was followed by another option (starting with '-')"<<std::endl;
+                    build_cfg_default= true;
+                }
+                if ( build_cfg_default ) {
+                    std::cerr << "WARNING: -C was specified but could not get <build_configuration_name> after -C ."
+                    " So, using the default configuration to build."<< std::endl;
+                    build_config_name= ""; // a empty string is passed for the default configuration
+                    // shift -C
+                }
+                else {
+                    build_config_name = std::move( tu::ProgramArguments[2]);
+                    // shift -C <build_configuration_name>
+                    option_param_count=1; // for the build_configuration_name
+                }
+                // Technical design
+                //   -C <default|debugging|deployed|...>
+                // The build config parameter in is used to call a script functionality with the case word in [ [(] pattern [ | pattern ]  in CPX-preproces_hash_compile.sh
+                //  this is a very general approach to do almost anything.
+                // The intend is to set CPP_FLAGS kind of variables that determine what kind of executable is build,
+                //   default: fast edit compile execute cycle, no size and speed optimizations, with debug info
+                //            also, if no --build-config option is given, this is the selected configuration
+                //   debugging: more to debugging focussed compiling and load executable in debugger, probably a suited debugging gui, aka: kdbg
+                //   deploy: for production use, optimize in one way, depending on needs, for size or speed
+                //   deploy_max_speed | deploy_min_size
+                //   profiled | sanatized | ... other compiler build assistance configurations.
+                //   default | debugging |deploy  fullfill immediate needs, other build configurations may follow, maybe as spinoff from other work.
+                //
+                // The buildconfig should be somewhat restricted because, always keep in mind that this remains intended for research, proof of concepts and tiny 'single purpose' apps.
+                // Complexity should not explode or else consider a more mature industrial level development enviromnment backed by vendors.
+          }// case 6
+            break;
+        //_____________________________________________________________________________________________________________
+          case 7: // -p    print target oath after compilation
+                if ( one_of_the_options== ' ' ) {
+                    one_of_the_options='p';
+                }
+                else {
+                    if ( one_of_the_options == 'p' ) {
+                        std::cerr << std::endl
+                        << "WARNING: option: -p detected more then once !"
+                        "Any other -p then the first - and, so this one - is ignored !"
+                        << std::endl;
+                    }
+                    else {
+                        ErrorMsg= STREAM2STR( "option -p conflicts with option -"<<one_of_the_options
+                        <<" choose one, hey cant be used both at the sane time");
+                        tu::ThrowBreak( ErrorMsg.c_str(), tu::eBC_handled);
+                    }
+                }
+              break;
+        //_____________________________________________________________________________________________________________
+          case 8: // TBD: -a  'preprocessor arguments passed as single argument'  ( --arguments (for preprocessing) )
+                  // check tu::ProgramArguments.size()
+                  // preprocessor_arguments = std::move( tu::ProgramArguments[2]);
+                  // option_param_count= 1;
+              break;
+
+        //_____________________________________________________________________________________________________________
+          case 9: // TBD: -E (ake: line gcc -E) output transformed source i.s.o compiling and running it.
+              break;
 
           default:
-
             // If no (more) option(s) found, the selector must me zero.
-            if ( selector ) {
+            if (EXPECT_false_FROM(selector>0)) {
                 ErrorMsg= "Expecting selector being zero, but got "+std::to_string(selector) +
                             ". Check commandline argument processing";
                 tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_default);
             }
             //else {
+                // HERE: selector == 0
                 // It's OK, there where no (explicit) commandline options left to be processed.
                 // anyOfOptions[0]==tu::ProgramArguments[1].c_str()
                 // LoggingEnabled=  ... see declaration above or get it from environment variable
@@ -442,7 +536,15 @@ int runner()
             tu::ProgramArguments.erase( tu::ProgramArguments.begin()+ 1 );
             process_more_options= false;
         } //switch
+        if (process_more_options) {
+            ASSERT_ALWAYS_DO(STATEREPORT( tu::LeftShiftOut_First_ProgramArgument(/*and*/ option_param_count /* option parameter*/))== 0 );
+        }
     } // for process_more_options
+
+    // be sure to pass as a valid commandline argument.
+    if ( !( build_config_name.size() ) ) {
+        build_config_name= "default";
+    }
 
     // determine origin of *psource, either from stdin or from a named file, if
     // read from stdin but need arguments to read, then use '--' as sourcefile name replacement
@@ -462,12 +564,18 @@ int runner()
         }
         psource = fromfile.get();
         fs::path source_path = source_name;
-        orginal_source_dir = fs::canonical( source_path.parent_path());
+        fs::path souce_path_parent = source_path.parent_path();
+        if ( souce_path_parent.empty() ) {
+            orginal_source_dir = fs::current_path();
+        }
+        else {
+            orginal_source_dir = fs::canonical( souce_path_parent);
+        }
     }
 
     // append orginal source dir to child process executions PATH, create PATH=orginal_source_dir when needed.
     char const* current_path= getenv( ENV_PATH);
-    std::string new_path( orginal_source_dir);
+    std::string new_path(orginal_source_dir);
     if ( !tu::Is_null( current_path) ) {
         new_path+= ':';
         new_path+= current_path;
@@ -506,7 +614,7 @@ int runner()
     struct EndOfSourceFileEvent  { };
 
     char char_from_source = '\0'; // assigned by calling get_char_from_source()
-    uint32_t line = 1,col = 0;             //
+    uint32_t line = 1,col = 0, chars=0;             //
 
     //:preprocess_char_copy://Copy char to dest detect #! (hashbang) #| .... which
     // insert a cpx specific include(s)
@@ -521,12 +629,16 @@ int runner()
             // try to get next char
             psource->get(char_from_source);
             if (!(*psource)) {
+                if (col) {
+                    chars+=col;
+                }
                 tu::ThrowEvent(EndOfSourceFileEvent());
             }
             // update prosition data used for mini preprocessor command detection and
             // check sum calculation
             if (char_from_source == '\n') {
                 ++line;
+                chars+=col;
                 col = 0;
             } //
             else {
@@ -576,7 +688,7 @@ int runner()
             tu::SHA1 content_hash;
             content_hash.processBytes( &command_file_time, sizeof command_file_time);
             content_hash.processBytes( cmd_and_args.data(), cmd_and_args.length());
-            content_hash.processBytes( command_canonical_path);
+            content_hash.processString( command_canonical_path);
 
             if ( !_predicatble ) {
                 // ensure unique include file names by including path and line number into the hash
@@ -607,27 +719,41 @@ int runner()
             work_input<<"#include "<< execute_results_path<< "    /*    #!="<< cmd_and_args<< "    */"<< std::endl;
         }; // metaCommand
 
-        // BEGIN micro preprocessor
+            auto
+        sourceLineMarking=[&]()
+        {
+            return STREAM2STR("\n#line "<< line<<'"'<<source_name <<'"'<< '\n');
+        };
+        // BEGIN micropreprocessor
         // After a '#' on the first column check for a single char command.
         // See case's in switch below for explation of each command.
         // Reuire: Not to change the linecount of the compiler.
-        switch (get_char_from_source()) {
+        switch (get_char_from_source()) /*1*/ {
           case '#':
             if (col > 1) {
                 work_input << '#';
                 break;
             }
             // preprocesssing based on next char
-            switch (get_char_from_source()) { // unhandled EndOfSourceFileEvent, file
-                                              // closed without writing.
+            switch (get_char_from_source()) /*2*/ {
               case '!': // #!   script hash bang
                 if ( line==1 ) /* && col==2 ) */ {
                     work_input << "//    #!";
                 }
                 else {
                     // Meta programming tokens
-                    switch(get_char_from_source()) {
-                      case '!': // plain execution (depricated, puts to much responsibility in called executable)
+                    switch (get_char_from_source()) /*3*/ {
+                      case '?': // querying meta command, every call might produce different results despite equal arguments, always execute
+                        metaCommand(/* _predicatble= */false);
+                        break;
+                      case '=': // pure execution if previously arguments and generated output file differ
+                        metaCommand(/* _predicatble= */true);
+                        break;
+                      default:
+                        work_input<< "#!"<< char_from_source;
+                      break;
+#if 0
+                      case '!': // plain execution (depricated, puts too much responsibility in called executable)
                         {//OLD
                             std::string cmd_and_args;
 
@@ -648,46 +774,81 @@ int runner()
                             }
                         }//OLD
                         break;
-                      case '?': // querying meta command, every call might produce different results despite equal arguments, alayas execute
-                        metaCommand(/* _predicatble= */false);
-                        break;
-                      case '=': // pure execution if previously arguments and generated output file differ
-                        metaCommand(/* _predicatble= */true);
-                        break;
-                      case '&': // reserved for asynchronus querying meta command  ( might be difficult to implement, no prio)
-                      case '.': // wait for completion of asynchronus executing metacommands
+                      case '&': // reserved:for asynchronus querying meta command  ( might be difficult to implement, no prio)
+                      case ',': // reserved: ANY:wait for completion of any asynchronus executing metacommands
+                      case '.': // reserved: ALL:wait for completion of asynchronus executing metacommands
                           ErrorMsg = STREAM2STR( "Metacommand #!"<< char_from_source<< " is not implemented"
                                               << " found at line:"<< line
                                                );
                           tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
                         break;
-                      default:
-                        work_input<< "#!"<< char_from_source;
-                    }
+#endif
+                    }// switch *3*
                 }
                 break;
-#if 0
-                // This is likely to become too complicated to realize and uneconomical
-                // (since it redoing the functionality of #!= and #!?)
-                // Though striving to it uncovers some demanded functionallity, now to be builtin tosics::util.
-              case '=': // recurse cpx pure script
-                break;
-              case '?': // recurse cpx query script
-                break;
-#endif
 
               case '|': // replace by preprogrammed file begin
-                work_input << "/* #|   '-include <cpx-unchanged.hpp>' added to compiler options */";
                 unchanged_includes<< "#include <cpx-unchanged.hpp>\n";
+                work_input<< "#include " <<'"'<< "cpx-file-begin.hpp" << '"' <<"    /* #|   '-include <cpx-unchanged.hpp>' added to compiler options, is include before this */";
+                work_input<< "\nvoid app_debugging_main_entry(){/* set breakpoint here*/}";
+                work_input<< sourceLineMarking();
                 break;
               case '(': // second generation, fewer tags and better encapsulation,
                       // replaces #{ + #[ see cpx-core.cpp and tu::cpx_main()
                       // vector<string> tu::ProgramArguments i.s.o argc and argv
-                work_input << "#include " << '"' << "cpx-all-before-script.hpp" << '"' << " /*    #(    */";
+                work_input << "\n#include " << '"' << "cpx-all-before-script.hpp" << '"' << " /*    #(    */";
+                work_input<< sourceLineMarking();
                 break;
               case ')': // replaces #} + #] see case '(':
-                work_input << "#include " << '"' << "cpx-all-after-script.hpp" << '"' << "    /*    #)    */";
+                work_input << "\n#include " << '"' << "cpx-all-after-script.hpp" << '"' << "    /*    #)    */";
+                work_input<< sourceLineMarking();
                 break;
+
+
+              case '+': // customized cpx include #+name turns into #include "cpx-name"
+                work_input << "\n#include " << '"' << "cpx-";
+                for (;;) {
+                    if (get_char_from_source() == '\n') {
+                        work_input << '"' << "    /*    #+    */\n";
+                        break;
+                    }
+                    // else, construct include filename char by char
+                    work_input.put(char_from_source);
+                }
+                work_input<< sourceLineMarking();
+                break;
+
+              case '^': // -include directily to compilation, bypassing hash phase
+                work_input<< "//#^";
+                unchanged_includes<<"#include ";
+                for(;;) {
+                    get_char_from_source();
+                    work_input.put(char_from_source);
+                    unchanged_includes.put(char_from_source);
+                    if ( char_from_source=='\n' ) {
+                        break;
+                    }
+                }
+                work_input<< sourceLineMarking();
+                break;
+
+              case '@': // explicit micropreprocessor invoked sourceline marking
+                  // Sometimes, there is no other alternative them explicit fix the line numering by \n#line <currentline number +1>
+                  // The this advantage is that every time the source text changes you need to modify these numbers too, that's too
+                  // cubersome to accept. Instead, you can use #@ micropreprocessor command that will do it for you, bbut with the
+                  // advantage that it's result changes accordingly to source changes.
+                  // This ONLY works in the cpx script, in (somehow) included files, other solutions need to be provided.
+                  work_input<< sourceLineMarking();
+                  break;
+
+              default:
+                // anything else is taken 1:1 from the source
+                work_input<< '#'<< char_from_source;
+                break;
+
+
+  //( BEGIN depricated (functioning) micropreprocessor commands
+  //       These still should work but a are no further maintained.
               case '{': // replace by start of main declaration
                 work_input << "#include " << '"' << "cpx-main-definition-signature.hpp" << '"' << " /*    #{    */";
                 break;
@@ -701,39 +862,15 @@ int runner()
                       // catch situations
                 work_input << "#include " << '"' << "cpx-main-outer-catch-block.hpp" << '"' << "    /*    #]    */";
                 break;
-              case '+': // customized cpx include #+name turns into #include "cpx-name"
-                work_input << "#include " << '"' << "cpx-";
-                for (;;) {
-                    if (get_char_from_source() == '\n') {
-                        work_input << '"' << "    /*    #+    */\n";
-                        break;
-                    } // else
-                    work_input.put(char_from_source);
-                }
-                break;
-              case '^': // -include directily to compilation, bypassing hash phase
-                work_input<< "//#^";
-                unchanged_includes<<"#include";
-                for(;;) {
-                    get_char_from_source();
-                    work_input.put(char_from_source);
-                    unchanged_includes.put(char_from_source);
-                    if ( char_from_source=='\n' ) {
-                        break;
-                    }
-                }
-                break;
-
-              default:
-                // anything else is taken 1:1 from the source
-                work_input<< '#'<< char_from_source;
-            } // inner switch c
+  //) END depricated micropreprocessor commands
+            } // switch *2*
             break;
 
           default:
             work_input<< char_from_source;
-        } // outer switch c
-        // END micro preprocessor
+            break;
+        } // switch /*1*/
+        // END micropreprocessor
     }; // preprocess_char_copy
 
     try {
@@ -741,6 +878,11 @@ int runner()
             preprocess_char_copy();
         }
     } catch (EndOfSourceFileEvent&) {
+        logref("cpx-micropreprocessor")
+        << "completed "
+        << line<< " lines, "
+        << chars<< " characters."
+        << std::endl<< std::flush;
     }
 
     unchanged_includes.close();
@@ -751,36 +893,46 @@ int runner()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  start script (to decide) to (re)compile or not
-    std::string target_name;
+    std::string target_name, runtimeValidationHash;
 
     // every string that gives a path with a directory should end on /
     std::string orginal_source_dir_name= orginal_source_dir;
     orginal_source_dir_name+= fs::path::preferred_separator;
 
-    status = preproces_hash_compile(&target_name, work_input_name, orginal_source_dir_name);
+    status = preproces_hash_compile( &target_name, &runtimeValidationHash,
+                                    work_input_name, orginal_source_dir_name, build_config_name);
 
     // report "Needed" time
     auto phc_endtime = std::chrono::system_clock::now();
     std::chrono::duration<double> diff = phc_endtime - start;
     logref("preproces_hash_compile")
-        << tu::YELLOW << "Needed " << tu::HYELLOW
-        << (diff.count() * 1000) << tu::YELLOW
+        << YELLOW << "Needed " << HYELLOW
+        << (diff.count() * 1000) << YELLOW
         << " miliseconds for "
-        << tu::HYELLOW<< work_input_name << tu::NOCOLOR
-        << " to complete." << tu::NOCOLOR << "\n";
+        << HYELLOW<< work_input_name << NOCOLOR
+        << " to complete." << NOCOLOR << "\n";
 
     if ( !valid_phc_status(status) ) {
         ErrorMsg = "Something went wrong during compilation of " + work_input_name + ". Check logfile.";
         tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
     }
-#if 0 // maybe changed due to compiling (a unknown process), checked again
+ // maybe changed due to compiling (a unknown process), checked again
     if (!fs::exists(target_name)) {
-        throwBreak("Failed to retrieve compiled target binary", tu::eBC_assertion_failed);
+        tu::ThrowBreak("Failed to retrieve compiled target binary", tu::eBC_assertion_failed);
     }
-#endif
+    if ( runtimeValidationHash.length()<30 ){
+        tu::ThrowBreak("Failed retrieving runtimeValidationHash, tu::eBC_assertion_failed");
+    }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    if( STATEREPORT(setenv( ENV_CPX_VALIDATION_HASH, runtimeValidationHash.c_str(), /* overwrite= true*/1))) {
+        perror("setenv() failed");
+        ErrorMsg= STREAM2STR("Unable to set environment variable "<< ENV_CPX_VALIDATION_HASH);
+        tu::ThrowBreak(ErrorMsg.c_str());
+    }
+
 //  copy binary or execution
     if (named_target.length()) {
+        assert( one_of_the_options== 'o' ); // output target was specified, so ensure -o was detected
         fs::path named_target_path = orginal_source_dir / named_target;
         fs::copy(target_name, /*to*/ named_target_path, fs::copy_options::overwrite_existing);
         // notice: remaining arguments are ignored
@@ -788,7 +940,13 @@ int runner()
 
         logref("output") << "Coping (executable) " << target_name << " to " << named_target << "\n";
     } //
+    else if ( one_of_the_options=='p' ) {
+        // print target
+        std::cout<< target_name<< std::endl;
+    }
     else {
+        LOCAL_MODIFIED(OccasionallyModified::FlushLogging);
+        OccasionallyModified::FlushLogging = true;
         // replace first argument of the resulted ProgramArguments by the created target_name
         tu::ProgramArguments[0]= target_name;
         status= execute( tu::ProgramArguments);

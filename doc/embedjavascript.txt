@@ -1,0 +1,120 @@
+prequisites
+-----------
+When QT development environment installed
+
+
+Note
+----
+This is an investigation report, figuring out how to do something and describing it to remember it for later use. 
+However, at the time of writing (B0914) it is not proven to work, altough its likely that it will work.
+
+
+Intro
+-----
+Embedding javascript can be very usefull, it allows  to have custom interpreted code or invoke generated interpreted code.
+There are multiple javascript engines available (V8, duktape, Qt V4/V8, ...). We fous on use of Qt V4 (in QJSEngine), because
+we asume that the  QT development environment is installed anyway.
+
+More over it comes down the question how to levarage the presense of qt libraries and their without use of qmake and qtcreator.
+
+   ( The motivation for that is that cpx is meant to be a light weight environment and we strive to
+     minimize all possible dependencies, one does not need to use or install, for that we use the most
+     basic lowest level technology that is available. This applies in many situations, not only this one )
+
+
+     
+     
+pkg-config
+----------
+With qmake, it is simple, just QT += <whatever> following the qt documentation instructions.
+It seems however that pkg-config databases for qt libraries are also present, you only need to discover where they are stored :-)
+
+
+michel@T470S-MTO:/usr/lib64/pkgconfig> 
+MAIN> Shell(1): fn qt
+./Qt5Xml.pc
+./Qt5Core.pc
+....
+./Qt5Network.pc
+./Qt5DBus.pc
+....
+./Qt5Qml.pc
+....
+
+Getting the compile and link parameters for javascript.
+------------------------------------------------------
+QT defines qml. That is its own javascript based declarative language.
+Nowadays it is based on the V4 javascript engine (inspired by V8 but tweaked for qml and less resource hungery).
+This is available via class QJSEngine, which is in the qml library.
+Bing more specific, where qmake uses : QT += qml we discovered that it actually uses QT5Qml.
+
+michel@T470S-MTO:~> 
+MAIN> Shell(1): pkg-config --cflags --libs Qt5Qml gives following output:    (I added '\' because of the long line)
+-DQT_QML_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB \
+-I/usr/include/qt5/QtQml -I/usr/include/qt5 \
+-I/usr/include/qt5/QtNetwork -I/usr/include/qt5 \
+-I/usr/include/qt5/QtCore -I/usr/include/qt5 \
+-lQt5Qml -lQt5Network -lQt5Core
+
+
+
+Conclusion for cpx
+------------------
+With a very low effort, anytime we want to add a specific (QT) functionallity, or any other *.pc based library.
+We can grab the output and put it into the CPX-precmdproces-hash_compile script. More generally provide a 
+feature --pkg-config <library> .... to cpx to provide app specific library linkages.
+
+TODO
+----
+Investigate how custom bindings can be made to the embedded javascript.
+Advanced: is there a way to auto generate such bindings?
+
+Answer from:
+https://qdmana.com/2022/162/202206110634367830.html
+
+<code/>
+// Defining C++ code to be used from javascript
+class JsRunFunc : public QObject
+{
+Q_OBJECT
+public:
+    Q_INVOKABLE JsRunFunc(QObject* parent = nullptr, ...)
+    : ...
+    {
+    ...
+    }
+    ~JsRunFunc(){
+    ...
+    }
+    Q_INVOKABLE int callFunc(int number1, int number2);
+    {
+        qDebug() << __FUNCTION__;
+        return number1 + number2;
+    }
+};
+
+// Telling the javascript engine bind to the C++ object 
+QJSEngine* jsEngine = new QJSEngine(this);
+jsEngine->globalObject().setProperty("jsRunFuncObject",jsEngine->newQObject(new JsRunFunc(this)));
+
+QJSValue value = jsEngine->evaluate("jsRunFuncObject.callFunc(10, 20)");
+qDebug() << "CallFunc Result is " << value.toInt();
+</code>
+
+Altough this looks promissing, we are not there jet. 
+Notice the use of QT macro's and potentionally the need to resolve the code with moc (aka /usr/bin/moc-qt5).
+Altough full use of Qt and qml is attraktive, it is not the objective. 
+We want to embed javascript and call application specific funtionallity from there. 
+
+Conclusion 2
+------------
+For the original intend of embedding javascript t call custom functions, 
+using QJSEngine is too heavy and would need integration of moc-qt5 into cpx.
+Better use duktape  which is far more lightweigt.
+On the other hand, we might like a qt variant of cpx, say qpx that can cope with Qt extensions, run 
+declerative qml and so on, then use QqmlEngine. Of cause you pay for it by slower compilation and
+potentionally complex integration of moc-qt.
+
+
+
+

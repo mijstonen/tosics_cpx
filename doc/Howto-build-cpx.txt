@@ -22,6 +22,15 @@ cpx
   CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=ON
 
 
+CMake commandline arguments
+---------------------------
+If using default 'Unix Makefile', the generator needs to be specified with the -G option
+see man:/cmake-generators(7)
+Using ninja, the cmake commandline for cpx becomes 
+/home/michel/Projects/Kdevelop/build/cpx> /usr/bin/cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Debug -G Ninja /home/michel/Projects/Kdevelop/cpx
+
+  
+  
 ----------------------------------------------------------------------------
 Importand: do NOT manually backup or save files within the build tree and its
 project subdirectories. To reset the build system, it is allowed to enirely delete

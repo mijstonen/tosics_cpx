@@ -21,7 +21,7 @@ STATEREPORT(  Append_splitted( &out, in, " ")  );
 //STATEREPORT(  Append_splitted( &out, "P,Q,RE", ",",true)  );
 
 // mini test, can I get the type name of a lambda
-// INFO(VARVAL(type_name_of(out)));
+INFO(VARVAL(type_name(out)));
 // ---------
 
 INFO(VARVAL(in));

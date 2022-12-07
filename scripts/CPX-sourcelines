@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Derived from CPX-sher, it shows the with ../apps/sourcelines generated decorated colorized preprocessed
+#  source lines. This is used to investigate and understand compiler errors in preprocessed source code.
+
+SCRIPTS_DIR="$(dirname $(realpath -P $0))/"
+. "${SCRIPTS_DIR}CPX-common.sh"
+CPX_WORK_DIR=$(heal_DIR CPX_WORK_DIR)
+
+WORK_DIR="${CPX_WORK_DIR:-/tmp/cpx/}"
+
+cd "$WORK_DIR"
+
+while :
+ls -1rt *.sourcelines
+  lastSourceLines=$(ls -1rt *.sourcelines| tail -1)
+  do less -R "$lastSourceLines"
+done
+

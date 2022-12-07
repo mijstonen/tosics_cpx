@@ -1,8 +1,8 @@
 #include <tosics_util.hpp>
-#include "cpx-config.h"
+#include "inc/cpx-config.h"
 #include "runner2.hpp"
 
-namespace tu = tosics::util;  // prepare for renamiming util to tosics::util
+namespace tu = tosics::util;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:main:// entry function for runner, setup runtime environment and last resort exception handling
@@ -10,7 +10,13 @@ namespace tu = tosics::util;  // prepare for renamiming util to tosics::util
 
 int main(int _argc, char const* _argv[])
 {
-    namespace fs = std::experimental::filesystem;
+        auto
+    atexit([](){
+        std::cout<<std::flush;
+        std::cerr<< std::flush;
+    });
+
+    namespace fs = std::filesystem;
 // temp. solution, filesystem should deal with it
 
     int status = EXIT_FAILURE;
@@ -42,11 +48,14 @@ int main(int _argc, char const* _argv[])
         }
         Work_Dir= fs::path(Work_Dir).c_str();
 
+#if 1   ////////// this a possible cause for double fs::path::preferred_separator IN PATH, ALTHOUG HARMLESS, try effect of switching off this code block //////////
+
         // Ensure that Work_Dir ends with a directory path separator, this asumed in the remaining software.
         if ( Work_Dir.back()!=fs::path::preferred_separator ) {
             Work_Dir+= fs::path::preferred_separator;
         }
 
+#endif
         // Write it back to the environment sanatized value, for use in script(s) being called
         if ( STATEREPORT(setenv( ENV_WORK_DIR, Work_Dir.c_str(), /* overwrite= true*/1)) ) {
             perror("setenv() failed");
@@ -60,7 +69,8 @@ int main(int _argc, char const* _argv[])
         if ( !tu::Is_null(Env_Cpx_StackLevelCount) ) {
             Cpx_StackLevelCount=std::atoi( Env_Cpx_StackLevelCount)+1;
             if ( Cpx_StackLevelCount> MAX_CPX_STACKLEVELCOUNT ) {
-                ErrorMsg= STREAM2STR("Cpx terminated due to execeeding MAX_CPX_STACKLEVELCOUNT");
+                ErrorMsg= STREAM2STR("Cpx terminated due to execeeding MAX_CPX_STACKLEVELCOUNT,"
+                                     " terminated to prevent infinite proces recursion");
                 tu::ThrowBreak(ErrorMsg.c_str());
             }
             ASSERT( Cpx_StackLevelCount>0 );
@@ -88,24 +98,34 @@ int main(int _argc, char const* _argv[])
         }
         //@} open log file for appending
 
+      //
+       //
+        //
+        ///
+        ////
         ///// THE MAIN ACTION IS IN runner() /////
         status = runner();
         //////////////////////////////////////////
+        ////
+        ///
+        //
+       //
+      //
 
     } // try
     // Notice: All cathes cause main() to return EXIT_FAILURE
     catch (std::exception const& _e) {
-        std::cerr << tu::HRED << "ERROR: exception: " << _e.what() << tu::NOCOLOR << std::endl;
+        std::cerr << HRED "ERROR: exception: " << _e.what() << NOCOLOR << std::endl;
     } //
     catch (char const* _msg) {
-        std::cerr << tu::HRED << "ERROR: message: " << _msg << tu::NOCOLOR << std::endl;
+        std::cerr << HYELLOW "ERROR: message: " << _msg << NOCOLOR << std::endl;
     } //
     catch (int _errno) {
-        std::cerr << tu::HRED << "ERROR: status: " << _errno << tu::NOCOLOR << std::endl;
+        std::cerr << HRED "ERROR: status: " << _errno << NOCOLOR << std::endl;
     } //
 #if 1
     catch (...) {
-    std::cerr << "ERROR: catched unknown exception" << std::endl;
+    std::cerr << HMAGENTA "ERROR: catched unknown exception" << std::endl;
     }
 #endif
     if ( PLogStream ) {

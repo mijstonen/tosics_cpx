@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Decorate SourCe LineS
+
+cd /run/user/1000/tosics/workdir_cpx/
+LAST_II=$(ls -1rt *.ii | tail -1)
+awk -f ~/Projects/test/sourcelines5.awk "$LAST_II" 2>&1 | less
