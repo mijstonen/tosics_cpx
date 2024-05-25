@@ -3,5 +3,5 @@
 // use std::hash on std::string
 #|
 #(
-INFO(VARVALHEX(hash<string>{}(string("Michel"))));
+INFO(VARVALHEX(hash<string>{}(string("_michel"))));
 #)

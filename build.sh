@@ -16,19 +16,20 @@
 # See also:  compile-alias
 #
 
-TARGET=$1
+
+prj_dir_name=$(basename $(pwd))
 
 build_in_other_dir()
 {
-  prj_dir_name=$(basename $(pwd))
   cd "../build/$prj_dir_name"
   VERBOSE=1 ninja -v -j 8  $1
   ls -lrth --full-time --color=always
   cd -
 }
 
-BUILDLOG="build-$(timestamp).log"
-build_in_other_dir $TARGET 2>&1 | tee $BUILDLOG
+mkdir -p ../build/$prj_dir_name/logs/
+BUILDLOG="../build/$prj_dir_name/logs/build-$(timestamp).log"
+build_in_other_dir 2>&1 | tee $BUILDLOG
 less -R $BUILDLOG
 ls -lrth build*.log | tail
 

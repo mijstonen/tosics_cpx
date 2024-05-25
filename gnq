@@ -1,0 +1,38 @@
+#!/bin/sh
+# Make a snapshot archive of SeqIntra
+
+PROJECT=$(basename $(dirname $(readlink -e $0))); 
+if [ "$?" -ne 0 ]
+then
+     echo "scriptname: $0  could not extract PROJECT from it" 1>&2
+     exit 1
+fi
+#echo "arg0: $0"
+#echo $PROJECT
+#exit 0
+
+ARCH_NAME="${PROJECT}_vcs$(timestamp)"
+
+cd ~/Projects/Kdevelop/
+mv ${PROJECT}_vcs20[0-9][0-9]-*.txz ~/Archives/snapshots
+
+
+TAR_ARGS="
+-Jcv
+--exclude-backups
+--exclude=*~
+--exclude=\#*
+--exclude=*.gch
+--exclude=*.txz
+--exclude=*.o
+--exclude=*/Debug/*
+--exclude=*/logs/*
+
+-f ${ARCH_NAME}.txz ${PROJECT}/
+"
+# echo $TAR_ARGS
+# exit 0
+tar $TAR_ARGS
+pwd
+ls -lh ${PROJECT}_vcs20[0-9][0-9]-*.txz
+cd -

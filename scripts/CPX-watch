@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# set -x
 # Compile and execute program as soon any of the files specified on the command line change.
 #  -*- sh -*-
 
@@ -6,25 +7,88 @@
 # This version is customized to typical use in the test directory
 # where programs are created from one or a few sources.
 
+# === Changes ====
+# MT20220326  ... before and interactive execution (allows (default)compile only, without automatically running)
+# MT20180401  Check for multiple files being changed, colorized messages to console.
+# MT20180302  Only watch a single executable CPX script and pass its arguments
+PRJ_PARENT_DIR="/home/michel/Projects/Kdevelop/"
+ CPX_SCRIPTS_DIR="${PRJ_PARENT_DIR}cpx/scripts/"
+source "${CPX_SCRIPTS_DIR}CPX-common.sh"
 
-files_to_watch="$*"
 prog=$1
+shift 1
 
-ccache -C
-ccache -M 1.5G
-export CCACHE_NLEVELS=3
-export CCACHE_COMPILERCHECK=none
-export CCACHE_COMPRESS=1
-export CCACHE_NOSTATS=1
-export CCACHE_SLOPPINESS=time_macros
+#
+# allow extra files to be watched, syntax CPX-watch <program> + <relative file path> + ... <program arguments>*
+# eaqch time a '+' following program or file path a new file is added. If no '+' is following, the rest is considered
+# program arguments.
+#
+files=''
+while [ "$1" = '+' ]
+do
+    shift 1
+    files="$files $1"
+    shift 1
+done
+
+doubleYellew()
+{
+    echo -e "${HYELLOW}=======================================${NOCOLOR}"
+}
+
+showErrors()
+{
+ doubleYellew
+ echo -e "${HGREEN}" $(date +%Y-%02V%02u_%02m%02d-%H%M%S) "${NOCOLOR}"
+ (
+    cd $CPX_WORK_DIR
+
+    # there is only one, but we must wildcard it and hence cover all
+    for errorFile in *$prog.transformed.errors
+    do
+        [ -s "$errorFile" ] && head -40 "$errorFile"
+    done
+
+    # suppress also includes from the error output
+    # there is only one, but we must wildcard it and hence cover all
+    for errorFile in *$prog.errors
+    do
+        [ -s "$errorFile" ] &&  grep -qvE '^\!|^\.' "$errorFile" && head -60 "$errorFile"
+    done
+ )
+ doubleYellew
+}
+
+# state set in CPX-precmdproces_hash_compile
+IS_COMPILED=64
+export CPX_VALIDATION_POLICY=disabled
 
 while :
 do
-      cpx $prog
+    echo '-----------------------------------------------------------------------------------------------------------'
+    exe=$(cpx -p ./$prog); cpx_result=$?
+    echo "===== cpx build phase finished ====="
 
-      echo -e "\n\nwatch for changes in $files_to_watch\n\n...."
-      inotifywait -q -e modify -e attrib -e create -e move -e move_self -e moved_to -e moved_from -e delete -e delete_self \
-                  --timefmt '%Y.%02V.%02u %y-%02m-%02d %H:%M:%S' \
-                  --format  '%T  %w %e' $files_to_watch
+    # if exe succesfully build, confirm for execution within
+    # ...given timeout, before watching for changes again
+    #
+    if [ $cpx_result -eq 0 ] || [  $cpx_result -eq $IS_COMPILED ] ; then
+        echo -en "${HBLUE}(-: succesfully build :-)${NOCOLOR}    "
+        if read -N 1 -p " Execute $exe ?  (y/...)" -t 60 key ; then
+            if [ "$key" = "y" ]; then
+                echo ""
+                time "$exe" $*
+            fi
+        fi
+        echo ""
+    else
+        showErrors
+    fi
+
+
+    echo -e "watch for changes in: ${HCYAN}$prog ${CYAN} $files${RESET}\n...."
+    inotifywait -q -e modify -e attrib -e create -e move -e move_self -e moved_to -e moved_from -e delete -e delete_self \
+                --timefmt '%Y.%02V.%02u %y-%02m-%02d %H:%M:%S' \
+                --format  '%T  %w %e' $prog $files
 done
 

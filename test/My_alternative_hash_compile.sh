@@ -4,7 +4,7 @@
 # test alternative CPX-preproces_hash_compile.sh  (not in test.sh)
 
 # files and directories / depended settings
-PRJ_PARENT_DIR="/home/michel/Projects/Kdevelop/"
+PRJ_PARENT_DIR="/home/michel/Projects/Kdevelop"
  CPX_INCLUDES_DIR="${PRJ_PARENT_DIR}cpx/inc/"
  CPX_BIN_DIR="${PRJ_PARENT_DIR}build/cpx/"
  UTILS_BIN_DIR="${PRJ_PARENT_DIR}build/util/"

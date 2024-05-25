@@ -1,0 +1,78 @@
+
+{ ************************* UNUSED ***********************
+// mod 16
+                1               2               3
+0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
+0123456789ABCDEF1GHIJKLMNOPQRSTU2VWXYZabcdefghij3klmnopqrstuvwxy
+                z               z               z
+                                                           
+ 
+ 123456789 123456789 123456789 123456789 123456789 123456789 123
+01234567890ABCDEF1GH0IJKLMNOPQ0RSTU2VWXY0Zabcdefgh0ij3klmnopqrst 
+          v         w         y         u         z
+
+vwxyz
+
+
+// mod 10
+
+0         1         2         3         4         5         6
+ 123456789 123456789 123456789 123456789 123456789 123456789 123
+0123456789 ABCDEFGHI JKLMNOPQR STUVWXYZa bcdefghij klmnopqrs tuv 
+
+wxyz
+
+// unique combinations
+wx  xw  yw  zw
+wy  xy  yx  zx
+wz  xz  yz  zy
+          
+// most distinguashble combs, each char apears 3 times 
+ww
+wx
+xx
+yy
+zy
+zz
+
+bad: need mod 10
+
+
+// mod 8  ( t & 0x7 )
+                
+ 1234567 1234567 1234567 1234567 1234567 1234567 1234567 1234567
+01234567 89ABCDE FGHIJKL MNOPQRS TUVWXYZ abcdefg hijklmn opqrstu 
+        vv      ww      wx      xx      yy      yz      zz
+v 
+
+w 
+x 
+y 
+
+z
+
+wv
+xv
+yv
+zv
+wz
+xz
+yz
+
+    
+        
+        
+    0123456789 123456789 123456789 123456789 123456789 123456789 123    
+a0="01234567w89ABCDExFGHIJKLyMNOPQRSxTUVWXYZwabcdefgxhijklmnyopqrstu"
+            v       v       v       v       z       z       z 
+
+a1="vvvvzzzz"        
+        
+        
+put a0[i]
+j=i>>3    // divide by 8, i=0..63 => result is 0..7
+if ( j ) {
+put a1[j]
+        
+} ************************ UNUSED ***********************
+        

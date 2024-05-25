@@ -1,0 +1,94 @@
+
+
+cpx aliassing
+-------------
+
+#'/ <non whitespace input character sequence> <non whitespace output character sequence>
+
+aka example
+#s /#!php_script/<?php/
+
+#/<?php/<?php
+#/?>    PHP_END
+
+
+
+PHP
+--------------------
+Make PHP directives aware, so it can be used to serve PHP preprocessing.
+How: preparsing prehash on directive lines, injecting commands to PHP
+
+# 123 "path/to/file" d ...
+
+transformed to:
+
+<?InhectDirective(<<<EODL
+# 123 "path/to/file" d ... 
+EODL);?>
+
+The default output to transformed is to reproduce the directive unmodified.
+
+
+manage local defines
+
+ PHP_BEGIN
+	pushDefine(<<<EODefs
+		@{ 
+		UAX 5
+		LONGMACRO A \
+		B \
+		C
+		@}
+		EODefs
+	);
+ PHP_END
+ 
+ C++ code
+ 
+ PHP_BEGIN popDefine(); PHP_END
+ 
+evoloution 1: special C/++ preprocessor macros 
+ PHP_LOCDEF_BEGIN
+		UAX 5
+		LONGMACRO A \
+		B \
+		C
+ PHP_LOCDEF_USE
+ 
+ C++ code, here UAX and LONGMACRO are usable
+ 
+ PHP_LOCDEF_END
+ 
+ C++ code, here UAX and LONGMACRO are #undef-ined
+ unless the where defined before with PHP_LOCDEF_...
+ PHP_LOCDEF statements can be nested.
+ By reading directives from the prehash file, it can manage LOCDEF sets of file scope. 
+	
+evaluation 2: By observing directive lines and symmetry count, the moments of leaving scope do not need to be programmed
+
+
+{  // some scope
+   PHP_LOCDEF
+		UAX 5
+		LONGMACRO A \
+		B \
+		C
+   PHP_LOCDEF_USE
+	
+	C++ code
+	... AUA ...
+	...........
+	LONGMACRO
+	.........
+} // left scope
+
+
+     ...UAX....               error   UAX undefined
+	 LONGMACRO                error   LONGMACRO undefined
+
+
+
+Reminder PHP server with preloaded definitions
+
+
+
