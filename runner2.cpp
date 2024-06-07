@@ -596,6 +596,7 @@ runner()
 //  source conversion with micro preprocessor
     fs::path work_input_path= Work_Dir + work_input_name;
 
+    bool close_main_at_end_of_file=false;
     std::ofstream work_input(work_input_path);
     if (!work_input) {
         tu::ThrowBreak("failed to open work_input_path");
@@ -767,9 +768,22 @@ runner()
                       case '=': // pure execution if previously arguments and generated output file differ
                         metaCommand(/* _predicatble= */true);
                         break;
+
+                      // here add other 3 character uPP tokens to process
+
                       default:
-                          // Turn in to uninterpreted input.
-                        work_input<< "#!"<< char_from_source;
+                        // absorb all characters till end of line, then inject code to start cpx::main()
+                        for(;;get_char_from_source()) {
+                            if ( char_from_source== '\n' ) {
+                                // turn from global file space into cpx::main filespace as if the rest of the file would be in #( #)
+                                close_main_at_end_of_file= true;
+                                work_input << "\n#include \"cpx-all-before-script.hpp\" /* #!   starts main   */";
+                                work_input<< sourceLineMarking();
+                                break;
+                            }
+                            //otherwise, in future we could use to define annotations
+                            // annotaion+= char_from_source;
+                        }
                       break;
                     }// switch *3*
                 }
@@ -871,6 +885,9 @@ runner()
     }
 
     unchanged_includes.close();
+    if ( close_main_at_end_of_file ) {
+        work_input << "\n#include " << '"' << "cpx-all-after-script.hpp" << '"' << "    /* closing main that was started with #!  */";
+    }
     work_input.close();
     if (psource == fromfile.get()) {
         fromfile->close();

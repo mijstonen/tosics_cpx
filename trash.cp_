@@ -199,3 +199,11 @@ class Line : public string {
         return ( outer->*_memfnL )( /* _situ:  expand tuple members with index sequence*/);
     }
 
+if 0
+ #define REPEAT_MAKE(repeatArray,repeatChain) <?${#repeatArray}=explode("|",#repeatChain);?>
+ #define REPEAT_FOREACH(repeatArray,repeatIterator) <?foreach(${#repeatArray} as ${#repeatIterator}){?>
+ #define REPEAT_ITEM(repeatIterator) <?=${#repeatIterator}?>
+ #define REPEAT_ITEM_STRING(repeatIterator) <?='"'.${#repeatIterator}.'"'?>
+ #define REPEAT_END <?}?><?PHP_MARKSRCLINE?>
+ #define REPEAT_RUNTIME_RANGE(repeatArray,postfix) constexpr const char* repeatArray##postfix[]<?=C_initializerListFrom(${#repeatArray})?>;
+#endif

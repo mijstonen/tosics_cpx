@@ -12,6 +12,6 @@ cd "$WORK_DIR"
 while :
 ls -1rt *.sourcelines
   lastSourceLines=$(ls -1rt *.sourcelines| tail -1)
-  do less -R "$lastSourceLines"
+  do less '+>' -R "$lastSourceLines"
 done
 

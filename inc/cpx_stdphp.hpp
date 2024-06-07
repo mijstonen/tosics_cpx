@@ -301,5 +301,16 @@ function subProcessScript( string $_scripIdentifier, string $fileTypeExtension, 
     }
 
  PHP_END
+
+// Macros to allow repetition of code (without exposing PHP details in the source)
+// See example cpx/test/repeat.cpp
+#define REPEAT_MAKE(repeatArray,repeatChain) <?${#repeatArray}=explode("|",#repeatChain);?>
+#define REPEAT_FOREACH(repeatArray,repeatIterator) <?foreach(${#repeatArray} as ${#repeatIterator}){?>
+#define REPEAT_ITEM(repeatIterator) <?=${#repeatIterator}?>
+#define REPEAT_ITEM_STRING(repeatIterator) <?='"'.${#repeatIterator}.'"'?>
+#define REPEAT_END <?}?><?PHP_MARKSRCLINE?>
+#define REPEAT_RUNTIME_RANGE(repeatArray,postfix) constexpr const char* repeatArray##postfix[]<?=C_initializerListFrom(${#repeatArray})?>;
+
+
 //}______________________________________________________ cpx_stdphp.hpp _______________________________________________
 #endif // CPX_STD_PHP_

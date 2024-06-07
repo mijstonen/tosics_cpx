@@ -1,4 +1,4 @@
-
+uPP : The micro preprocessor
 
 cpx aliassing
 -------------
@@ -23,7 +23,7 @@ How: preparsing prehash on directive lines, injecting commands to PHP
 transformed to:
 
 <?InhectDirective(<<<EODL
-# 123 "path/to/file" d ... 
+# 123 "path/to/file" d ...
 EODL);?>
 
 The default output to transformed is to reproduce the directive unmodified.
@@ -33,7 +33,7 @@ manage local defines
 
  PHP_BEGIN
 	pushDefine(<<<EODefs
-		@{ 
+		@{
 		UAX 5
 		LONGMACRO A \
 		B \
@@ -42,28 +42,28 @@ manage local defines
 		EODefs
 	);
  PHP_END
- 
+
  C++ code
- 
+
  PHP_BEGIN popDefine(); PHP_END
- 
-evoloution 1: special C/++ preprocessor macros 
+
+evoloution 1: special C/++ preprocessor macros
  PHP_LOCDEF_BEGIN
 		UAX 5
 		LONGMACRO A \
 		B \
 		C
  PHP_LOCDEF_USE
- 
+
  C++ code, here UAX and LONGMACRO are usable
- 
+
  PHP_LOCDEF_END
- 
+
  C++ code, here UAX and LONGMACRO are #undef-ined
  unless the where defined before with PHP_LOCDEF_...
  PHP_LOCDEF statements can be nested.
- By reading directives from the prehash file, it can manage LOCDEF sets of file scope. 
-	
+ By reading directives from the prehash file, it can manage LOCDEF sets of file scope.
+
 evaluation 2: By observing directive lines and symmetry count, the moments of leaving scope do not need to be programmed
 
 
@@ -74,7 +74,7 @@ evaluation 2: By observing directive lines and symmetry count, the moments of le
 		B \
 		C
    PHP_LOCDEF_USE
-	
+
 	C++ code
 	... AUA ...
 	...........
@@ -89,6 +89,106 @@ evaluation 2: By observing directive lines and symmetry count, the moments of le
 
 
 Reminder PHP server with preloaded definitions
+
+Overview of uPP commands by token (order is left to right, top down on keyboard)
+
+#~     [new idea] ..... something like resource deallocation cutomization .....
+#`     [new idea] ..... Smart library binding allows to specify in the libraries (aka pkgconfig for Qt)
+#!     first line: hash bang for running the script, all other lines, start of main, it puts the rest of the file in main, or till the next uPP token. Every following #! will create a peer parallel forked cpx::main, but then cpx::vector<main_func>[] 1, 2, .... N which each will run in its own forked process.
+
+#!?    querying meta command, every call might produce different results despite equal arguments, unconditionally always execute
+#!=    pure execution, if previously arguments are reused, the prior compiled and hashed executabele can be reused.
+#!&      [reserved] Asynchronous execute child program
+#!&<trigger>  same as #!& but trigger will be submitted when child program is completed. There is no other information passing mechanism for this in uPP
+#!,      [reserved] synchronization ANY:Wait for one of Asynchronous child programs to complete
+#!.      [reserved] AND:Wait for all Asynchronous child programs to complete
+#%
+#$
+#o     OMP directive it is replaced by "#pragma omp"     "#o parallel" ->  "#pragma omp parallel"
+
+#@     forced source line marking
+
+##     nested scope.   The following scopes are counted by uPP
+        (  +1    )   -1     symetric counts forC like language syntax
+        [  +1    ]   -1
+        {  +1    }   -1
+
+        /* +1    */  -1     disbale/enable counts above
+        // +1   '\n' -1
+
+        <? +1    ?>  -1  php scope counts, not effected by comment tokens above
+
+        The effect of the changes made in the nested scope is only as long the scope counts do not go below the
+        current counts.
+        This is archived by running uPP and slave processes in a child process.
+
+        example
+
+            foo()
+            {
+        #%
+         # define LOCAL 2
+
+                use of LOCAL
+            }
+
+        // scope count is decreased
+        cannot use LOCAL here
+
+        Remarks: Some edge cases are not handled or should be implemented later.
+        * Nested scopes can be (recursively) nested again
+        * Nested scopes do know the encapsulated environment, you cannot shadow symbols or variables (without special precautions,like use of #undef).
+        * \ before new line, when in // the status of next line is undefined. Simplest is to ignore it and start with a fresh new line.
+        * using # for comments in php. You can use it, but uPP would not know,consider it an active php code part.
+          it will only cause problems when asymetrically using ({[]}) <? ?> inside such comment.
+          To be save, only use C/C++ style comments inside php code.
+
+#^     Includes a (readonly) file without involving it in the "modified" check ( aka #^<boost/circular_buffer.hpp>  )
+
+#&
+#*
+#(
+#)
+#-
+
+#+      include a named cpx include  aka:  #+ myowninc.h   -> #include "cpx-myowninc.h"
+
+#_ _______
+#
+
+#[      Starts main exception block
+
+#]      Ends main exception block
+
+#{      Starts real main, normally cpx::main is started from an default included main.
+
+#}      Ends real main
+
+#|      [reserved](classic) incorporating standard includes for cpx scripts nowadays it has become optional and it is always included
+
+#:
+#'
+#"
+
+begin--------- [new idea]
+#/       file wide search and replace, introduced where this uPP command starts, it does not act inside uPP commands
+            options can be similar to sed, option w is to replace words only where words are sparated by spaces and
+            (typical C) tokens. Replace substitutions run first and on the fly (before the C++ processor)
+            They ONLY act on the file it self not on included or sourced files.
+
+#/day/DAY/wlig
+
+#\       stops prior substitution
+#\day
+end--------- [new idea]
+
+#/=
+
+#<       [new idea] ....(binary) output stream...... ?
+
+#>       [new idea] ....(binary) input stream...... ?
+
+#?<trigger> [new idea] completion code as response Asynchronous started child program. If this token happens multiple times, all completion code parts will be executed in isolation and (possibly) in parallel each in their own context. It usually means that the child process that produced its results broadcasts these same results to all completers that where triggered. However each of the completers may also have some own context and behave differently.
 
 
 

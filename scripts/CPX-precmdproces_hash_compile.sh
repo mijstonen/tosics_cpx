@@ -178,7 +178,7 @@ amalgamate() # $1 is input ii file, remove most of manual formatting before auto
         next;
     }
     # othwhise
-        { # NF!=0
+    { # NF!=0
        priorEmptyLine = 0;   # resetted
     }
     $1 == "#" { # suppres line directives, but not compiler messaging directives
@@ -242,14 +242,14 @@ print_included_files_without_missing_guards_warning()  # $1 = filename
    ' "$1"
 }
 
-function getHashInputData {
+getHashInputData() {
     cat "$TMP_PP_WORK_PATH"
     ls -lrta --full-time $LS_PATTERNS
 }
 
-function runHashProg {
+runHashProg() {
     # set variable in context of running the hash program
-    CPX_VALIDATION_POLICY=disabled "$HASH_PROG"
+    CPX_VALIDATION_POLICY='strict' "$HASH_PROG"
 }
 
 injectPriorToSourceCode()  # written to C/++ output file, by encapsulating it into a function, it can be done with a single file redirection
@@ -374,6 +374,8 @@ then
         CPX_cleanup
         exit "$TRANSFORM_STATUS"
     fi
+
+    # Here todo: clang++ syntax check
 
     maybe_echo "=== Compiling $CPX_SOURCE_FILE ==="
     maybe_printf "$HBLUE(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$NOCOLOR\n"

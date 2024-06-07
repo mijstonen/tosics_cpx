@@ -122,9 +122,9 @@ void indentPrint(uint32_t indents)  noexcept
 void VerifySorted(const char* _words[], size_t _words_size)
 // In case ASSERT is_sorted fails (look like a bug???), this can be used to check it and find the cause (if any)
 {
-    if ( !_words_size )
+    if ( !_words_size ) {
         return;  // a empty array is considered ok
-
+    }
     const char* prior{_words[0]};
     for( size_t siCnt=1; siCnt<_words_size  ; ++siCnt ) {
         const char* sym = _words[ siCnt];

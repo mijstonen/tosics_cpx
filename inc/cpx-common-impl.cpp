@@ -62,16 +62,26 @@ ApplicationValidator
     ,   failtest
     // Be more strict then normal, enforce correct behavior and warn for legal but unrecommended or corner cases.
     ,   strict
-    // Disable it at runtime, the will be no validation checks.
+    // Disable it at runtime, there will be no validation checks.
     ,   disabled
-    // Will not abort execution when CPX_VALIDATION_POLICY wasn't found in runtime environment, the message bacomes a warning instead.
+    // Will not abort execution when CPX_VALIDATION_POLICY wasn't found in runtime environment, the message becomes a warning instead.
     ,   relaxed
     // Standard behavior, cpx apps can not run without CPX_VALIDATION_HASH environment varaiable matching.
     ,   normal
     }
     ;
+        char const*
+    m_policyNames[6]=
+    {static_cast<char const*>(nullptr) /* <-- set on each call*/
+        ,"failtest"
+        ,"strict"
+        ,"disabled"
+        ,"relaxed"
+        ,"normal"
+    }
+    ;
         validation_policy
-    myValidationPolicy = validation_policy::relaxed
+    m_myValidationPolicy = validation_policy::notfound;
     ;
         char const*
     m_compiletimeValidationHash = nullptr
@@ -82,18 +92,9 @@ ApplicationValidator
         void
     cstr2validationPolicy(char const* _validation_policy)
     {
-            static char const*
-        policyNames[]=
-        {static_cast<char const*>(nullptr) /* <-- set on each call*/
-            ,"failtest"
-            ,"strict"
-            ,"disabled"
-            ,"relaxed"
-            ,"normal"
-        };
-        int policyAsIndex=/*number of*/ITEMS_IN(policyNames);
-        policyNames[0]=_validation_policy;
-        FindIndex( &policyAsIndex , policyNames);
+        int policyAsIndex=/*number of*/ITEMS_IN(m_policyNames);
+        m_policyNames[0]=_validation_policy;
+        FindIndex( &policyAsIndex , m_policyNames);
         if ( !policyAsIndex ) {
             INFO(HRED);
             INFO("Error:",VARVAL(_validation_policy),
@@ -103,7 +104,7 @@ ApplicationValidator
             INFO(NOCOLOR);
             return;
         }
-        myValidationPolicy = static_cast<validation_policy>(policyAsIndex);
+        m_myValidationPolicy = static_cast<validation_policy>(policyAsIndex);
     }
   public:
     ApplicationValidator(char const *_compiletimeValidationHash) noexcept
@@ -115,7 +116,7 @@ ApplicationValidator
         void
     get_optional_runtime_policy()
     {
-        if ( myValidationPolicy== validation_policy::disabled ) {
+        if ( m_myValidationPolicy== validation_policy::disabled ) {
             return;
         }
         char* cpx_validation_policy=getenv(ENV_CPX_VALIDATION_POLICY);
@@ -123,10 +124,17 @@ ApplicationValidator
         if ( cpx_validation_policy== NULL ) {
             // I hope you did not misspell it (see ENV_CPX_VALIDATION_POLICY) because setting it is optional and the
             // hardcoded will be used otherwise. There is a bit of rescue for developers if they recompile with
-            // myValidationPolicy== validation_policy::strict.
-            if ( myValidationPolicy== validation_policy::strict ) {
+            // m_myValidationPolicy== validation_policy::strict.
+            if ( m_myValidationPolicy== validation_policy::strict ) {
                 INFO(HYELLOW);
                 INFO("Warning:",VARVAL(ENV_CPX_VALIDATION_POLICY),"not retrieved from environment.");
+                vector<const char*> valid_policies;
+                for(const char* cstrl:m_policyNames){
+                    if (cstrl) {
+                        valid_policies.push_back(cstrl);
+                    }
+                }
+                INFO("         Posible values",VARVALS(valid_policies));
                 INFO(NOCOLOR);
             }
             return;
@@ -146,7 +154,7 @@ ApplicationValidator
             returnValue = false;
         }
         if ( !m_runtimeValidationHash ) {
-            INFO( ( myValidationPolicy== validation_policy::relaxed ) ?HYELLOW :HRED);
+            INFO( ( m_myValidationPolicy== validation_policy::relaxed ) ?HYELLOW :HRED);
             INFO("Failed at runtime to retrieve enviromment variable:",VARVAL(ENV_CPX_VALIDATION_HASH),',');
             INFO("  it usually is defined when the cpx app is started via cpx or as executable source (starting with #!...cpx)");
             INFO("Resolve or set/export",ENV_CPX_VALIDATION_POLICY "=disabled");
@@ -155,7 +163,7 @@ ApplicationValidator
             returnValue = false;
             INFO(NOCOLOR);
         }
-        switch ( myValidationPolicy ) {
+        switch ( m_myValidationPolicy ) {
             case validation_policy::failtest:
                 INFO(GREEN,"failtest: OK. cpx app was forced to fail the validation.",NOCOLOR);
                 return false;
@@ -177,7 +185,7 @@ ApplicationValidator
         int
     isValidationHashMismatching() const // returns non zero int when mismatching
     {
-        switch ( myValidationPolicy ) {
+        switch ( m_myValidationPolicy ) {
             case validation_policy::failtest:
                 return !0;
             case validation_policy::disabled:
@@ -205,7 +213,7 @@ public:
         void
     handle_validationHash_checking(ostream* pOs_=nullptr)
     {
-        if ( myValidationPolicy == validation_policy::disabled ) {
+        if ( m_myValidationPolicy == validation_policy::disabled ) {
             return;
         }
 
@@ -213,21 +221,33 @@ public:
         INFO_TO(*pOs_);
 
         get_optional_runtime_policy();
-        if ( myValidationPolicy == validation_policy::disabled ) {
+        if ( m_myValidationPolicy == validation_policy::disabled ) {
             return;
         }
         if ( !fields_are_set() ) {
             tu::ThrowBreak("Missing application validation fields.");
         }
+        //INFO(VARVALS(m_policyNames[static_cast<int>(m_myValidationPolicy)]));
         if ( isValidationHashMismatching() ) {
             if ( pOs_ ) {
                 char const* source = CPX_SOURCE_FILE;
+                INFO(HYELLOW);
                 INFO("No maching validation hashes!",VARVALS(source,m_compiletimeValidationHash,m_runtimeValidationHash));
                 INFO("CPX found a matching hash executable in its cache and asumed that it could use it, skipping compiling the source.");
                 INFO("The validation Hashes are there to ensure that only the correct binary that belonged to the source is executed.");
                 INFO("This excutable, does not match, it is from another source and therefor had to stop executing.");
             }
-            tu::ThrowBreak("Executable, has same binary hash, but the validation Hashes (to verify it is the right executable) do not match.");
+            if ( m_myValidationPolicy == validation_policy::relaxed ) {
+                INFO(NOCOLOR);
+                return;
+            }
+            INFO(HRED);
+            INFO("Execution is halted");
+            tu::ThrowBreak("Executable, has same binary hash, but the validation Hashes (to verify it is the correct executable) do not match.");
+        }
+        else {
+            // Show a grean smily character indication that the runtime validation succeeded.
+            std::cout<< HGREEN "[\u263A]" NOCOLOR <<std::endl;
         }
     }
 } //class ApplicationValidator
