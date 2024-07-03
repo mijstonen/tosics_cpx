@@ -31,7 +31,7 @@ mkdir -p ../build/$prj_dir_name/logs/
 BUILDLOG="../build/$prj_dir_name/logs/build-$(timestamp).log"
 build_in_other_dir 2>&1 | tee $BUILDLOG
 less -R $BUILDLOG
-ls -lrth build*.log | tail
+ls -lrth ../build/$prj_dir_name/logs/build*.log | tail -3
 
 
 

@@ -212,7 +212,7 @@ void VerifySorted(const char* _words[], size_t _words_size)
     // count found words and nicely print them colored at the bottom, in most used first order
     bool addWordMap{tu::ProgramArguments.size()>=2 && tu::ProgramArguments[1]=="--wordmap" };
     // addWordMap output unusable for extracting the words for further processing,
-    // therefor a extended option dumps the words only and without colorting, but in sorted order
+    // therefor a extended option dumps the words only and without coloring, but in sorted order
     // note that this is a quick hack for the output, altough not shown, the words are counted
 
     bool sortDumpWords{addWordMap && tu::ProgramArguments.size()>=3 && tu::ProgramArguments[2]=="--sortdump"};
@@ -593,13 +593,13 @@ LB_flush_word:
         std::ranges::move(wordMap, std::back_inserter<std::vector<pair<string,int>>>(wordVec));
         if ( sortDumpWords ) {
             std::ranges::sort(wordVec,
-                    [](const pair<string,int> &l, const pair<string,int> &r)
-                    {
-                        if ( l.first > r.first ) return false;
-                        if ( l.first < r.first ) return true;
-                        // otherwhise l.first == r.first  sort on first
-                        return l.second < r.second;
-                    }
+                [](const pair<string,int> &l, const pair<string,int> &r)
+                {
+                    if ( l.first > r.first ) return false;
+                    if ( l.first < r.first ) return true;
+                    // otherwhise l.first == r.first  sort on first
+                    return l.second < r.second;
+                }
             );
             // Print, suited for further processing (aka with awk)
             for (auto const &symcntPair: wordVec) {
@@ -608,13 +608,13 @@ LB_flush_word:
         }
         else {
             std::ranges::sort(wordVec,
-                    [](const pair<string,int> &l, const pair<string,int> &r)
-                    {
-                        if ( l.first < r.first ) return false;
-                        if ( l.first > r.first ) return true;
-                        // otherwhise l.second == r.second  sort on first
-                        return l.second < r.second;
-                    }
+                [](const pair<string,int> &l, const pair<string,int> &r)
+                {
+                    if ( l.first < r.first ) return false;
+                    if ( l.first > r.first ) return true;
+                    // otherwhise l.second == r.second  sort on first
+                    return l.second < r.second;
+                }
             );
             printf(NOCOLOR "\n\n"
                 "wordMap, potentianlly global defined symbols useable in "
@@ -635,4 +635,14 @@ LB_flush_word:
         }
     }
 #)
+/*
+  https://gcc.gnu.org/onlinedocs/cpp/Preprocessor-Output.html
 
+ Source file name and line number information is conveyed by lines of the form # linenum filename flags
+These are called linemarkers. They are inserted as needed into the output (but never within a string or character constant). They mean that the following line originated in file filename at line linenum. filename will never contain any non-printing characters; they are replaced with octal escape sequences.
+After the file name comes zero or more flags, which are ‘1’, ‘2’, ‘3’, or ‘4’. If there are multiple flags, spaces separate them. Here is what the flags mean:
+‘1’ This indicates the start of a new file.
+‘2’ This indicates returning to a file (after having included another file).
+‘3’ This indicates that the following text comes from a system header file, so certain warnings should be suppressed.
+‘4’ This indicates that the following text should be treated as being wrapped in an implicit extern "C" block.
+*/

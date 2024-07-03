@@ -16,12 +16,17 @@
 #define CPP_MARKSRCLINE #include "marksourceline"
 // include here uses preprocessed source i.s.o. true source for line determination.
 //#define PHP_MARKSRCLINE echo "\n#include \"marksourceline\"\n";
-#define PHP_ATMARKSL(Source,Line) echo "\n# ",Line,"  ",'"',Source,'"',"\n";
+#define PHP_ATMARKSL(File,Line) global $TheGlobs; $TheGlobs->MarkFileLine(File,Line);
 //#define PHP_MARKSRCLINE echo "\n# ",__LINE__+1,"  ",'"',__FILE__,'"',"\n";
 #define PHP_MARKSRCLINE PHP_ATMARKSL(__FILE__,__LINE__+1)
-#define  PHP_BEGIN <?php PHP_MARKSRCLINE
-#define  PHP_END PHP_MARKSRCLINE ?>
+
+// only used one to avoid circulardependency
+#define PHP_INITIAL_BEGIN <?php $Initail_file=__FILE__; $Initial_line=__LINE__+1; echo "\n# ",$Initial_line,"  ",'"',$Initail_file,'"',"\n";
+
+#define PHP_BEGIN <?php PHP_MARKSRCLINE
+#define PHP_END PHP_MARKSRCLINE ?>
 #define PHP_VARDUMP_COMMENT(var) var_dump_comment($##var,#var)
+
 // simple VARVAL variant to be used with primitive debugging output to string
 #define PHP_VARVAL(var) " $".#var."='". $##var ."' "
 #define PHP_TIMESTAMP microtime(true)
@@ -33,7 +38,7 @@
 
 
 //{______________________________________________________ cpx_stdphp.hpp _______________________________________________
- PHP_BEGIN
+ PHP_INITIAL_BEGIN
   // inside namespace Cpx; invoked by cpx  in shell script $CPX_HASH_COMPILE
   //____________________________________________________________________________________________________________________
 #   define PHP_TRACE(_msgStr) trace(__LINE__,__METHOD__,_msgStr,false)
@@ -42,9 +47,17 @@
     // this is the root class for supporting globals,
     // its life time spans the entire PHP preprocessing phase
     {
+        var $actual_file= "";
+        var $actual_line  = 0;
 
         function __construct()
         {
+            global $Initail_file;
+            $this->actual_file= $Initail_file;
+
+            global $Initial_line;
+            $this->actual_line= $Initial_line;
+
             $this->traceHandle= fopen("php://stderr","a") /* STDERR */;
 
             echo $this->PHP_TRACE( "\n// PHP preprocessing started."
@@ -54,6 +67,7 @@
                                  . " php preprocessor arguments: ".getenv("PRE_ARGS")
                                  . " work dir: " . workDir()
                                  );
+
             $php_ini_path = php_ini_loaded_file();
             global $argv;
             $this->PHP_TRACE(PHP_VARVAL(php_ini_path).PHP_EOL."\$argv = ".print_r($argv,true));
@@ -84,6 +98,17 @@
             }
             fwrite( $this->traceHandle, "$_line:$_label: $printedMessage\n");
             return $_message;
+        }
+
+        function MarkFileLine( string $_file, int $_line, bool $_echoNow=true)
+        {
+            // $this->PHP_TRACE("file: $this->actual_file -> $_file   line: $this->actual_line ->  $_line");
+            $this->actual_file=  $_file;
+            $this->actual_line=  $_line;
+
+            if ( $_echoNow ) {
+                echo "\n# ",$_line,"  ",'"',$_file,'"',"\n";
+            }
         }
 
     } // class PhpPrepocessorWrapper
@@ -304,11 +329,11 @@ function subProcessScript( string $_scripIdentifier, string $fileTypeExtension, 
 
 // Macros to allow repetition of code (without exposing PHP details in the source)
 // See example cpx/test/repeat.cpp
-#define REPEAT_MAKE(repeatArray,repeatChain) <?${#repeatArray}=explode("|",#repeatChain);?>
-#define REPEAT_FOREACH(repeatArray,repeatIterator) <?foreach(${#repeatArray} as ${#repeatIterator}){?>
-#define REPEAT_ITEM(repeatIterator) <?=${#repeatIterator}?>
+#define REPEAT_MAKE(repeatArray,repeatChain) <?php ${#repeatArray}=explode("|",#repeatChain);?>
+#define REPEAT_FOREACH(repeatArray,repeatIterator) <?php foreach(${#repeatArray} as ${#repeatIterator}){?>
+#define REPEAT_ITEM(repeatIterator) <?php =${#repeatIterator}?>
 #define REPEAT_ITEM_STRING(repeatIterator) <?='"'.${#repeatIterator}.'"'?>
-#define REPEAT_END <?}?><?PHP_MARKSRCLINE?>
+#define REPEAT_END <?}PHP_MARKSRCLINE?>
 #define REPEAT_RUNTIME_RANGE(repeatArray,postfix) constexpr const char* repeatArray##postfix[]<?=C_initializerListFrom(${#repeatArray})?>;
 
 

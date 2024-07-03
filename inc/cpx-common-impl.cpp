@@ -1,4 +1,4 @@
-#pragma once
+//#pragma once
 //cpx-common-impl.cpp
 #ifndef CPX_COMMON_IMPL_CPP
 #  define CPX_COMMON_IMPL_CPP 1
@@ -175,12 +175,13 @@ ApplicationValidator
                 }
                 [[fallthrough]];
             case validation_policy::normal:
-                [[fallthrough]];
+                break;
             case validation_policy::strict:
-                [[fallthrough]];
-            default: // could be    _notfound
-                return returnValue;
+                break;
+            default: // could be notfound
+                INFO( HYELLOW "WARNING: Unchecked validation policy!" NOCOLOR, VARVALS(static_cast<int>(m_myValidationPolicy)));
         }
+        return returnValue;
     }
         int
     isValidationHashMismatching() const // returns non zero int when mismatching
@@ -216,7 +217,7 @@ public:
         if ( m_myValidationPolicy == validation_policy::disabled ) {
             return;
         }
-
+        // otherwise
         LOCAL_MODIFIED(INFO_STREAM_PTR);
         INFO_TO(*pOs_);
 
@@ -224,9 +225,12 @@ public:
         if ( m_myValidationPolicy == validation_policy::disabled ) {
             return;
         }
+        // otherwise
         if ( !fields_are_set() ) {
             tu::ThrowBreak("Missing application validation fields.");
         }
+
+        // otherwise
         //INFO(VARVALS(m_policyNames[static_cast<int>(m_myValidationPolicy)]));
         if ( isValidationHashMismatching() ) {
             if ( pOs_ ) {
@@ -241,14 +245,20 @@ public:
                 INFO(NOCOLOR);
                 return;
             }
+            // otherwise
             INFO(HRED);
             INFO("Execution is halted");
             tu::ThrowBreak("Executable, has same binary hash, but the validation Hashes (to verify it is the correct executable) do not match.");
         }
+#if !NO_SMILIE
         else {
-            // Show a grean smily character indication that the runtime validation succeeded.
-            std::cout<< HGREEN "[\u263A]" NOCOLOR <<std::endl;
+            if ( m_myValidationPolicy!= validation_policy::strict ) {
+                // Show a lile green smile face character indication that the runtime validation succeeded.
+                std::cout<< HGREEN "😇" NOCOLOR <<std::endl;
+            }
+            // in production, the validation_policy should be strict and the validation happens silently.
         }
+#endif
     }
 } //class ApplicationValidator
 ;

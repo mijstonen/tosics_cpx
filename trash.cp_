@@ -207,3 +207,17 @@ if 0
  #define REPEAT_END <?}?><?PHP_MARKSRCLINE?>
  #define REPEAT_RUNTIME_RANGE(repeatArray,postfix) constexpr const char* repeatArray##postfix[]<?=C_initializerListFrom(${#repeatArray})?>;
 #endif
+
+                    {
+                    std::string included_file(get_line_from_source());
+                    unchanged_includes<< included_file;
+                    work_input<<
+                    }
+                    for(;;) {
+                        get_char_from_source();
+                        unchanged_includes.put(char_from_source);
+                        work_input.put(char_from_source);
+                        if ( char_from_source=='\n' ) {
+                            break;
+                        }
+                    }

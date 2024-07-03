@@ -21,7 +21,7 @@ Less common
 
 New
 ---
-#. source another script into the main source, the path is relative to the path of the parent
+#+ source another script into the main source, the path is relative to the path of the parent
    This will incorporate all functionality that is also present in the main script, including the
    micro proeprocessor.
 
@@ -42,13 +42,16 @@ New
 
    examples
    --------
-#. extracode.cpp                                          // sources  file 'extracode.cpp' from directory of the parent script
-#. reports/as a spread sheet                              // sources in 'as a spread sheet' in subdirectory reports
-#. /usr/shared/cpx/lib/extraPHPutils.hpp                  // sources from absolute path /usr/shared/cpx/lib/extraPHPutils.hpp
-#. ~/personal/settings.cfg                                // sources from $HOME/personal/settings.cfg
+#+extracode.cpp                                          // sources  file 'extracode.cpp' from directory of the parent script
+#+./in_current_dir
+#+../inparent_dir
+#+reports/as a spread sheet                              // sources in 'as a spread sheet' in subdirectory reports
+#+/usr/shared/cpx/lib/extraPHPutils.hpp                  // sources from absolute path /usr/shared/cpx/lib/extraPHPutils.hpp
+#+~/personal/settings.cfg                                // sources from $HOME/personal/settings.cfg
+#+cpx core.cpp
 
  in sourced reports/as a spread sheet
-#. ../math/complex.hpp                                    // effectively (seen from parent) sources math/complex.cpp
+#+ ../math/complex.hpp                                    // effectively (seen from parent) sources math/complex.cpp
 
     Extra arguments : Allow to run cpx scripts in multiple configurations.
     ---------------
@@ -58,10 +61,18 @@ New
     Spaces are allowed by backquoting only. In general passing spaces should be rare.
     Addtional, the values can be sequences inside { and } for example
 
-#.  example/processweek.cpp?days={monday,wednesday,friday}&vebosity=high&this\ is \a \message\ with\ spaces
+#+  example/processweek.cpp?days={monday,wednesday,friday}&vebosity=high&this\ is \a \message\ with\ spaces
 
     A typical use of agurguments would be plat
 
+#*...    <glob> operation
+#~...    <regular expression match> operation
+
+
+#*+   like #+ but the given text is a file glob
+#~+   like #+ but the given text is a file regular expression match
+
+#~+~rguka[pa|PA]+\.cpp     // searching with regular expression match in home directory
 
 
 
@@ -248,5 +259,7 @@ Notice: Nested cpx script executions, should never use the same script source, b
 cpx processes could get in conflict. Possibly it can be avoided when using CPX_STACKLEVELCOUNT in other filenames too.
 
 
-
-
+specialized PHP processing tokens
+<?>    starts a PHP region, but marks the beginning of it in the source file.
+<{>    ends a PHP region, beginning a PHP controlled (code) block and marks the location of it in the source file.
+<}>    enters and leaves a PHP and marks the location of it in the source file.

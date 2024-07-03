@@ -12,6 +12,6 @@ then
     echo "" > ${WORK_DIR}/CPX-runner.log
 fi
 while :
-  do less -R '+?\-\-\-\[.*\]\-\-\-|\ Transforming' $(ls -1t ${WORK_DIR}/CPX-runner*.log)
+  do less -R '+?\-\-\-\[.*\]\-\-\-|\ Transforming|Invalid cpx option:.*\ NOT-FOUND!' $(ls -1t ${WORK_DIR}/CPX-runner*.log)
 done
 

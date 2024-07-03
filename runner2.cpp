@@ -78,13 +78,13 @@ mkname(std::string* name_, char const* _path_in_arg, char _subst = '^')
     bool convert = false;
     for (char const* pc = _path_in_arg; *pc; ++pc) {
         switch (*pc) {
-        case '_':
+          case '_':
             convert = false;
             break;
-        case '.':
+          case '.':
             convert = ( ( pc[1] )!= 'c'); // keep name.c and name.cpp in tact
             break;
-        default:
+          default:
             convert = ispunct(*pc) || isspace(*pc);
         }
         if (convert) {
@@ -273,7 +273,6 @@ preproces_hash_compile(std::string* target_prog_, std::string* runtimeValidation
             ErrorMsg= std::move(smsg.str());
             tu::ThrowBreak(std::runtime_error(ErrorMsg), tu::eBC_fatal);
         }
-
     } // if valid_phc_status
     else {
         CERROR("Compilation failed! ", VARVAL(phc_script), VARVAL(return_value));
@@ -372,21 +371,50 @@ runner()
     for( auto arg: tu::ProgramArguments ) {
         args_stream<< arg<< ' ';
     }
-
     logref("cpx-start")<< args_stream.str()<< std::endl<< std::flush;
-
-
-
     for ( bool process_more_options=true; process_more_options && tu::ProgramArguments.size()> 1 ;
          /* tu::ProgramArguments changes in body*/) {
-        char const* anyOfOptions[]={tu::ProgramArguments[1].c_str(),"-o","-q", "-v" ,"-f","-","-C", "-p", "-a","-E"};
+        char const* anyOfOptions[]={tu::ProgramArguments[1].c_str(),
+            "-o","--output",
+            "-q","--quiet",
+            "-v","--verbose",
+            "-f","--force",
+            "-n","--named-stdin",
+            "-C","--build-config",
+            "-p","--print-target",
+            "-a","--preprocessor-arguments",
+            "-E","--expanded-source"
+            // ,"-t", "--test" // --test {<indentifier>|=cpx::main()}
+            // runs the app, stores output in <identifier>.stdout and <identifier>.stderr and returns
+            // the exit status. The test did succeed when if cpx --test <ident> <app> ; then executes.
+            // --test <...> can be specified multiple times.
+            // ,"-tt","--test-all" // {<!identifier>}" //run all tests, optionally specify which to exclude.
+            // -tt is a place holder, recommend to always use --test-all .
+            // -tx --test-all-then-execute {<!identifier>} // after completing tests succesfully run cpx::main
+        };
         int selector=/*number of*/ITEMS_IN(anyOfOptions);
         tu::FindIndex( &selector, anyOfOptions);
 
+        if ( selector ) { // Found
+            ASSERT(!strcmp(anyOfOptions[selector],anyOfOptions[0])); // Check that search and found fo match
+            logref("process argument")<<selector<<' '<<anyOfOptions[selector]<<"\n";
+        }
+        else {
+            if ( **anyOfOptions== '-' ) {
+                std::string valid_options=[anyOfOptions]{std::ostringstream oss;
+                    for(size_t i=1;i<ITEMS_IN(anyOfOptions);++i) oss<<anyOfOptions[i]<<' '; return oss.str();}();
+                logref("process argument")<< HRED "Invalid cpx option:"<< anyOfOptions[selector]<< " NOT-FOUND!\n" NOCOLOR
+                       "Try one of: "<<valid_options<<'\n';
+                ErrorMsg= STREAM2STR("Invalid cpx option: '"<< anyOfOptions[selector]);
+                tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
+            }
+            // else, possibly filename and/or other argument(s) not starting considered an cpx option
+        }
+
         decltype( tu::ProgramArguments.size() ) option_param_count=0;
-        switch ( selector) {
+        switch (selector) {
         //_____________________________________________________________________________________________________________
-          case 1: // -o <targetname> Save compiled target output to given destination (relative to current directory)
+          case 1: case 2:// -o <targetname> Save compiled target output to given destination (relative to current directory)
             if ( tu::ProgramArguments.size()< 3) {
                 tu::ThrowBreak(std::runtime_error("Expecting -o <target_name> <source_name>, but only got -o"),
                     tu::eBC_handled);
@@ -422,20 +450,22 @@ runner()
             option_param_count=1;  // for the target name
             break;
         //_____________________________________________________________________________________________________________
-          case 2: // -q quiet mode, mimimize logging, except for compiler errors and warnings (also errors)
+          case 3: case 4: // -q quiet mode, mimimize logging, except for compiler errors and warnings (also errors)
             OccasionallyModified::LoggingEnabled=false;
             break;
-          case 3: // -v :  opposite of -q, when running script as executable, and logging would be off by default
+          case 5: case 6: // -v :  opposite of -q, when running script as executable, and logging would be off by default
             OccasionallyModified::LoggingEnabled=true;
             break;
-          case 4: // -f : Force rebuild
+          case 7: case 8: // -f : Force rebuild
             ForceRebuild=true;
             break;
-          case 5: // - : source is standard input
+          case 9: case 10: // - : source is standard input  --named-stdin report.cpp
               // this command does (jet) nothing, presuming correct commandline construction with source comming from standard input
+              // When standard input is named, the compiled result can be cached and parsing works as with a file.
+              tu::ThrowBreak("-n | --named-stdin : This option is not implemented.");
             break;
         //_____________________________________________________________________________________________________________
-          case 6: // -C <build_configuration_name>
+          case 11: case 12: // -C <build_configuration_name>
                 // Here: tu::ProgramArguments[1]=="-C"
           {
                 bool build_cfg_default = false;
@@ -475,10 +505,10 @@ runner()
                 //
                 // The buildconfig should be somewhat restricted because, always keep in mind that this remains intended for research, proof of concepts and tiny 'single purpose' apps.
                 // Complexity should not explode or else consider a more mature industrial level development enviromnment backed by vendors.
-          }// case 6
+          }// case 11 case 12
             break;
         //_____________________________________________________________________________________________________________
-          case 7: // -p    print target oath after compilation
+          case 13: case 14: // -p    instead of executing, print target after compilation. Intendec use: APP=$(cpx -p myApp.cpp);later use it (multiple times): $APP
                 if ( one_of_the_options== ' ' ) {
                     one_of_the_options='p';
                 }
@@ -497,14 +527,23 @@ runner()
                 }
               break;
         //_____________________________________________________________________________________________________________
-          case 8: // TBD: -a  'preprocessor arguments passed as single argument'  ( --arguments (for preprocessing) )
+          case 15: case 16: // TBD: -a  'preprocessor arguments passed as single argument'  ( --arguments (for preprocessing) )
                   // check tu::ProgramArguments.size()
                   // preprocessor_arguments = std::move( tu::ProgramArguments[2]);
                   // option_param_count= 1;
               break;
 
         //_____________________________________________________________________________________________________________
-          case 9: // TBD: -E (ake: line gcc -E) output transformed source i.s.o compiling and running it.
+          case 17: case 18: // TBD: -E (ake: line gcc -E) output transformed source i.s.o compiling and running it.
+              // Spec
+              //   This option is intended to integrate cpx into larger projects with an industry standard build system.
+              //   The task for cpx is then to work as code generator with compile and execution validation.
+              // -E --expanded-source does compile but not execute.
+              // If the compilation fails, no output is presented.
+              // If it succeeds, it dumps the intermediate file, that was the translation unit for the compiler, to stdout
+              //    the option can be combined with --output <output file>
+              // If (also) combined with --test then the app runs as a test
+              //    and only if it succeeds it will provide the expanded source
               break;
 
           default:
@@ -537,7 +576,8 @@ runner()
             process_more_options= false;
         } //switch
         if (process_more_options) {
-            ASSERT_ALWAYS_DO(STATEREPORT( tu::LeftShiftOut_First_ProgramArgument(/*and*/ option_param_count /* option parameter*/))== 0 );
+            auto issueState=STATEREPORT(tu::LeftShiftOut_First_ProgramArgument(option_param_count));
+            ASSERT(!issueState);
         }
     } // for process_more_options
 
@@ -549,20 +589,24 @@ runner()
     // determine origin of *psource, either from stdin or from a named file, if
     // read from stdin but need arguments to read, then use '--' as sourcefile name replacement
     if ( source_name=="" || source_name=="--" ) {
-        psource = &std::cin;
-        pid_t pid= getpid();  // pid_t =  (likely)  int
-        source_name = STREAM2STR("standard_input_"<< pid<< ".cpp");
-        orginal_source_dir = fs::current_path();
+        ErrorMsg=STREAM2STR("Running source code from standard input is not supported");
+        tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
+
+        // Use of unget is needed for modern parsing, but you cannot unget from stdin
+        // psource = &std::cin;
+        // pid_t pid= getpid();  // pid_t =  (likely)  int
+        // source_name = STREAM2STR("standard_input_"<< pid<< ".cpp");
+        // orginal_source_dir = fs::current_path();
     } //
     else {
         //source_name = tu::ProgramArguments[1].c_str();
-
+        ASSERT(!source_name.empty());
         fromfile.reset(new std::ifstream(source_name));
-        if (!(*fromfile)) {
-            ErrorMsg=STREAM2STR("Failed to open source file: '"<< source_name<< "'");
+        if ( !( *fromfile ) ) {
+            ErrorMsg= STREAM2STR("Failed to open source file: '"<<source_name<<"'");
             tu::ThrowBreak( ErrorMsg.c_str(), tu::eBC_handled);
         }
-        psource = fromfile.get();
+        psource= fromfile.get();
         fs::path source_path = source_name;
         fs::path souce_path_parent = source_path.parent_path();
         if ( souce_path_parent.empty() ) {
@@ -615,53 +659,148 @@ runner()
     struct EndOfSourceFileEvent  { };
 
     char char_from_source = '\0'; // assigned by calling get_char_from_source()
-    uint32_t line = 1,col = 0, chars=0;             //
-
+    uint32_t line_nr=1, col_nr=0, chars=0;
     bool preprogrammed_done=false;    // #| is only working once. Any repeated is silently ignored, such that new (auto) include of |# cause explicit mentioning it to be ignored.
+    bool enabled_pragma_omp=true;
 
     //:preprocess_char_copy://Copy char to dest detect #! (hashbang) #| .... which
     // insert a cpx specific include(s)
         auto
-    preprocess_char_copy = [&]() -> void
+    preprocess_char_copy = [&] (auto /*recurse*/preprocess_char_copy) mutable -> void
     {
+            auto
+        throwIfEndOfSourceFile= [&]() -> void
+        {
+            if (!(*psource)) {
+                chars+=col_nr;
+                tu::ThrowEvent(EndOfSourceFileEvent());
+            }
+        };
+
         //:get_char_from_source:// ~ and calc column, line and checksum, throwing
         // EndOfSourceFileEvent ends file reads
             auto
         get_char_from_source = [&]() -> char
         {
-            // try to get next char
-            psource->get(char_from_source);
-            if (!(*psource)) {
-                if (col) {
-                    chars+=col;
-                }
-                tu::ThrowEvent(EndOfSourceFileEvent());
+            psource->get(char_from_source );
+
+            if (EXPECT_false_FROM( char_from_source== '<' )) {
+                    auto
+                instead_inject=[&](const char* _word)
+                {
+                    work_input<< _word;
+                    col_nr+=3;
+                    // asume its ok not the check for a token immediately after having found one.
+                    psource->get(char_from_source );
+                };
+
+                // think char_from_source is char a
+                char  b='\0'; psource->get(b );
+                char  c='\0'; psource->get(c );
+
+                if ( c== '>' ) {
+                    switch (b) {
+                      case '{':  //  <{>
+                        // leave line marked PHP code region
+                        // enter PHP controlled (C/C++) code block
+                        instead_inject(" { PHP_MARKSRCLINE ?> ");
+                        goto skip;
+                      case '}':  //  <}>
+                        // leave PHP controlled (C/C++) code block
+                        // enter and leave line marked PHP code region
+                        instead_inject(" <?php } PHP_MARKSRCLINE ?> ");
+                        goto skip;
+                      case '?':  //  <?>
+                        // enter line marked PHP code region
+                        instead_inject(" <?php PHP_MARKSRCLINE ");
+                        goto skip;
+                      // case !
+                      // case ;
+                    } // switch b
+                } // if c
+                psource->unget(); // undo c
+                psource->unget(); // undo b
+                //{                    const char abc[]={char_from_source,b,c,'\0'};
+                //    instead_inject(abc);                }
+              skip:;
             }
+            //else no special token was started
+
+            throwIfEndOfSourceFile();
             // update position data used for mini preprocessor command detection and
             // check sum calculation
-            if (char_from_source == '\n') {
-                ++line;
-                chars+=col;
-                col = 0;
-            } //
-            else {
-                ++col;
+            if ( char_from_source== '\n' ) {
+                ++line_nr;
+                chars+=col_nr;
+                col_nr = 0;
             }
+            else {
+                ++col_nr;
+            }
+
             return char_from_source;
         }; // get_char_from_source
+
+        enum getline_mode
+        {
+            GLM_no_trimming=0,
+            GLM_left_trimmed=1,
+            GLM_right_trimmed=2,
+            GLM_left_and_right_trimmed=3
+        };
+
+            auto
+        // return line without the newline at the end
+        get_line_from_source=[&]( getline_mode glmMode=GLM_no_trimming) -> std::string
+        {
+            std::string line;
+
+            //#define
+
+            if ( glmMode & GLM_left_trimmed ) {
+                // trim spaces and tabs before
+                while( get_char_from_source() ){
+                    switch (char_from_source) {
+                      case ' ':
+                      case '\t':
+                          continue;
+                      case '\n':
+                          return line;  // probably not desired empty (or only whitespaces) line
+                      default:
+                          line+= char_from_source;
+                          goto done_trim_before;
+                    }
+                }
+                done_trim_before:;
+            }
+
+            while (get_char_from_source()!='\n') {
+                line+= char_from_source;
+            }
+
+            if ( glmMode& GLM_right_trimmed ) {
+                // trim spaces and tabs after, also
+                while ( !line.empty() ) {
+                    switch ( line.back() ) {
+                      case ' ':
+                      case '\t':
+                          line.pop_back();
+                          continue;
+                      default:
+                          // keep all that is not a white space
+                          goto done_trim_after;
+                    }
+                }
+                done_trim_after:;
+            }
+            return line;
+        };
 
             auto
         metaCommand=[&](bool _predicatble )
         {
-            std::string cmd_and_args;
+            std::string cmd_and_args(get_line_from_source());
 
-            for (;;) {
-                if (get_char_from_source() == '\n') {
-                    break;
-                } // else
-
-                cmd_and_args+= char_from_source;
-            }
             std::string command;
             std::istringstream(cmd_and_args)>> command; // Note: Command should not be quoted or contain whitespace(s).
             fs::path command_canonical_path;
@@ -697,7 +836,7 @@ runner()
                 // ensure unique include file names by including path and line number into the hash
                 char const* work_input_path_name= work_input_path.c_str();
                 content_hash.processBytes( work_input_path_name, strlen(work_input_path_name));
-                content_hash.processBytes( &line, sizeof line);
+                content_hash.processBytes( &line_nr, sizeof line_nr);
             }
 
             //{@ TODO: test metaCommand usage again
@@ -708,26 +847,24 @@ runner()
             if ( ForceRebuild || !( _predicatble && fs::exists( execute_results_path) ) ) {
                 std::ofstream execute_results( execute_results_path);
                 if ( !execute_results ) {
-                    ErrorMsg = STREAM2STR("Metacommand (#!=) running '"<< cmd_and_args<< "' at line:"<< (line-1)<<
+                    ErrorMsg = STREAM2STR("Metacommand (#!=) running '"<< cmd_and_args<< "' at line:"<< (line_nr-1)<<
                                           " failed to open execute results file:"<< execute_results_path );
                     tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
                 }
                 status = execute( &execute_results, cmd_and_args); // what to do with stderr of cmd... ?
                 if ( !valid_phc_status(status) ) {
-                    ErrorMsg = STREAM2STR( "Metacommand (#!=) running '"<<cmd_and_args<< "' at line:"<< (line-1)<<
+                    ErrorMsg = STREAM2STR( "Metacommand (#!=) running '"<<cmd_and_args<< "' at line:"<< (line_nr-1)<<
                                            " failed and returned "<<status );
                     tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
                 }
             }
             work_input<<"#include "<< execute_results_path<< "    /*    #!="<< cmd_and_args<< "    */"<< std::endl;
         }; // metaCommand
-
             auto
-        sourceLineMarking=[&]()
+        sourceLineMarking=[&line_nr,&source_name](int32_t _lnr_offset=0)
         {
-            return STREAM2STR("\n#line "<< line<<'"'<<source_name <<'"'<< '\n');
+            return STREAM2STR("\n#line "<< ( static_cast<int32_t>(line_nr)+ _lnr_offset )<< " \""<< source_name<< "\"\n");
         };
-
             auto
         insert_preprogrammed=[&]()
         {
@@ -736,118 +873,244 @@ runner()
             }
             // otherwise
             unchanged_includes<< "#include <cpx-unchanged.hpp>\n";
-            work_input<< "\n#include " <<'"'<< "cpx-file-begin.hpp" << '"' <<"    /* #|   '-include <cpx-unchanged.hpp>' added to compiler options, is include before this */";
-            work_input<< "\nvoid app_debugging_main_entry(){/* set breakpoint here*/}";
-            work_input<< sourceLineMarking();
+            work_input<< "#include \"cpx-file-begin.hpp\"  /* #|   '-include <cpx-unchanged.hpp>' added to compiler options, is include before this */\n";
+            work_input<< "void app_debugging_main_entry(){/* set breakpoint here*/}\n";
             preprogrammed_done=true;
+        };
+            auto
+        pragma_omp=[&]()
+        {
+            // look ahead to enable/disable pragma omp
+            {
+                char plusmin;
+                psource->get(plusmin );
+                throwIfEndOfSourceFile();
+                switch (plusmin) {
+                  case '+':
+                    enabled_pragma_omp= true;
+                    ++col_nr;
+                    work_input.put(' ');
+                    break;
+                  case '-':
+                    enabled_pragma_omp= false;
+                    ++col_nr;
+                    work_input.put(' ');
+                    break;
+                  default:
+                    psource->unget();
+                    if (enabled_pragma_omp) {
+                        work_input<<" #pragma omp ";
+                    }
+                }
+            }
+            if (enabled_pragma_omp) {
+                for(;get_char_from_source()!='\n';) {
+                    switch (char_from_source) {
+                      case '\\':
+                        //handle next line continuation and double backquote
+                        switch ( get_char_from_source() ) {
+                          case '\n': // line continuation
+                            work_input.put('\\');
+                            work_input<<'\n';  // maintain the same number of lines
+                            break;
+                          case '\\': // double backquote
+                            work_input<<"\\\\";
+                            break;
+                          default:  // just a singleback quote
+                            work_input<<'\\'<< char_from_source;
+                        }
+                        break;
+                      default:
+                        work_input<< char_from_source;
+                    } // switch char_from_source
+                } // for
+            }
+            else {
+                // ignore all except newlines from next line continuations
+                while( get_line_from_source().back()=='\\' ){
+                    work_input.put('\n');
+                }
+            }
+            work_input<<'\n';  // maintain the same number of lines
+        };
+
+            auto
+        source_inner=[&]()
+        {
+            fs::path current_working_directory(fs::current_path());
+
+            std::string inner_source_name=get_line_from_source( GLM_left_and_right_trimmed);
+            // SHALLOW recursion check, notice that indirect deep infinite recursions are not prevented this way.
+            // That is more complex to implement. Just, don't be silly ;-)
+            if ( inner_source_name==source_name ) {
+                ErrorMsg= STREAM2STR("Failed to inner source: "<< inner_source_name<<"    cpx prevented infinite recursion!");
+                tu::ThrowBreak( ErrorMsg.c_str(), tu::eBC_handled);
+            }
+
+            if ( 0== inner_source_name.compare(0,2,"~/") ) {
+                // replace ~ with absolute HOME path
+                // FIXME HOME_DIR, see cpx-config.h
+                static_assert(HOME_DIR[strlen(HOME_DIR)-1]=='/');
+                inner_source_name= STREAM2STR( HOME_DIR<< &(inner_source_name.c_str()[2]));
+            }
+
+            fs::path inner_source_path(inner_source_name);
+            fs::path inner_souce_path_directory(inner_source_path.parent_path());
+            fs::path inner_souce_filename=inner_source_path.filename();
+
+            try {
+                // Change to directory of inner source, such that its sources files are relative are:  seen_from_inner
+                tu::ScopedDirectory seen_from_inner(inner_souce_path_directory);
+
+                fs::path inner_current_working_directory(fs::current_path());
+                std::ifstream sourcing_file(inner_souce_filename); // 1st attempt
+
+                if ( !sourcing_file ) {
+                    // Note: Trying the alternative is ONLY for backwards compatablity with prior #+ implementation.
+                    auto cpx_inner_source_name=STREAM2STR(CPX_INCLUDES_DIRS<<"cpx-"<<inner_souce_filename.generic_string());
+                    fs::path cpx_inner_source_path(cpx_inner_source_name);
+                    logref("cpx-WARNING")<<inner_souce_filename<<" in "<<inner_current_working_directory<<" failed to open. "
+                                        "Instead trying cpx default: "<< cpx_inner_source_path;
+                    sourcing_file.open(cpx_inner_source_path);
+                    if (!sourcing_file) {
+                        ErrorMsg= STREAM2STR("Failed to open inner_source "<< inner_source_path<< " and alternative "<< cpx_inner_source_path);
+                        logref("cpx-ERROR")<<HRED<<ErrorMsg<<NOCOLOR;
+                        tu::ThrowBreak( ErrorMsg.c_str(), tu::eBC_handled);
+                    }
+                    //otherwise
+                    inner_source_name=std::move(cpx_inner_source_name);
+                }
+                logref("cpx-inner")
+                    << current_working_directory.generic_string()<<'/'<<source_name<< "  line:"<<line_nr<<" col:"<<col_nr<< ' '
+                    << "Parsing inner source file: "<< inner_source_name;
+
+                LOCAL_MODIFIED(source_name, psource,line_nr, col_nr,   chars, char_from_source,enabled_pragma_omp);
+                            source_name=inner_source_name;
+                                            psource= &sourcing_file;
+                                                    line_nr=1;col_nr=0;chars=0;
+                                                                            char_from_source='\0';
+                                                                                            // enabled_pragma_omp in enclosing file does not change
+
+                work_input<<sourceLineMarking();
+                try {
+                    for (;;) preprocess_char_copy(preprocess_char_copy);
+                }
+                catch (EndOfSourceFileEvent&) {
+                    logref("cpx-inner")<< "Parsing inner source: "<< inner_source_name<<" completed "<< line_nr-(col_nr?0:1) << " lines, "<< chars<< " characters.\n";
+                }
+            }
+            catch (const tu::DirectoryChanger::changeDir_error& e) {
+                ErrorMsg= e.what();
+                tu::ThrowBreak( ErrorMsg.c_str());
+            }
         };
 
         // BEGIN micropreprocessor
         // After a '#' on the first column check for a single char command.
         // See case's in switch below for explation of each command.
         // Reuire: Not to change the linecount of the compiler.
-        switch (get_char_from_source()) /*1*/ {
+            bool
+        do_mark_sourceline=false;
+        ;
+        get_char_from_source();
+        switch ( col_nr )
+        {
+          case 0: // line ended by a newline
+            work_input<< std::endl;
+            return;
+
+          case 1:  // continue after switch statement, any detected uPP command should trigger sourceline marking
+            do_mark_sourceline= true;
+            break;
+
+          default: //for all other columns preprocessing is not triggered.
+            work_input.put( char_from_source);
+            return;
+        }
+        // otherwise only when col_nr==1
+        switch (char_from_source) /*1*/ {
           case '#':
-            if (col > 1) {
-                work_input << '#';
-                break;
-            }
             // preprocesssing based on next char
-            switch (get_char_from_source()) /*2*/ {
+            get_char_from_source();
+            switch (char_from_source) /*2*/ {
               case '!': // #!   script hash bang
-                if ( line==1 ) /* && col==2 ) */ {
+                 /* col==2 */
+                if ( line_nr==1 )  {
+                    work_input << "//    #! "<< get_line_from_source()<<'\n';  // outcommenting what is on the first line (the hash bang to execute cpx)
                     insert_preprogrammed();
-                    work_input << "//    #! ";  // outcommenting what is on the first line (the hash bang to execute cpx)
+                    break;
                 }
-                else {
-                    // Meta programming tokens
-                    switch (get_char_from_source()) /*3*/ {
-                      case '?': // querying meta command, every call might produce different results despite equal arguments, always execute
-                        metaCommand(/* _predicatble= */false);
-                        break;
-                      case '=': // pure execution if previously arguments and generated output file differ
-                        metaCommand(/* _predicatble= */true);
-                        break;
+                // otherwise line_nr!=1
+                // Meta programming tokens
+                get_char_from_source();
+                switch (char_from_source) /*3*/ {
+                  case '?': // querying meta command, every call might produce different results despite equal arguments, always execute
+                    metaCommand(/* _predicatble= */false);
+                    break;
+                  case '=': // pure execution if previously arguments and generated output file differ
+                    metaCommand(/* _predicatble= */true);
+                    break;
 
-                      // here add other 3 character uPP tokens to process
-
-                      default:
-                        // absorb all characters till end of line, then inject code to start cpx::main()
-                        for(;;get_char_from_source()) {
-                            if ( char_from_source== '\n' ) {
-                                // turn from global file space into cpx::main filespace as if the rest of the file would be in #( #)
-                                close_main_at_end_of_file= true;
-                                work_input << "\n#include \"cpx-all-before-script.hpp\" /* #!   starts main   */";
-                                work_input<< sourceLineMarking();
-                                break;
-                            }
-                            //otherwise, in future we could use to define annotations
-                            // annotaion+= char_from_source;
-                        }
-                      break;
-                    }// switch *3*
-                }
-                break;
-
-              case '|': // replace by preprogrammed file begin
-                  insert_preprogrammed();
-                break;
-              case '(': // second generation, fewer tags and better encapsulation,
-                      // replaces #{ + #[ see cpx-core.cpp and tu::cpx_main()
-                      // vector<string> tu::ProgramArguments i.s.o argc and argv
-                work_input << "\n#include " << '"' << "cpx-all-before-script.hpp" << '"' << " /*    #(    */";
-                work_input<< sourceLineMarking();
-                break;
-              case ')': // replaces #} + #] see case '(':
-                work_input << "\n#include " << '"' << "cpx-all-after-script.hpp" << '"' << "    /*    #)    */";
-                work_input<< sourceLineMarking();
-                break;
-
-
-              case '+': // customized cpx include #+name turns into #include "cpx-name"
-                work_input << "\n#include " << '"' << "cpx-";
-                for (;;) {
-                    if (get_char_from_source() == '\n') {
-                        work_input << '"' << "    /*    #+    */\n";
-                        break;
-                    }
-                    // else, construct include filename char by char
+                  default: // found '#!' after line_nr==1 at col_nr==1
+                    close_main_at_end_of_file= true;
+                    work_input << "#include \"cpx-all-before-script.hpp\" /* #!  starts main */";
                     work_input.put(char_from_source);
-                }
-                work_input<< sourceLineMarking();
+                    if ( '\n'!= char_from_source ) {
+                        work_input<< get_line_from_source()<< '\n';
+                    }
+
+                // here add other 3 character uPP tokens to process
+
+                }// switch *3*
                 break;
 
-              case '^': // -include directily to compilation, bypassing hash phase
-                work_input<< "//#^";
+              case '+':
+                source_inner();
+                break;
+
+              case '^': // -include directily to compilation, bypassing hash phase, multiple includes are separated by '^'
+                work_input<< "// #^";
                 unchanged_includes<<"#include ";
-                for(;;) {
-                    get_char_from_source();
-                    work_input.put(char_from_source);
-                    unchanged_includes.put(char_from_source);
-                    if ( char_from_source=='\n' ) {
-                        break;
+                do  {
+                    get_char_from_source(); // when '\n' then col_nr==0 and the loop terminates
+                    if ( char_from_source=='^' ) {
+                        unchanged_includes<< "\n#include ";
                     }
-                }
-                work_input<< sourceLineMarking();
+                    else {
+                        unchanged_includes.put( char_from_source);
+                    }
+                    work_input.put( char_from_source);
+                }   while (col_nr);
                 break;
 
               case '@': // explicit micropreprocessor invoked sourceline marking
-                  // Sometimes, there is no other alternative them explicit fix the line numering by \n#line <currentline number +1>
-                  // The disadvantage is that every time the source text changes you need to modify these numbers too, that's too
-                  // cubersome to accept. Instead, you can use #@ micropreprocessor command that will do it for you, but with the
-                  // advantage that it's result changes accordingly to source changes.
-                  // This ONLY works in the cpx script, in (somehow) included files, other solutions need to be provided.
-                  work_input<< sourceLineMarking();
-                  break;
+                // Sometimes, there is no other alternative them explicit fix the line numering by \n#line <currentline number +1>
+                // The disadvantage is that every time the source text changes you need to modify these numbers too, that's too
+                // cubersome to accept. Instead, you can use #@ micropreprocessor command that will do it for you, but with the
+                // advantage that it's result changes accordingly to source changes.
+                // This ONLY works in the cpx script, in (somehow) included files, other solutions need to be provided.
 
-              default:
-                // anything else is taken 1:1 from the source
-                work_input<< '#'<< char_from_source;
+                // NEW: This won;t be needed anymore, since any executed uPP command will trigger source line maring and
+                // '__' can be used for this instead.
+                // These reason this is still here is that there are scripts that use it.
                 break;
 
+              case '|': // replace by preprogrammed file begin
+                insert_preprogrammed();
+                break;
 
-  //( BEGIN depricated (functioning) micropreprocessor commands
-  //       These still should work but a are no further maintained.
+              case '(': // second generation, fewer tags and better encapsulation,
+                    // replaces #{ + #[ see cpx-core.cpp and tu::cpx_main()
+                    // vector<string> tu::ProgramArguments i.s.o argc and argv
+                work_input << "\n#include " << '"' << "cpx-all-before-script.hpp" << '"' << " /*    #(    */";
+                break;
+
+              case ')': // replaces #} + #] see case '(':
+                work_input << "\n#include " << '"' << "cpx-all-after-script.hpp" << '"' << "    /*    #)    */";
+                break;
+
+                //( BEGIN depricated (functioning) micropreprocessor commands
+                //       These still should work but a are no further maintained.
               case '{': // replace by start of main declaration
                 work_input << "#include " << '"' << "cpx-main-definition-signature.hpp" << '"' << " /*    #{    */";
                 break;
@@ -858,30 +1121,62 @@ runner()
                 work_input << "#include " << '"' << "cpx-main-outer-try.hpp" << '"' << "    /*    #[    */";
                 break;
               case ']': // end most outer try block of the program and handle standard
-                      // catch situations
+                    // catch situations
                 work_input << "#include " << '"' << "cpx-main-outer-catch-block.hpp" << '"' << "    /*    #]    */";
                 break;
-  //) END depricated micropreprocessor commands
+                //) END depricated micropreprocessor commands
+              default:
+                do_mark_sourceline= false;
+                // anything else is taken 1:1 from the source
+                work_input<< '#'<< char_from_source;
+              break;
             } // switch *2*
             break;
 
+          case '|':
+            get_char_from_source();
+            switch (char_from_source) /*2*/ {
+              case '|':
+                pragma_omp();
+                break;
+              default:
+                do_mark_sourceline= false;
+                work_input<< '|'<< char_from_source;
+            } // switch /*2*/
+            break;
+
+          case '_':
+            get_char_from_source();
+            switch (char_from_source) /*2*/ {
+              case '_': // ignore this line (use for comment or high level tool control), except the newline
+                (void)get_line_from_source();
+                ASSERT( !col_nr );
+                work_input.put('\n');
+                break;
+              default:
+                do_mark_sourceline= false;
+                work_input<< '_'<< char_from_source;
+            }
+            break;
+
           default:
-            work_input<< char_from_source;
+            ASSERT('\n'!=char_from_source);  // prior control flow will have avoided this to happen
+            work_input.put(char_from_source);
+            do_mark_sourceline= false;
             break;
         } // switch /*1*/
+        if ( do_mark_sourceline ) {
+            work_input<< sourceLineMarking();
+        }
+
         // END micropreprocessor
     }; // preprocess_char_copy
 
     try {
-        for (;;) {
-            preprocess_char_copy();
-        }
-    } catch (EndOfSourceFileEvent&) {
-        logref("cpx-micropreprocessor")
-        << "completed "
-        << line<< " lines, "
-        << chars<< " characters."
-        << std::endl<< std::flush;
+        for (;;) preprocess_char_copy(preprocess_char_copy);
+    }
+    catch (EndOfSourceFileEvent&) {
+        logref("cpx-micropreprocessor")<< "completed "<< line_nr-(col_nr?0:1)<< " lines, "<< chars<< " characters."<< std::endl<< std::flush;
     }
 
     unchanged_includes.close();

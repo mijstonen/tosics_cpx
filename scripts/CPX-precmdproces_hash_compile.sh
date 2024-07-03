@@ -24,8 +24,8 @@ CPPCOMPILER=g++
 #Notice that there are some small issues with clang++ but I got it working with small workarrounds
 #CPPCOMPILER=clang++
 #WRAPPER="nice -20 ccache"  # use empty value if not used, ccache effectiveness needs to increase before using it
-#WRAPPER="nice -20"  # use empty value if not used
-WRAPPER=' '
+WRAPPER="nice -20"  # use empty value if not used
+#WRAPPER=' '
 # STD_OF_CPP="c++14" # uncomment desired standard selection, c++14 should be default
 # deprecated STD_OF_CPP="c++1z"   # see man gcc , search: -std   near line 817
 # STD_OF_CPP="c++14"
@@ -255,7 +255,7 @@ runHashProg() {
 injectPriorToSourceCode()  # written to C/++ output file, by encapsulating it into a function, it can be done with a single file redirection
 {
     export CPX_VALIDATION_HASH=$(rev "$WORK_INPUT" | runHashProg )
-    echo "<? declare(strict_types=1); namespace Cpx; \$PHP_started=microtime(true); ?> //-*- C++ -*-"
+    echo "<? declare(strict_types=1); namespace Cpx; \$PHP_started=microtime(true); ?>//-*- C++ -*-"
     echo "# 3 \"$THIS_FILE\""
 
     # Here below is only required if runtime validation is needed (aka: a lot of different cpx binaries in the cache over a long time)
@@ -360,12 +360,15 @@ if test "$REBUILD" = "force" ||  test ! -f "$TARGET_PROG"
 then
     # Run php with default cli except for specific configuration on commandline
     maybe_printf  "$HGREEN=== Transforming $CPX_SOURCE_FILE with php ===$NOCOLOR\n"
+
     (
         cd $start_dir
         php --no-php-ini --php-ini "$PHP_INI_PATH" \
             --no-chdir --no-header -d variables_order="E" -d short_open_tag=On \
             -d include_path="$PHP_INCLUDE_PATH" "$WORK_DIR/$TMP_PP_WORK_PATH"
     ) 2> "$TMP_TRANSFORMED_WORK_PATH.errors" 1> "$TMP_TRANSFORMED_WORK_PATH"
+
+
     TRANSFORM_STATUS=$?
     cat $TMP_TRANSFORMED_WORK_PATH.errors # can also contain php warnings or trace messages and should be printed always
     if test "$TRANSFORM_STATUS" -ne 0
