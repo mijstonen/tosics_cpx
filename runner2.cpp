@@ -40,6 +40,9 @@ namespace OccasionallyModified {
     bool FlushLogging=false;
 }
 
+namespace
+{
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:logref:// log activity of compiling and executing to desdicated stream (aka
 // file), distinguisch messages with label
@@ -69,7 +72,7 @@ logref(char const* _label = nullptr)
     return ( *PLogStream );
 }
 
-//////////////////////////////////////////////////      ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:mkname:// substitute characters that make bad file names
     tu::state_t
 mkname(std::string* name_, char const* _path_in_arg, char _subst = '^')
@@ -184,6 +187,28 @@ logged_popen(std::vector<std::string> const& _cmd_args, LAMBDA_T output_dest_, c
 {
     return logged_popen(nullptr, _cmd_args, output_dest_, _label);
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//:extract variable that represents a filesystem object (dir,file,(sym)link, pipe,...) that must exist
+    std::string
+getPathFromEnvironment(const char* _environmentVariable)
+{
+    const char* path_in_envar=getenv(_environmentVariable);
+    if ( tu::Is_null(path_in_envar) ) {
+       ErrorMsg= STREAM2STR("Unknown environment variable:'"<< _environmentVariable<<"'");
+       tu::ThrowBreak(ErrorMsg.c_str());
+    }
+    //otherwise
+    if ( !fs::exists(path_in_envar) ) {
+       ErrorMsg= STREAM2STR("The path:'"<< path_in_envar<<"' does not match a existing path (dir,file,(sym)link, pipe,...)."
+                            "Check environment variable:'"<< _environmentVariable<<"'");
+       tu::ThrowBreak(ErrorMsg.c_str());
+    }
+    //otherwise
+    logref("getPathFromEnvironment")<<"Retrievd environment varariable:'"<<_environmentVariable<<"'  providing path:'"<<path_in_envar<<"'";
+    return path_in_envar;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:preproces_hash_compile:// run script to preprocess then hash and eventually compile using pstream popen mechanism
     int
@@ -195,15 +220,22 @@ preproces_hash_compile(std::string* target_prog_, std::string* runtimeValidation
     if ( tu::Is_null( phc_script) ) {
         phc_script= DEFAULT_HASH_COMPILE;
     }
-    fs::path cpx_script_dir(CPX_SCRIPTS_DIR);
-    // if phc_script is a absolute file path, cpx_script_dir is not prepended
-    fs::path phc_script_path= ( *phc_script== fs::path::preferred_separator )? phc_script: cpx_script_dir / phc_script;
+
+    fs::path phc_script_path;
+    if ( *phc_script== fs::path::preferred_separator ) {
+        // phc_script is a absolute file path, cpx_script_dir is not prepended
+        phc_script_path= phc_script;
+    }
+    else {
+        fs::path cpx_script_dir(getPathFromEnvironment(ENVNAME_CPX_SCRIPTS_DIR));
+        phc_script_path= cpx_script_dir/ phc_script;
+    }
 
     if (!fs::exists(phc_script_path)) {
         ErrorMsg = "preproces_hash_compile(): can not find preproces_hash_compile "
                    "script: "
             + phc_script_path.native();
-        tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
+        tu::ThrowBreak(ErrorMsg.c_str());
     }
     /* clang-format off */
     std::vector<std::string> cmd_args =
@@ -227,7 +259,7 @@ preproces_hash_compile(std::string* target_prog_, std::string* runtimeValidation
             ErrorMsg = phc_script;
             ErrorMsg += " unsufficient lines, must provide <compiling|available> <target_prog> on the "
                         "last line of its output";
-            tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
+            tu::ThrowBreak(ErrorMsg.c_str());
         }
 
         // Get status ( compiling | available ) and target name from the last line
@@ -238,7 +270,7 @@ preproces_hash_compile(std::string* target_prog_, std::string* runtimeValidation
             ErrorMsg = phc_script;
             ErrorMsg += " failed reading <compiling|available> <target_prog> on the "
                         "last line of its output";
-            tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
+            tu::ThrowBreak(ErrorMsg.c_str());
         }
 
         // check consistancy in return_value and status_word reported on the last output line of the script
@@ -308,29 +340,13 @@ execute(std::ostream* pOs_, std::vector<std::string> const& _program_and_args_ve
     return return_value;
 }
     int
-execute(std::string const& _program_and_args_str)
-{
-    return execute( &(std::cout), _program_and_args_str);
-}
-    int
 execute(std::vector<std::string> const& _program_and_args_vec)
 {
     return execute( &(std::cout), _program_and_args_vec);
 }
 
-// depricated
-   int
-execute(std::string const& _program, int _argc, char const* _argv[], int _start = 0)
-{
-    std::vector<std::string> program_and_args_vec = { _program };
-    for (int i = _start; i < _argc; ++i) {
-        program_and_args_vec.emplace(program_and_args_vec.end(), _argv[i]);
-    }
-    return execute( program_and_args_vec);
-}
 
-
-
+} // namespace
 
 
 
@@ -406,7 +422,7 @@ runner()
                 logref("process argument")<< HRED "Invalid cpx option:"<< anyOfOptions[selector]<< " NOT-FOUND!\n" NOCOLOR
                        "Try one of: "<<valid_options<<'\n';
                 ErrorMsg= STREAM2STR("Invalid cpx option: '"<< anyOfOptions[selector]);
-                tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
+                tu::ThrowBreak(ErrorMsg.c_str());
             }
             // else, possibly filename and/or other argument(s) not starting considered an cpx option
         }
@@ -416,8 +432,8 @@ runner()
         //_____________________________________________________________________________________________________________
           case 1: case 2:// -o <targetname> Save compiled target output to given destination (relative to current directory)
             if ( tu::ProgramArguments.size()< 3) {
-                tu::ThrowBreak(std::runtime_error("Expecting -o <target_name> <source_name>, but only got -o"),
-                    tu::eBC_handled);
+                tu::ThrowBreak(std::runtime_error("Expecting -o <target_name> <source_name>, but only got -o")
+                    );
             } // else
             if ( one_of_the_options!= ' ' ) {
                 if ( one_of_the_options == 'o' ) {
@@ -439,12 +455,12 @@ runner()
                 ErrorMsg= STREAM2STR( "Target shouldn't start with '-'."
                 " Expecting -o <target_name> <source_name>,"
                 " it looks -o was followed by another option (starting with '-')");
-                tu::ThrowBreak( ErrorMsg.c_str(), tu::eBC_handled);
+                tu::ThrowBreak( ErrorMsg.c_str());
             }
             if ( ! named_target.length() ) {
                 ErrorMsg = "with option -o: Target name length is 0, "
                            "the target name should be made of at least of one character, but not start with '-' .";
-                tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
+                tu::ThrowBreak(ErrorMsg.c_str());
             }
             one_of_the_options= 'o';
             option_param_count=1;  // for the target name
@@ -522,7 +538,7 @@ runner()
                     else {
                         ErrorMsg= STREAM2STR( "option -p conflicts with option -"<<one_of_the_options
                         <<" choose one, hey cant be used both at the sane time");
-                        tu::ThrowBreak( ErrorMsg.c_str(), tu::eBC_handled);
+                        tu::ThrowBreak( ErrorMsg.c_str());
                     }
                 }
               break;
@@ -565,18 +581,19 @@ runner()
                 if ( source_name[0]== '-' && source_name!= "--"  ) {
                     ErrorMsg= STREAM2STR("Invalid source name: '"<< source_name<<
                                         "' , starting with:'-'  conflicts with the option syntax!");
-                    tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
+                    tu::ThrowBreak(ErrorMsg.c_str());
                 }
             }
             else {
                 ErrorMsg = "The source name length is 0, but it has to be made of one or more characters";
-                tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
+                tu::ThrowBreak(ErrorMsg.c_str());
             }
             tu::ProgramArguments.erase( tu::ProgramArguments.begin()+ 1 );
             process_more_options= false;
         } //switch
         if (process_more_options) {
             auto issueState=STATEREPORT(tu::LeftShiftOut_First_ProgramArgument(option_param_count));
+            FAKE_USE(issueState);
             ASSERT(!issueState);
         }
     } // for process_more_options
@@ -590,7 +607,7 @@ runner()
     // read from stdin but need arguments to read, then use '--' as sourcefile name replacement
     if ( source_name=="" || source_name=="--" ) {
         ErrorMsg=STREAM2STR("Running source code from standard input is not supported");
-        tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
+        tu::ThrowBreak(ErrorMsg.c_str());
 
         // Use of unget is needed for modern parsing, but you cannot unget from stdin
         // psource = &std::cin;
@@ -604,7 +621,7 @@ runner()
         fromfile.reset(new std::ifstream(source_name));
         if ( !( *fromfile ) ) {
             ErrorMsg= STREAM2STR("Failed to open source file: '"<<source_name<<"'");
-            tu::ThrowBreak( ErrorMsg.c_str(), tu::eBC_handled);
+            tu::ThrowBreak( ErrorMsg.c_str());
         }
         psource= fromfile.get();
         fs::path source_path = source_name;
@@ -819,7 +836,8 @@ runner()
                 ErrorMsg= STREAM2STR("Command: "<<command
                                    <<" unrecognized! Could not be found in PATH with following directories: "
                                    <<directories);
-                tu::ThrowBreak( ErrorMsg.c_str(), tu::eBC_handled);
+                tu::ThrowBreak( ErrorMsg.c_str());
+                break;
 
               default: // All other are unexpected
                 ErrorMsg= STREAM2STR("tu::FileInPATH( ,"<<command<<", "<<new_path<<") failed");
@@ -849,13 +867,13 @@ runner()
                 if ( !execute_results ) {
                     ErrorMsg = STREAM2STR("Metacommand (#!=) running '"<< cmd_and_args<< "' at line:"<< (line_nr-1)<<
                                           " failed to open execute results file:"<< execute_results_path );
-                    tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
+                    tu::ThrowBreak(ErrorMsg.c_str());
                 }
                 status = execute( &execute_results, cmd_and_args); // what to do with stderr of cmd... ?
                 if ( !valid_phc_status(status) ) {
                     ErrorMsg = STREAM2STR( "Metacommand (#!=) running '"<<cmd_and_args<< "' at line:"<< (line_nr-1)<<
                                            " failed and returned "<<status );
-                    tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
+                    tu::ThrowBreak(ErrorMsg.c_str());
                 }
             }
             work_input<<"#include "<< execute_results_path<< "    /*    #!="<< cmd_and_args<< "    */"<< std::endl;
@@ -944,15 +962,9 @@ runner()
             // That is more complex to implement. Just, don't be silly ;-)
             if ( inner_source_name==source_name ) {
                 ErrorMsg= STREAM2STR("Failed to inner source: "<< inner_source_name<<"    cpx prevented infinite recursion!");
-                tu::ThrowBreak( ErrorMsg.c_str(), tu::eBC_handled);
+                tu::ThrowBreak( ErrorMsg.c_str());
             }
 
-            if ( 0== inner_source_name.compare(0,2,"~/") ) {
-                // replace ~ with absolute HOME path
-                // FIXME HOME_DIR, see cpx-config.h
-                static_assert(HOME_DIR[strlen(HOME_DIR)-1]=='/');
-                inner_source_name= STREAM2STR( HOME_DIR<< &(inner_source_name.c_str()[2]));
-            }
 
             fs::path inner_source_path(inner_source_name);
             fs::path inner_souce_path_directory(inner_source_path.parent_path());
@@ -967,7 +979,8 @@ runner()
 
                 if ( !sourcing_file ) {
                     // Note: Trying the alternative is ONLY for backwards compatablity with prior #+ implementation.
-                    auto cpx_inner_source_name=STREAM2STR(CPX_INCLUDES_DIRS<<"cpx-"<<inner_souce_filename.generic_string());
+                    std::string cpx_inner_source_name=
+                        getPathFromEnvironment(ENVNAME_CPX_INCLUDES_DIR)+"/cpx-"+inner_souce_filename.generic_string();
                     fs::path cpx_inner_source_path(cpx_inner_source_name);
                     logref("cpx-WARNING")<<inner_souce_filename<<" in "<<inner_current_working_directory<<" failed to open. "
                                         "Instead trying cpx default: "<< cpx_inner_source_path;
@@ -975,7 +988,7 @@ runner()
                     if (!sourcing_file) {
                         ErrorMsg= STREAM2STR("Failed to open inner_source "<< inner_source_path<< " and alternative "<< cpx_inner_source_path);
                         logref("cpx-ERROR")<<HRED<<ErrorMsg<<NOCOLOR;
-                        tu::ThrowBreak( ErrorMsg.c_str(), tu::eBC_handled);
+                        tu::ThrowBreak( ErrorMsg.c_str());
                     }
                     //otherwise
                     inner_source_name=std::move(cpx_inner_source_name);
@@ -1203,15 +1216,15 @@ runner()
     auto phc_endtime = std::chrono::system_clock::now();
     std::chrono::duration<double> diff = phc_endtime - start;
     logref("preproces_hash_compile")
-        << YELLOW << "Needed " << HYELLOW
-        << (diff.count() * 1000) << YELLOW
+        << HGREEN << "Needed " << HYELLOW
+        << (diff.count() * 1000) << HGREEN
         << " miliseconds for "
         << HYELLOW<< work_input_name << NOCOLOR
         << " to complete." << NOCOLOR << "\n";
 
     if ( !valid_phc_status(status) ) {
         ErrorMsg = "Something went wrong during compilation of " + work_input_name + ". Check logfile.";
-        tu::ThrowBreak(ErrorMsg.c_str(), tu::eBC_handled);
+        tu::ThrowBreak(ErrorMsg.c_str());
     }
  // maybe changed due to compiling (a unknown process), checked again
     if (!fs::exists(target_name)) {

@@ -1,0 +1,30 @@
+  # -*- bash -*-
+# cpx environment initialization
+# run this script when opening a new (bash) shell.
+
+# set directory for cpx files (for development)
+export CPX_WORK_DIR="$HOME/tmp/cpx" # See also script: CPX-reamdisk
+# tools (aka php) need to know where are files to be included
+export  PRJ_PARENT_DIR="$HOME/Projects/Kdevelop"
+export  CPX_SHARED_DIR="$PRJ_PARENT_DIR/cpx"
+export  CPX_INCLUDES_DIR="$CPX_SHARED_DIR/inc"
+export  CPX_SCRIPTS_DIR="$CPX_SHARED_DIR/scripts"
+export CPX_HASH_COMPILE="CPX-precmdproces_hash_compile.sh"
+# when cpx is used in production and systemwide (aka for C++ scripting)
+# export CPX_WORK_DIR="/var/tmp/cpx/"
+# default builtin fallback systemwide (mentioned here for documentation reasons)
+# export CPX_WORK_DIR="/tmp/cpx/"
+
+if true
+then
+    source $PRJ_PARENT_DIR/cpx/scripts/CPX-ramdisk
+else
+   :
+fi
+export CPX_VALIDATION_POLICY='normal'
+
+# Show green (is good) colored feedback-+
+echo "---------------------------"
+echo "CPX environment initialized"
+set | GREP_COLORS='mt=01;36' grep -E '^CPX_[^=]*'
+echo "---------------------------"

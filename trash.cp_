@@ -221,3 +221,48 @@ if 0
                             break;
                         }
                     }
+
+auto cpx_inner_source_name=STREAM2STR(HOME_Dir<<'/'<<CPX_RELATIVE_INCLUDES_DIRS<<"/cpx-"<<inner_souce_filename.generic_string());
+
+    char const* env_HOME_dir= getenv( ENV_HOME_DIR);
+        if ( /*unlikely*/ tu::Is_null(env_HOME_dir) ) {
+           ErrorMsg= STREAM2STR("Could not extract home directory from enviroment variable:"<<ENV_HOME_DIR);
+           tu::ThrowBreak(ErrorMsg.c_str(),tu::eBC_handled);
+        }
+        //otherwise
+        HOME_Dir=env_HOME_dir;
+
+        if ( /*unlikely*/ !fs::exists(HOME_Dir) ) {
+           ErrorMsg= STREAM2STR("HOME directory:'"<< HOME_Dir<< "' does not exits.");
+           tu::ThrowBreak(ErrorMsg.c_str(),tu::eBC_handled);
+        }
+        //otherwise
+
+
+if ( 0== inner_source_name.compare(0,2,"~/") ) {
+    // replace ~ with absolute HOME path
+    inner_source_name.replace(0,2, HOME_Dir+"/");
+}
+
+// depricated
+   int
+execute(std::string const& _program, int _argc, char const* _argv[], int _start = 0)
+{
+    std::vector<std::string> program_and_args_vec = { _program };
+    for (int i = _start; i < _argc; ++i) {
+        program_and_args_vec.emplace(program_and_args_vec.end(), _argv[i]);
+    }
+    return execute( program_and_args_vec);
+}
+
+    std::string
+CpxIncludesDir
+;
+    std::string
+CpxScriptsDir
+;
+// TODO: demangeled backtrace
+//HINTS
+//https://linux.die.net/man/3/backtrace_symbols_fd
+//http://www.boost.org/doc/libs/master/libs/core/doc/html/core/demangle.html#core.demangle.header_boost_core_demangle_hpp
+//http://www.boost.org/doc/libs/1_65_0/doc/html/stacktrace.html

@@ -5,13 +5,12 @@
 
 THIS_FILE=$(basename $0)
 
-#PRJ PARENT DIR and CPX INCLUDES DIR set in $HOME/.tosics_custom
+# PRJ_PARENT_DIR and CPX_INCLUDES_DIR CPX_SHARED_DIR CPX_SCRIPTS_DIR set in $HOME/.tosics_custom
   CPX_BIN_DIR="$PRJ_PARENT_DIR/build/cpx"
   CPXAPPS_BIN_DIR="$PRJ_PARENT_DIR/build_cpx_apps"
   UTILS_BIN_DIR="$PRJ_PARENT_DIR/build/util"
   UTILS_INCLUDES_DIR="$PRJ_PARENT_DIR/util"
-  CPX_SCRIPTS_DIR="$PRJ_PARENT_DIR/cpx/scripts"
-   source "$CPX_SCRIPTS_DIR/CPX-common.sh"
+  source "$CPX_SCRIPTS_DIR/CPX-common.sh"
   PHP_INI_PATH="$PRJ_PARENT_DIR/cpx/etc/cpx_php.ini"
   BEATIFY_CONFIG_PATH="$PRJ_PARENT_DIR/cpx/etc/clang-format"
 
@@ -31,7 +30,7 @@ WRAPPER="nice -20"  # use empty value if not used
 # STD_OF_CPP="c++14"
 # STD_OF_CPP="c++17"
 # STD_OF_CPP="gnu++17"  # experimental c++17
-STD_OF_CPP="gnu++23"  # experimental c++23
+STD_OF_CPP="gnu++26"  # experimental c++23
 
 HASH_PROG="$PRJ_PARENT_DIR/build_cpx_apps/hasher"
 # use same symlink as on commandline, sourcelines link can be replaced by a test versions instead of the apps version
@@ -64,9 +63,10 @@ TRY_OPTIONS=""
 #TRY_OPTIONS="-fpermissive"
 
 # set 'default' values
-PRE_PPSRC_OPTIONS="-H -nostdinc -march=native -O0 -std=$STD_OF_CPP"  # -P (no include directives)
-PRE_SRC_OPTIONS="-march=native -save-temps -ggdb -H -O0 -DDEBUG -std=$STD_OF_CPP $TRY_OPTIONS -ftemplate-depth=900 -fconcepts -fopenmp -Wall -Wextra -fmax-errors=50 -fdiagnostics-color=always"
-LINK_LIBRARIES_OPTIONS="-lutil -lstdc++fs -lpthread -ldl -latomic"
+OPTIMIZE_OPTIONS="-O0"
+PRE_PPSRC_OPTIONS="-H -nostdinc -march=native $OPTIMIZE_OPTIONS -std=$STD_OF_CPP"  # -P (no include directives)
+PRE_SRC_OPTIONS="-march=native -save-temps -ggdb -H $OPTIMIZE_OPTIONS -DDEBUG -std=$STD_OF_CPP $TRY_OPTIONS -ftemplate-depth=900 -fconcepts -fopenmp -fcoroutines -Wall -Wextra -fmax-errors=50 -fdiagnostics-color=always"
+LINK_LIBRARIES_OPTIONS="-lutil -lstdc++fs -lpthread -ldl -latomic -lstdc++exp"
 PHP_INCLUDE_PATH="$SOURCE_DIR:$CPX_INCLUDES_DIR:/usr/share/php8:/usr/share/php/PEAR"
 
 # selecting configuration
@@ -77,9 +77,9 @@ case $CPX_BUILD_CONFIG in
  ;;
  release)
     # note: tbd: release version link of util library, turning off DEBUG might fail, util:CMakeLists.txt is only made for debugging
-    PRE_PPSRC_OPTIONS="-nostdinc -march=native -H -s -Ofast -DDEBUG -std=$STD_OF_CPP"  # -P (no include directives)
-    PRE_SRC_OPTIONS="-march=native -save-temps -H -s -Ofast  -DDEBUG -std=$STD_OF_CPP -fconcepts -fopenmp -Wall -Wextra -fmax-errors=50 -fdiagnostics-color=always"
-    LINK_LIBRARIES_OPTIONS="-lutil -lstdc++fs -lpthread -ldl -latomic"
+    PRE_PPSRC_OPTIONS="-nostdinc -march=native -H -s -Ofast -DNDEBUG -std=$STD_OF_CPP"  # -P (no include directives)
+    PRE_SRC_OPTIONS="-march=native -save-temps -H -s -Ofast  -DNDEBUG -std=$STD_OF_CPP -fconcepts -fcoroutines -fopenmp -Wall -Wextra -fmax-errors=50 -fdiagnostics-color=always"
+    LINK_LIBRARIES_OPTIONS="-lutil -lstdc++fs -lpthread -ldl -latomic -lstdc++exp"
     SOURCELINES_PROG="$PRJ_PARENT_DIR/build_cpx_apps/sourcelines --wordmap"
  ;;
  *)
@@ -94,7 +94,6 @@ PREPROC_INCLUDE="stdinc.hpp"
  PREPROC_INCLUDE_PATH="$PREPROC_INCLUDE_DIR/$PREPROC_INCLUDE"
   # create unique source specific hash by which it detects existance of prior created executable for that source
   LS_PATTERNS="$0 $SOURCE_DIR $UTILS_BIN_DIR $CPX_BIN_DIR $CPXAPPS_BIN_DIR $UTILS_INCLUDES_DIR $CPX_INCLUDES_DIR"
-LINK_LIBRARIES_OPTIONS="-lutil -lstdc++fs -lpthread -ldl -latomic"
 
 #cpx specifics
 LOG_FILE="CPX-runner.log"
@@ -201,20 +200,20 @@ beautify_ii() # $1 is fiename  Beatify raw preprocessed C++ code
 {
     ( # Do not delay cpx execution, this part runs in parallel while cpx continues to executing the cpx C++ script
       # Note that time benefits depend on (current) available (processor) resources.
-        sleep 0.5         # give the parent proces time to continue and complete before starting.
         cd $WORK_DIR
         local ii="${1%.*}.ii"
-        local output="$ii.beautified"
+        local output="$ii.beautified.gz"
         ii="$(basename $TARGET_PROG)-$ii"  # Compiler seems to prefix intermediate names with the target name.
         # maybe_printf "beautified $HCYAN $ii $NOCOLOR \n to $HCYAN $output $NOCOLOR to check raw preprocessed C++ code\n"
         # ensure access to the clang format configuration file, create the symlink if it was is not there
         if  [ ! -L .clang-format ]; then
             ln -sf "$BEATIFY_CONFIG_PATH" .clang-format
         fi
-        echo "// -*- C++ -*- " > "$output"  # triggers syntax coloring for several editors and viewers
-        # astyle --quiet --style=stroustrup -c < "$ii" >> "$output"
-        amalgamate "$ii" |  clang-format >> "$output" &
-        $SOURCELINES_PROG < "$ii" > "$CPX_SOURCE_FILE.sourcelines" &
+        ( echo "// -*- C++ -*-  # triggers syntax coloring for several editors and viewers " ;
+          amalgamate "$ii" |  clang-format
+        ) | gzip --fast > "$output"
+        $SOURCELINES_PROG < "$ii" | gzip > "$CPX_SOURCE_FILE.sourcelines.gz"
+        gzip --fast "$ii"
     ) & disown -ahr   # decouple from parent by the disown command
 }
 
@@ -351,6 +350,7 @@ then
 fi
 
 TARGET_PROG="$WORK_PATH_PREFIX$HASH.cpp.x"
+# TARGET_PROG="$WORK_PATH_PREFIX${TMP_TRANSFORMED_WORK_PATH}_${HASH}.x"
 
 maybe_printf "$YELLOW---------------------------------------------------------------------$NOCOLOR\n"
 dumpvars '' "HASH    TARGET_PROG    ACTION_CNT    CPX_VALIDATION_HASH"
@@ -392,6 +392,7 @@ then
       -o $TARGET_PROG -x c++ $TMP_TRANSFORMED_WORK_PATH \
       -L $UTILS_BIN_DIR $LINK_LIBRARIES_OPTIONS 2>$WORK_INPUT.errors"
 
+    # compile compiling
     logged_eval "build phase" "$CCMD"
     COMPILE_RESULT=$?
 
@@ -402,6 +403,8 @@ then
     if test "$COMPILE_RESULT" -ne 0
     then
        maybe_printf "$HRED=== failed to compile ===$NOCOLOR\n"
+    else
+        ("$CPX_SCRIPTS_DIR/CPX-tiding-WORK_DIR" 1> /tmp/CPX-tiding-WORK_DIR.log 2>&1) & disown -ahr
     fi
     print_included_files_without_missing_guards_warning  "$WORK_INPUT.errors"
 

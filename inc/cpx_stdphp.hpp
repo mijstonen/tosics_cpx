@@ -49,6 +49,7 @@
     {
         var $actual_file= "";
         var $actual_line  = 0;
+        var $traceHandle;
 
         function __construct()
         {

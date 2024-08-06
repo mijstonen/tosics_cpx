@@ -8,7 +8,7 @@ project(cpx)
 set(HOME "/home/michel")
  set(PRJ_PARENT "${HOME}/Projects/Kdevelop")
   set(INCLUDE_PATH "${PRJ_PARENT}/util/")
-set(CMAKE_CXX_COMPILER /usr/local/bin/g++)
+set(CMAKE_CXX_COMPILER /usr/bin/g++)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ")
 set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG -O0 -ggdb")
 
@@ -20,7 +20,8 @@ add_definitions(
 add_compile_options(
     -march=native
     -save-temps
-    -std=gnu++23
+    -std=gnu++26
+    -fcoroutines
     -fconcepts
     -ggdb
     -I${INCLUDE_PATH}
@@ -47,6 +48,8 @@ target_link_libraries(
     stdc++fs
     pthread
     dl
+    atomic
+    stdc++exp
 )
 
 #____________________________________________________________________________________

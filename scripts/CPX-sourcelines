@@ -9,9 +9,8 @@ WORK_DIR="${CPX_WORK_DIR:-/tmp/cpx/}"
 
 cd "$WORK_DIR"
 
-while :
-ls -1rt *.sourcelines
-  lastSourceLines=$(ls -1rt *.sourcelines| tail -1)
-  do less '+>' -R "$lastSourceLines"
+while : ; do
+  lastSourceLines=$(ls -1rt *.sourcelines *.sourcelines.gz| tail -1)
+  less '+>' -R "$lastSourceLines"
 done
 

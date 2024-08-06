@@ -253,8 +253,8 @@ public:
 #if !NO_SMILIE
         else {
             if ( m_myValidationPolicy!= validation_policy::strict ) {
-                // Show a lile green smile face character indication that the runtime validation succeeded.
-                std::cout<< HGREEN "😇" NOCOLOR <<std::endl;
+                // Show a green emoji indication that the runtime validation succeeded.
+                std::clog<< HGREEN "😇" NOCOLOR <<std::endl;
             }
             // in production, the validation_policy should be strict and the validation happens silently.
         }

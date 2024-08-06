@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 # -*- sh -*-
 
+# PRJ_PARENT_DIR CPX_SHARED_DIR CPX_INCLUDES_DIR CPX_SCRIPTS_DIR CPX_HASH_COMPILE are defined in ~/.tosics_custom
+
 # files and directories / depended settings
-PRJ_PARENT_DIR="/home/michel/Projects/Kdevelop/"
- UTILS_INCLUDES_DIR="${PRJ_PARENT_DIR}util/"
+UTILS_INCLUDES_DIR="${PRJ_PARENT_DIR}/util/"
 
 PRECOMPILED_FILE="stdinc.hpp.gch"
-# TODO ID=$(id -u) to replace 1000
-TMPFS_USR_DIR="/run/user/1000/tosics"
+# One of the methods to create a dedicated ramdisk is to mount a tmpfs in /etc/fstab
+# Using existing RAMDISK is OK. Even don't use RAMDISK is OK. All have their own advantages or disadvantages. Recommend to not make the RAMDISK smaller then 300MB.
+# added to /ect/fstab
+# tmpfs $HOME/tmp/cpx    tmpfs  rw,uid=1000,gid=1000,mode=0755,relatime,size=1536M  0  0
+TMPFS_USR_DIR="$HOME/tmp/cpx" #  replacing "/run/user/1000/tosics"
 
 
 setup_ramdisk()
@@ -21,10 +25,10 @@ setup_ramdisk()
     echo ""
 }
 
+
 setup_precompiled()
 {
-  echo "setup_precompiled $PRECOMPILED_FILE to RAMDISK"
-  (
+    echo "setup_precompiled $PRECOMPILED_FILE to RAMDISK"
     cd "$UTILS_INCLUDES_DIR"
     pwd
     echo "$PRECOMPILED_FILE"
@@ -51,29 +55,14 @@ setup_precompiled()
     else
         echo "ERROR: missing $PRECOMPILED_FILE, run ...util/rebuild-stdinc  and (when succeeded), source CPX-ramdisk again."
     fi
-  )
-  echo ""
-}
-
-setup_ccache()
-{
-    echo "setup_ccache"
-    export CCACHE_DIR="/var/run/user/1000/tosics/.ccache"
-    ccache -C
-    ccache -M 1.5G
-    export CCACHE_NLEVELS=3
-    export CCACHE_COMPILERCHECK=none
-    export CCACHE_COMPRESS=1
-    export CCACHE_NOSTATS=1
-    export CCACHE_SLOPPINESS=time_macros
     echo ""
 }
+
 
 
 echo "CPX-ramdisk: Setup ramdisk, this may take a moment, be patient ..."
 echo ""
 setup_ramdisk
 setup_precompiled
-setup_ccache
 echo "CPX-ramdisk: finished"
 

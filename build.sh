@@ -22,7 +22,7 @@ prj_dir_name=$(basename $(pwd))
 build_in_other_dir()
 {
   cd "../build/$prj_dir_name"
-  VERBOSE=1 ninja -v -j 8  $1
+  VERBOSE=1 ninja -v -j 2  $1
   ls -lrth --full-time --color=always
   cd -
 }
