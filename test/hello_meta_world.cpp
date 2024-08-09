@@ -1,8 +1,7 @@
-#!/usr/bin/env cpx
+#!/usr/local/bin/cpx
 
 // test meta commands
 
-#|
 
 // #!=pure-circle.cpp pie 60 150 3 11
 
@@ -15,8 +14,8 @@
 // depricated 
 // #!!circle.cpp circle.h pie 60 150 3 10
 
-
-#(
+________________________________________________________________________________________________________________________
+#!
 
 //#!?sleepdatetime.cpp
 
@@ -44,5 +43,4 @@
         INFO(VARVAL(one));
     }
 #endif    
-#)
     

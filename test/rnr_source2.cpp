@@ -1,6 +1,6 @@
 #!/usr/bin/env cpx
-#|
-#(
+________________________________________________________________________________________________________________________
+#!
     // This is a mini feature tester of cpx.
     // However it also has become a super fast tester for STATEREPORT.
     // And later it is extended again to work on correct source file
@@ -38,4 +38,3 @@
     INFO(VARVAL(STATEREPORT(status, SR_EXCLUDE_0_AND(-3,-1,1,3),'E')  ));
     INFO(VARVAL(status));
     return status;
-#)

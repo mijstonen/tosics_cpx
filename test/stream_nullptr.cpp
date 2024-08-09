@@ -1,5 +1,4 @@
 #!/usr/bin/env cpx
-#|
 
 // Demonstrates tosics::util::Is_null() and std::is_null_pointer() and std::is_pointer() .
 
@@ -18,7 +17,7 @@ template <typename Value_T>
 }
 
 
-#(
+#!
    if ( nullptr )
   {
      INFO("Lying nullptr");
@@ -42,4 +41,4 @@ template <typename Value_T>
   void* pc=&c;
   FAKE_USE(c,pc);
   show("(void*)&pc ",static_cast<void*>(pc));
-#)
+

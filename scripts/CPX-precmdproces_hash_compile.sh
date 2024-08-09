@@ -258,7 +258,7 @@ injectPriorToSourceCode()  # written to C/++ output file, by encapsulating it in
     echo "# 3 \"$THIS_FILE\""
 
     # Here below is only required if runtime validation is needed (aka: a lot of different cpx binaries in the cache over a long time)
-    # The code written to cpx-precmdproces_hash_compile-invoked.hpp is only meant for checking the generated code.
+    # The code written to CPX-precmdproces_hash_compile-invoked.hpp is only meant for checking the generated code.
     # It is not good enough for including, then better write to standard out so it will be specific for the compiled app.
     (
     echo "#define CPX_BUILD_CONFIG \"$CPX_BUILD_CONFIG\" "
@@ -272,8 +272,8 @@ injectPriorToSourceCode()  # written to C/++ output file, by encapsulating it in
     else
         echo "/* 'release' configuration: no CPX VALIDATION HASH */"
     fi
-    ) > "cpx-precmdproces_hash_compile-invoked.hpp"
-    # to make it work, link from a Dir include path to cpx-precmdproces_hash_compile-invoked.hpp in $CPX_WORK_DIR
+    ) > "CPX-precmdproces_hash_compile-invoked.hpp"
+    # to make it work, link from a Dir include path to CPX-precmdproces_hash_compile-invoked.hpp in $CPX_WORK_DIR
     # heh??? or simply remove braces and file redirection. What's up?
 }
 

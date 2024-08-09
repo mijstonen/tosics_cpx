@@ -7,6 +7,7 @@
 UTILS_INCLUDES_DIR="${PRJ_PARENT_DIR}/util/"
 
 PRECOMPILED_FILE="stdinc.hpp.gch"
+PRECOMPILE_LOG="stdinc.hpp.precompile.log"
 # One of the methods to create a dedicated ramdisk is to mount a tmpfs in /etc/fstab
 # Using existing RAMDISK is OK. Even don't use RAMDISK is OK. All have their own advantages or disadvantages. Recommend to not make the RAMDISK smaller then 300MB.
 # added to /ect/fstab
@@ -32,8 +33,7 @@ setup_precompiled()
     cd "$UTILS_INCLUDES_DIR"
     pwd
     echo "$PRECOMPILED_FILE"
-    ls -l "$PRECOMPILED_FILE"
-    # ./rebuild-stdinc
+    ./rebuild-stdinc
     ls -l "$PRECOMPILED_FILE"
     if [ -s "$PRECOMPILED_FILE" -o -s "backup_$PRECOMPILED_FILE" ]
     then
@@ -50,6 +50,7 @@ setup_precompiled()
         else echo "INFO: Asume local file '$PRECOMPILED_FILE' (useually when no ramdisk was used)"
             cp -v "$PRECOMPILED_FILE" "backup_$PRECOMPILED_FILE" # for use next time
             cp -v "$PRECOMPILED_FILE" "$TMPFS_USR_DIR/precompiled/$PRECOMPILED_FILE"
+            [[ -s "$PRECOMPILE_LOG" ]] && ln -sf "$(pwd)/$PRECOMPILE_LOG" "$TMPFS_USR_DIR/precompiled/$PRECOMPILE_LOG"
             ln --backup -s "$TMPFS_USR_DIR/precompiled/$PRECOMPILED_FILE" $PRECOMPILED_FILE
         fi
     else

@@ -1,8 +1,7 @@
-#!/usr/bin/env cpx
+#!/usr/local/bin/cpx
 
-#|
+#!
 
-#(
 // test code generation calling and use, see hello_meta_world.cpp
 cout
     << "string Greetings(char _char, int _count)\n"
@@ -14,4 +13,3 @@ cout
     << "    return ret;\n"
     << "}\n"
     ;
-#)

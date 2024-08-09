@@ -1,7 +1,8 @@
 #!/usr/bin/env cpx
-#|
+
 #+generator.cpp
-#(
+
+#!
 // Genarate table representing circle positions.
 // Code generation by use of INFO, use 1 item per token to make it easier to parameterize items and improve readability.
 
@@ -57,4 +58,4 @@ for ( decltype(steps) i=0; i<steps; ++i ) {
 }
 INFO('}',';',"//",id);
 #endif
-#)
+

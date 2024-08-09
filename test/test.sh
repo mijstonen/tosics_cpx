@@ -3,11 +3,10 @@
 
 # set -e
 # files and directories / depended settings
-PRJ_PARENT_DIR="/home/michel/Projects/Kdevelop"
- CPX_SCRIPTS_DIR="${PRJ_PARENT_DIR}cpx/scripts"
- . ${CPX_SCRIPTS_DIR}CPX-common.sh
 
-# NOTICE: the currect directory has to be in the path (use alias: cupas)
+# NOTICE: cpx/scripts/CPX-initialize should have been run to set the variables correctly.
+echo $PATH | grep -qE '^\.:' | export PATH=".:$PATH"
+
 WORK_DIR="${CPX_WORK_DIR:-/tmp/cpx}"
  WORK_DIR=$(heal_DIR WORK_DIR)
   LOGFILE="${WORK_DIR}CPX-runner.log"
@@ -75,37 +74,13 @@ cycle () {
 }
 
 from_commandline() {
-
-# TODO: CPX_LOGGING_DEFAULT="on"
-
-# as if CPX_LOGGING_DEFAULT="off"
-    cpx <<EOF
+# Obsolete: ERROR: message: Running source code from standard input is not supported
+   cpx <<EOF
 #|
 #(
-    INFO("from_commandline: Default (logging off)");
+    INFO("from_commandline: Default (logging on)");
 #)
 EOF
-
-
-    cpx -q <<EOF
-#|
-#(
-    INFO("from_commandline: Quiet (logging off)");
-#)
-EOF
-
-if false
-then
-    cpx -v <<EOF
-#|
-#(
-    INFO("from_commandline: Verbose (full logging)");
-#)
-EOF
-
-fi
-
-
 }
 
 

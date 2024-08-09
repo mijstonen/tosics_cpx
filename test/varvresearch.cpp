@@ -2,14 +2,9 @@
 
 // Testing Append_splitted() and (in util) VSTRINS macro cases, during its development.
 
-#|
-
-#(
-
-
+#!
 //namespace fs = std::filesystem;
 
-using namespace experimental;
 namespace tu=tosics::util;
 
 optional<tu::ASJ_special> optAsj;
@@ -28,7 +23,7 @@ vector<string> vss;
 
 tu::ASJ_special asj;
 
-#if 0
+#if 1
 auto ul= asj.m_up.length();
 auto dl= asj.m_down.length();
 assert( ul==dl );
@@ -47,7 +42,7 @@ if ( !STATEREPORT(  Append_splitted(&vss, s)  ) ) {
 
 
 
-#if 0
+#if 1
 // test error checking
 string nothing; //= __VSTRINGS();
 STATEREPORT(  Append_splitted(&vss, nothing, ",", asj)  );
@@ -57,5 +52,3 @@ STATEREPORT(  Append_splitted(undefined, s, asj)  );
 STATEREPORT(  Append_splitted(undefined, s, " ,;/-")  );
 #endif
 
-
-#)

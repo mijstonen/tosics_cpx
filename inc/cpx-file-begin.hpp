@@ -5,7 +5,7 @@
 
 // From here, any source in prehash will be php preprocessed.
 // The environment must define: CPX_HASH_COMPILE=CPX-precmdproces_hash_compile.sh
-#include "cpx-precmdproces_hash_compile-invoked.hpp"
+#include "CPX-precmdproces_hash_compile-invoked.hpp"
 // Get global php utilities from file cpx_std.php . See ~/.tosics_custom for environment variables, its asumed they are defined
 #include "cpx_stdphp.hpp"
 

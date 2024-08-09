@@ -1,9 +1,6 @@
 #!/usr/bin/env cpx
 
-#|
-
-#(
-
+#!
 // Deliberately fail to compile to test the cpx behaviour.
 
 auto msg= "This should not run, but cause a nasty compile error!";
@@ -19,5 +16,3 @@ cout << msg << end;
 cout << msg << endl;
 
 #endif
-
-#)

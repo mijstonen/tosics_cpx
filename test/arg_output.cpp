@@ -1,7 +1,5 @@
 #!/usr/bin/env cpx
 
-#|
-
 /*
 Researching a Output class to make function arguments that act as a output from a function explicit during the call.
 Intended to follow the 'zero overhead abstraction' policy. This should be a dropin replacement for &output var.
@@ -104,8 +102,9 @@ void foo(Output<int>&& sum_, vector<int> values)
 
     INFO(VARVAL(spy),FUNC_MSG("==== leaving ===="));
 }
+________________________________________________________________________________________________________________________
+#!
 
-#(
 INFO_FUNC;
 int sumtest{0};
 ////
@@ -113,6 +112,7 @@ int *psumtest=&sumtest;
 FAKE_USE(psumtest);
 INFO(VARVAL(sumtest));
 foo( OUT(sumtest), {1,2,3,4,5,10} );
+ASSERT( sumtest== 26 );
 INFO(VARVAL(sumtest));
 
 INFO(ENDL,"---DROP---");
@@ -120,4 +120,3 @@ foo( DROP_OUTPUT(int),{8,9,10});
 INFO(VARVAL(sumtest));
 
 INFO(HBLUE,DateTime(),NOCOLOR);
-#)

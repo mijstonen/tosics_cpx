@@ -1,7 +1,6 @@
 #!/usr/bin/env cpx
-#^ "../inc/cpx-unchanged.hpp"
-#|
-#(
+_______________________________________________________________________________________________________________________
+#!
 //  Illustrates range loop over chars in string (opposing user of iterating const char* from string::c_str())
 const char *name="mijstonen@hotmail.com";
 string name_str(name);
@@ -17,6 +16,4 @@ for(auto& c: name_str)
     INFO(PTRVAL(&c),PTRCHRNUMHEX(&c),VARVAL(c),VARCHRNUMHEX(c),"VARVALS for multiple arguments",VARVALS(c,&c));
 #pragma GCC diagnostic pop
 }
-
-#)
 

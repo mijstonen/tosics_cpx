@@ -2,10 +2,7 @@
 
 // Testing Append_splitted()
 
-#^ "../inc/cpx-unchanged.hpp"
-#|
-#(
-
+#!
 
 string in{"   a,bb   ,,,,c     cc,dd dd"};
 vector<string> out;
@@ -27,6 +24,9 @@ INFO(VARVAL(type_name(out)));
 INFO(VARVAL(in));
 for( auto ostr:out ) INFO(VARVAL(ostr));
 
+// FIXME: This should print the vectotr values but we get out='?' indicating that this datatype cannot be interpreted. That is a bug in tosics_util.
+INFO(VARVALS(out));
+
 string back;
 
 
@@ -35,6 +35,4 @@ STATEREPORT(  Append_joined( &back, out, '|')    );
 CERROR(VARVAL(back));
 
 
-return 0;
-#)
 //force rebuild by changing the file by incrementing number 4

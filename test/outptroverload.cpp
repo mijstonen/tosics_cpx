@@ -1,6 +1,4 @@
 #!/usr/bin/env cpx
-#^ "../inc/cpx-unchanged.hpp"
-#|
 
 // Test overloading output parameters
 
@@ -49,8 +47,7 @@ void update(Dirived1* o_)
     o_->m=2;
 }
 
-
-#(
+#!
 INFO("OK");
 Out1 o1;
 Out2 o2;
@@ -63,5 +60,4 @@ update(&d1);
 update(static_cast<Out1*>(&m1)); // choose
 update((Out2*)&m1); // who wins
 return 0;
-#)
 //force rebuild by changing the file by incrementing number 4

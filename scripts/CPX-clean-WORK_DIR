@@ -2,13 +2,16 @@
 # clean temporary files and binaries, without touching other files or log
 
 SCRIPTS_DIR="$(dirname $(realpath -P $0))/"
-. "${SCRIPTS_DIR}CPX-common.sh"
+. "${SCRIPTS_DIR}/CPX-common.sh"
 CPX_WORK_DIR=$(heal_DIR CPX_WORK_DIR)
- WORK_DIR="${CPX_WORK_DIR:-/tmp/cpx/}"
+ WORK_DIR="${CPX_WORK_DIR:-/tmp/cpx}"
   cd $WORK_DIR
 
-CPX_files=$(ls -1f *.cpp *.x *.s *.o *.ii *.ii~ *.ii.orig *temp* *.unchanged.hpp *.cpp.prehash *.cpp.prehash.errors *.cpp.prehash.transformed \ 
-*.cpp.prehash.transformed.errors *.cpp.errors *[0-9,a-z].hash *[0-9,a-z].inc| grep '^CPX-')
+CPX_files=$(ls -1f *.beautified *.cpp *.errors *.hpp *.ii *.inc *.o *.prehash sourcelines.* *.s *.temp *.transformed \
+                   *.x *.beautified.gz *.cpp.gz *.errors.gz *.hpp.gz *.ii.gz *.inc.gz *.o.gz *.prehash.gz \
+                   *.sourcelines.gz *.s.gz *.temp.gz *.transformed.gz *.x.gz 2>/dev/null \
+          | grep '^CPX-'
+          )
 if test -z "$CPX_files"
 then echo "Nothing to clean"
 else rm -v $CPX_files
@@ -17,12 +20,12 @@ fi
 
 # expect that only the log files remains, show that this is correct.
 # note that these files are delibarately are not deleted to ensure
-# operations are handled correctly and it is jet to be decided how 
+# operations are handled correctly and it is jet to be decided how
 # to handle those files. If deletion is the proper way, add the
 # required pattern to the CPX_files list above.
 CPX_remaining=$(ls CPX-* | grep -Ev 'CPX-runner(-[0-9]+)?\.log')
 if test -n "$CPX_remaining"
-then 
+then
     echo -e "${HYELLOW}Warning: It seems that following files remain"
     echo -e "---------------------------------------------"
     echo -e "'$CPX_remaining'"

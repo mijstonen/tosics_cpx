@@ -1,6 +1,5 @@
 #! /usr/bin/env cpx
 #^ <boost/circular_buffer.hpp>
-#|
 
 
 // #include <boost/circular_buffer.hpp>
@@ -22,8 +21,11 @@
     shall trigger a recompilation.
 */
 
-#(
-  typedef boost::circular_buffer<int> circular_int_buffer;
+     using
+  circular_int_buffer = boost::circular_buffer<int>
+  ;
+________________________________________________________________________________________________________________________
+#!
   circular_int_buffer cb{3};
 
   INFO(VARVAL(cb.capacity()));
@@ -41,8 +43,8 @@
 
   INFO(VARVAL(cb.size()));
 
-  for (decltype(cb.size()) i=0;i<cb.size();++i){
+  for (auto i:repeat(cb.size())){
+    ASSERT( cb[i]== ( i+ 3 ) );
     INFO(VARVAL(i),VARVAL(cb[i]));
   }
-#)
 

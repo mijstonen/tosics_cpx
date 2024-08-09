@@ -3,7 +3,7 @@
 # looked up in the same directory as the using script.
 #
 # |SCRIPTS_DIR="$(dirname $(realpath -P $0))/"
-# |. "${SCRIPTS_DIR}CPX-common.sh"
+# |. "${SCRIPTS_DIR}/CPX-common.sh"
 
 PATH_SEPARATOR="/"
 CPX_COMMOM_ERROR=240  # aka -16

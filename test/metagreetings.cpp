@@ -1,10 +1,8 @@
-#!/usr/bin/env cpx
+#!/usr/local/bin/cpx
 
 // produce string variable of repeated chars,used in hello_meta_world.cpp
 
-#|
-
-#(
+#!
 //info_ProgramArguments();
 
 if ( ProgramArguments.size()<3 ) {
@@ -22,4 +20,4 @@ for ( auto i=0; i<cnt; ++i ) {
     cout<< chr;
 }
 cout << "\";\n";
-#)
+

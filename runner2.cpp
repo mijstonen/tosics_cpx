@@ -33,7 +33,8 @@ bool ForceRebuild=false;
 std::string ErrorMsg;
 //@}  Global program data
 
-namespace OccasionallyModified {
+namespace OccasionallyModified
+{
     //:LoggingEnabled://
     bool LoggingEnabled=true;
     //:FlushLogging://
@@ -1112,16 +1113,15 @@ runner()
                 insert_preprogrammed();
                 break;
 
+# if OBSOLETE
               case '(': // second generation, fewer tags and better encapsulation,
                     // replaces #{ + #[ see cpx-core.cpp and tu::cpx_main()
                     // vector<string> tu::ProgramArguments i.s.o argc and argv
                 work_input << "\n#include " << '"' << "cpx-all-before-script.hpp" << '"' << " /*    #(    */";
                 break;
-
               case ')': // replaces #} + #] see case '(':
                 work_input << "\n#include " << '"' << "cpx-all-after-script.hpp" << '"' << "    /*    #)    */";
                 break;
-
                 //( BEGIN depricated (functioning) micropreprocessor commands
                 //       These still should work but a are no further maintained.
               case '{': // replace by start of main declaration
@@ -1138,6 +1138,7 @@ runner()
                 work_input << "#include " << '"' << "cpx-main-outer-catch-block.hpp" << '"' << "    /*    #]    */";
                 break;
                 //) END depricated micropreprocessor commands
+# endif
               default:
                 do_mark_sourceline= false;
                 // anything else is taken 1:1 from the source
