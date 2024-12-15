@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# -*- sh -*-
+
+# PRJ_PARENT_DIR CPX_SHARED_DIR CPX_INCLUDES_DIR CPX_SCRIPTS_DIR CPX_HASH_COMPILE are defined in ~/.tosics_custom
+
+# files and directories / depended settings
+UTILS_INCLUDES_DIR="${PRJ_PARENT_DIR}/util/"
+
+PRECOMPILED_FILE="stdinc.hpp.gch"
+# One of the methods to create a dedicated ramdisk is to mount a tmpfs in /etc/fstab
+# Using existing RAMDISK is OK. Even don't use RAMDISK is OK. All have their own advantages or disadvantages. Recommend to not make the RAMDISK smaller then 300MB.
+# added to /ect/fstab
+# tmpfs $HOME/tmp/cpx    tmpfs  rw,uid=1000,gid=1000,mode=0755,relatime,size=1536M  0  0
+TMPFS_USR_DIR="$HOME/tmp/cpx" #  replacing "/run/user/1000/tosics"
+
+
+setup_ramdisk()
+{
+    # when directories are on non SSD filesystem, it makes sense to have some directories on tmpfs
+    # Where it is varies per system, it might be that you need to create your own
+    # also check aviable size and available RAM
+    echo "Custom RAMDISK directory: '$TMPFS_USR_DIR'"
+    mkdir -vp "$TMPFS_USR_DIR/precompiled"  "$TMPFS_USR_DIR/workdir_cpx"  "$TMPFS_USR_DIR/.ccache"
+    export CPX_WORK_DIR="$TMPFS_USR_DIR/workdir_cpx"
+    echo ""
+}
+
+
+setup_precompiled()
+{
+    echo "setup_precompiled $PRECOMPILED_FILE to RAMDISK"
+    cd "$UTILS_INCLUDES_DIR"
+    pwd
+    echo "$PRECOMPILED_FILE"
+    ls -l "$PRECOMPILED_FILE"
+    # ./rebuild-stdinc
+    ls -l "$PRECOMPILED_FILE"
+    if [ -s "$PRECOMPILED_FILE" -o -s "backup_$PRECOMPILED_FILE" ]
+    then
+        if [ -L "$PRECOMPILED_FILE" ]
+        then # symlink
+            PRECOMPILED_FILE_LINK_TARGET=$(readlink --canonicalize-missing "$PRECOMPILED_FILE")
+            if [ -s "$PRECOMPILED_FILE_LINK_TARGET" ]
+            then
+                echo "OK: Precompiled file is already on RAMDISK"
+            else
+                echo "INFO: Restoring target:'$PRECOMPILED_FILE_LINK_TARGET' of dangeling symlink "
+                cp -v "backup_$PRECOMPILED_FILE" "$PRECOMPILED_FILE_LINK_TARGET"
+            fi
+        else echo "INFO: Asume local file '$PRECOMPILED_FILE' (useually when no ramdisk was used)"
+            cp -v "$PRECOMPILED_FILE" "backup_$PRECOMPILED_FILE" # for use next time
+            cp -v "$PRECOMPILED_FILE" "$TMPFS_USR_DIR/precompiled/$PRECOMPILED_FILE"
+            ln --backup -s "$TMPFS_USR_DIR/precompiled/$PRECOMPILED_FILE" $PRECOMPILED_FILE
+        fi
+    else
+        echo "ERROR: missing $PRECOMPILED_FILE, run ...util/rebuild-stdinc  and (when succeeded), source CPX-ramdisk again."
+    fi
+    echo ""
+}
+
+
+
+echo "CPX-ramdisk: Setup ramdisk, this may take a moment, be patient ..."
+echo ""
+setup_ramdisk
+setup_precompiled
+echo "CPX-ramdisk: finished"
+

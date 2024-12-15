@@ -1,7 +1,5 @@
+/*OBSOLETE*/
 #!/usr/bin/env cpx
-
-#^ <TinySHA1.hpp>
-
 #|
 
 /*

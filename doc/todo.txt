@@ -1,0 +1,12 @@
+2019-0311
+clean /Install/tmptmp
+
+CPX workdir cleaning in scripts
+
+ApplicationValidator, use validation code as environment variables
+
+refactor info.hpp: SHA1
+    1. better classname
+    2. move to own file
+
+make libutil / tosics::util release version => ***/util/CMakeLists.txt 

@@ -4,7 +4,7 @@ michel@msi-kubuntu-1610:~$
 cpx<<EOF
 #|
 #(
-for(unsigned char i=1; i; ++i) {
+for(unsigned char i=1; i<128; ++i) {
 INFO(VARVAL((int)i),VARVAL(i)); }
 #)
 EOF

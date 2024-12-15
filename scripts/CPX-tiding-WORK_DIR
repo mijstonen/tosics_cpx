@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+echo "================================================================================================================="
+echo "$(date) |BEGIN Temporary logging of the CPX-tiding-WORK_DIR script"
+set -o nounset  # -u
+# set -o errexit  # -e
+# set -o xtrace # -x
+# shopt -s extglob
+
+# PRJ_PARENT_DIR and CPX_INCLUDES_DIR CPX_SHARED_DIR CPX_SCRIPTS_DIR set in $HOME/.tosics_custom
+. "${CPX_SCRIPTS_DIR}/CPX-common.sh"
+
+# STATUS: INCUBATION alpha
+# Ensures that the limited ramdisk space is used efficiently and removes
+# what is not needed or when available ramdisk gets too limited.
+
+cd $CPX_WORK_DIR
+
+function CPX_prior
+{
+    local extension=$1
+    # $2 indicates how many to keep (not showing up in output)
+    local from_line_number_on=$(($2+1))  # tell tail, where to start. Aka $2==1 would return all lines
+    # newest at first lines are not part of the returned filenames
+    nice ls -1t CPX-*.$extension.gz | tail -n +$from_line_number_on
+}
+
+echo "PHASE 1 rm or gzip "
+rm -v *.s # don't safe assembler files, they are lagre and I am not use there information.
+# compress the remaining files, any prior vzipped ersionsof the same named file is overwritten.
+# The creation date is not changed.
+for f in $(ls -1f *.beautified *.errors *.sourcelines *.transformed *.prehash); do
+    # double check that filenames in range are unique
+    f_date=$(stat -c %y "$f")
+    gzip --fast --force "$f"
+    [ -n "$f_date" ] && touch -d "$f_date" "$f.gz"
+done
+
+echo "PHASE 2 remove old gzipped"
+# remove large compressed intermediate files that do pile up  only most recent onces remain
+files_to_remove="$(CPX_prior ii 1) $(CPX_prior s 1) $(CPX_prior beautified 3) $(CPX_prior sourcelines 3) $(CPX_prior errors 3) $(CPX_prior prehash 3)"
+echo "files_to_remove: $files_to_remove"
+[ -n "$files_to_remove" ] && rm -v $files_to_remove
+
+echo "PHASE 3 remove days old executable"
+# remove older executable(s) created more then a few days ago to better remain below the ramdisk threshold.
+Old_Xs=$(find . -type f -name "CPX-*.cpp.x" -mtime +3)
+[ -n "$Old_Xs" ] && rm -v "$Old_Xs"  # remove multiple files, asuming the file names do not contain spaces.
+
+echo "PHASE 4 remove oldest executable as long exceeding allowed occupation"
+# Normally we want to keep executables as long as possible, but...
+# As long too much ram disk is used.
+#   Select the oldest executable (except most recent) and remove it
+#   But, stop when no further executable was found.
+while df $CPX_WORK_DIR|awk -v sensitivity=2 'NR==2{exit((sensitivity*$3)<$4)}'; do
+    local oldest_cpp_x=$(ls -1lt CPX-*.cpp.x 2>/dev/null | tail -n +2 | tail -1)
+    [ -n "$oldest_cpp_x" ]&& rm -v "$oldest_cpp_x"
+done
+
+echo "PHASE5 warn, potentionally unchache precompiled header"
+if df $CPX_WORK_DIR|awk 'NR==2{exit((0*$3)<$4)}'; then
+    echo "CPX_WORK_DIR: $CPX_WORK_DIR is getting full, consider cleaning it manually."
+fi
+echo "$(date) |END Temporary logging of the CPX-tiding-WORK_DIR scriptecho"
+echo "-----------------------------------------------------------------------------------------------------------------"

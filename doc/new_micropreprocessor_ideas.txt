@@ -1,0 +1,265 @@
+uPP : The micro preprocessor
+
+cpx aliassing
+-------------
+
+#'/ <non whitespace input character sequence> <non whitespace output character sequence>
+
+aka example
+#s /#!php_script/<?php/
+
+#/<?php/<?php
+#/?>    PHP_END
+
+
+
+PHP
+--------------------
+Make PHP directives aware, so it can be used to serve PHP preprocessing.
+How: preparsing prehash on directive lines, injecting commands to PHP
+
+# 123 "path/to/file" d ...
+
+transformed to:
+
+<?InhectDirective(<<<EODL
+# 123 "path/to/file" d ...
+EODL);?>
+
+The default output to transformed is to reproduce the directive unmodified.
+
+
+manage local defines
+
+ PHP_BEGIN
+	pushDefine(<<<EODefs
+		@{
+		UAX 5
+		LONGMACRO A \
+		B \
+		C
+		@}
+		EODefs
+	);
+ PHP_END
+
+ C++ code
+
+ PHP_BEGIN popDefine(); PHP_END
+
+evoloution 1: special C/++ preprocessor macros
+ PHP_LOCDEF_BEGIN
+		UAX 5
+		LONGMACRO A \
+		B \
+		C
+ PHP_LOCDEF_USE
+
+ C++ code, here UAX and LONGMACRO are usable
+
+ PHP_LOCDEF_END
+
+ C++ code, here UAX and LONGMACRO are #undef-ined
+ unless the where defined before with PHP_LOCDEF_...
+ PHP_LOCDEF statements can be nested.
+ By reading directives from the prehash file, it can manage LOCDEF sets of file scope.
+
+evaluation 2: By observing directive lines and symmetry count, the moments of leaving scope do not need to be programmed
+
+
+{  // some scope
+   PHP_LOCDEF
+		UAX 5
+		LONGMACRO A \
+		B \
+		C
+   PHP_LOCDEF_USE
+
+	C++ code
+	... AUA ...
+	...........
+	LONGMACRO
+	.........
+} // left scope
+
+
+     ...UAX....               error   UAX undefined
+	 LONGMACRO                error   LONGMACRO undefined
+
+
+
+Reminder PHP server with preloaded definitions
+
+
+##  nested scope.   The following scopes are counted by uPP
+    (  +1    )   -1     symetric counts forC like language syntax
+    [  +1    ]   -1
+    {  +1    }   -1
+
+    /* +1    */  -1     disbale/enable counts above
+    // +1   '\n' -1
+
+    <? +1    ?>  -1  php scope counts, not effected by comment tokens above
+
+    The effect of the changes made in the nested scope is only as long the scope counts do not go below the
+    current counts.
+    This is archived by running uPP and slave processes in a child process.
+
+    example
+
+        foo()
+        {
+    ##
+        # define LOCAL 2
+
+            use of LOCAL
+        }
+
+    // scope count is decreased
+    cannot use LOCAL here
+
+    Remarks: Some edge cases are not handled or should be implemented later.
+    * Nested scopes can be (recursively) nested again
+    * Nested scopes do know the encapsulated environment, you cannot shadow symbols or variables (without special precautions,like use of #undef).
+    * \ before new line, when in // the status of next line is undefined. Simplest is to ignore it and start with a fresh new line.
+    * using # for comments in php. You can use it, but uPP would not know,consider it an active php code part.
+        it will only cause problems when asymetrically using ({[]}) <? ?> inside such comment.
+        To be save, only use C/C++ style comments inside php code.
+
+
+
+Overview of uPP commands by token (order is left to right, top down on keyboard)
+
+#~     [new idea] ..... something like resource deallocation cutomization .....  or pattern matching
+#`     [new idea] ..... Smart library binding allows to specify in the libraries (aka pkgconfig for Qt)
+#!     first line: hash bang for running the script, all other lines, start of main, it puts the rest of the file in main, or till the next uPP token. Every following #! will create a peer parallel forked cpx::main, but then cpx::vector<main_func>[] 1, 2, .... N which each will run in its own forked process.
+
+#!?    querying meta command, every call might produce different results despite equal arguments, unconditionally always execute
+#!=    pure execution, if previously arguments are reused, the prior compiled and hashed executabele can be reused.
+#!&      [reserved] Asynchronous execute child program
+#!&<trigger>  same as #!& but trigger will be submitted when child program is completed. There is no other information passing mechanism for this in uPP
+#!,      [reserved] synchronization ANY:Wait for one of Asynchronous child programs to complete
+#!.      [reserved] AND:Wait for all Asynchronous child programs to complete
+#$ uPPvar = value
+
+||     OMP directive it is replaced by "#pragma omp"     "#o parallel" ->  "#pragma omp parallel"
+||+    enable following OMP directives
+||-    disable following OMP directives
+
+#@     forced source line marking
+
+##     Nested scope
+#^     Includes a (readonly) file without involving it in the "modified" check ( aka #^<boost/circular_buffer.hpp>  )
+
+#&
+#*
+#(
+#)
+#-      ........ discarding from source .......
+
+#+      include a named cpx include  aka:  #+ myowninc.h   -> #include "cpx-myowninc.h"
+
+#_      All that is following is ignored. This can be used as a comment line or for source decoration
+
+
+#[      Starts main exception block
+
+#]      Ends main exception block
+
+#{      Starts real main, normally cpx::main is started from an default included main.
+
+#}      Ends real main
+
+#|      [reserved](classic) incorporating standard includes for cpx scripts nowadays it has become optional and it is always included
+
+#:      Inhertance by sourced file.  For example #:/<source>/ inherit substitution from the (nearest only) parent file.
+        To make inheritance transiant, they need to be repeated in the parent chain.
+        Other inheritance extensions then #:/ can be expected in future.
+
+#;
+
+#'
+#"
+
+begin--------- [new idea]
+
+#/@;?>/PHP_MARKSRCLINE?>/     replaces all occurences of @;?>  with PHP_MARKSRCLINE?>
+#/@;?>/@;?>/                  disbles the replacement, uPP may detect that source and target are the same and so discard the replacement operation instead
+                              The substitution is text and also token agnostic and can be used to affect PHP tokens or other similar kinds.
+                              So substitutions do not distinguish in words: aka  #/id/ID/  changes valid to valID.
+
+                              Attemps to substitute a uPP preprocessor command is an error, which will uPP cause abortion.
+                              uPP command interpretation goes first.
+                              Dection: #/#.../# something else/ is only accetable if the first character of source and target are not on the first column.
+
+
+
+#/<source>/<target>/       file wide search and replace, introduced where this uPP command starts, it does not act inside uPP commands
+            options can be similar to sed, option w is to replace words only where words are sparated by spaces and
+            (typical C) tokens. Replace substitutions run first and on the fly (before the C++ processor)
+            They ONLY act on the file it self not on included or sourced files.
+
+#/<source>/<source>/     Effectively removes the substution operation for all that follows. If there was no <source> to <target> substitution, this has no effect.
+
+
+
+end--------- [new idea]
+
+#/=
+
+#<       [new idea] ....(binary) output stream...... ?
+
+#>       [new idea] ....(binary) input stream...... ?
+
+#?<trigger> [new idea] completion code as response Asynchronous started child program. If this token happens multiple times, all completion code parts will be executed in isolation and (possibly) in parallel each in their own context. It usually means that the child process that produced its results broadcasts these same results to all completers that where triggered. However each of the completers may also have some own context and behave differently.
+
+
+Compilation extensions
+----------------------
+The '+' designator is not effecting the source, it is effecting the compilation process.
+Compilation extensions can be given as commandline option or as part of the cpx source script.
+Although not enforced, by convetion, these options should follow the line_nr:1 hashbang.
+(the commandline option variant will added to options that way into the cpx sourc script)
+
+Unlike '#+' +x will not incorporate the source into the same file, but process them individually.
+However the benefit is that it uses the same compile and linkage command levaraching the preprocessed
+include of stdinc.h for all the sources.
+
+
+
++> <options> append options to the compile command
++< <options> prepend options to the compile command
++>! <script args... >  runs a script that outputs a string with options appended to the commandline options ala pkgconfig
++<! <script args... > runs a script that outputs a string with options prepended to the commandline options ala pkgconfig
+
++L <additional linkage/resource search path>
++x source file to be processed by cpx
++c plain source file to compile
++o <object name>    (o/obj)
++a <static libray>  (a/lib)
++s <shared library> (so/dll)
++- <to be discarded>  remove part of the compile command once -> s/<to be discarded>//
++-* <to be discarded> remomove all -> s/<to be discarded>//g
+
+example
+#!/usr/local/bin/cpx
++x extrafunctions.cpp
+
+
+Tests
+-----
+Running tests
+
+
+?{<test identifier>
+    source code
+?}<test identifier>
+
+The when --expanded-source option is combined with --test <...>, then the tests will run,
+but willnot be included in the expanded source.
+
+If there are no test bodies,the cpx::main() function is considered the one and only test.
+Of cause it can be (manually) composed multiple tests.
+
+
+https://gcc.gnu.org/onlinedocs/cpp/Preprocessor-Output.html

@@ -1,0 +1,268 @@
+        static bool
+    IsDirective(string const &_char _line)
+    // detect lines that start with #
+    // eventually precedded by whitespace(s)
+    // regexp equivalent of ^\s*#\s.*$
+    {
+        auto pc= _line;
+        while ( *pc ) /*1*/{
+            switch ( pc ) /*2*/{
+                case '#' :
+                    // There are more fields, separated by whitespace,
+                    // so we expect next at least one whitespace to confirm directive detection.
+                    switch ( ++pc ) {
+                        case ' ':
+                        case '\t':
+                            return true;
+                        default:
+                            // another directive not the kind of directive we are looking for  (aka #pragma)
+                            return false;
+                    }
+                case ' ':
+                case '\t':
+                    ++pc;
+                    continue; // to iterate to next character
+                default:
+                    // anything else including empty strings
+                    return false;
+            }// switch 2
+        } // switch 1
+    }
+
+    inline constexpr // signed byte
+int8_t operator "" _sb(long double _literal) noexcept
+{
+    return int8_t(_literal);
+}
+
+
+class Line : public string {
+
+    public:
+    Line(const string& _line) : string(_line)
+    {
+    }
+
+        auto
+    get(istream& _in) -> decltype(std::getline(istream,string))
+    {
+        return getline(_in,*this);
+    }
+
+    operator string() const
+    {
+        return *this;
+    }
+        bool
+    has_contents() const
+    // detects when the line has content that are interpretable as fields by getFields()
+    // that is it should not be empty or only contain whitespaces
+    {
+        auto end_line{ end(*this) };
+        // becomses true when any non white space is detected before the end of line
+        bool return_value { find_if_not( begin( *this), end_line, isspace)!= end_line };
+        return return_value;
+    }
+
+            //auto end_line{ end(_line) };
+        // becomses true when any non white space is detected before the end of line
+        //bool return_value { find_if_not( begin( _line), end_line, isspace)!= end_line };
+        //return return_value;
+
+
+};
+
+
+    for (auto c: _line) {
+        if ( isspace(c)) {
+            continue;
+        }
+        return true;
+    }}
+    return false;
+
+            auto
+    indentPrint=[&indentspaces,includeLevel]()
+    {
+        // Temporary change the string length by overwriting a space with end of string marker
+        // on the desired position. After printing the space character is restored,
+        // so that indentspaces can be reused next time.
+        auto eos_position=max(decltype(includeLevel)(MAX_INDENTS),includeLevel)*SPACES_PER_INDENT;
+        // ensure eos_position< indentspaces.size()), we did by having...
+        //    SPACES_PER_INDENT extra spaces larger then eos_position can become.
+//        char* exposed_indentspaces=indentspaces.data();
+//        char& changedChar{exposed_indentspaces[eos_position]};
+//        changedChar='\0';
+//         puts(exposed_indentspaces);
+//        changedChar=' ';
+
+        while(-- eos_position) putchar(' ');
+
+
+    };
+
+    string indentspaces{<?='"'.str_repeat(" ",SPACES_PER_INDENT*(MAX_INDENTS+1)).'"'?>};
+        auto
+    symmetryCount{ [&symmetry](string const& _line) -> string
+    // ensure that there are no C/++ comments in the file
+    // cant de < and > of template because these also work indiviually as less and more then, in expressions
+    {
+        bool sqtogle{false};
+        bool dqtogle{false};
+        ostringstream decorated_line;
+        string word="";
+
+                auto
+            flush_word{[&]()
+            {
+#if 1
+                if ( word.size() ) {
+                    bool is_keyword = C_plus_plus_keywords.find(word)!=C_plus_plus_keywords.end();
+                    char const* wordColor= NOCOLOR;
+                    if ( is_keyword ) {
+                        wordColor= HWHITE;
+                    }
+                    else if ( isdigit(word[0]) ) {
+                        wordColor= HMAGENTA;
+                    }
+                    else {
+                        wordColor= NOCOLOR;
+                    }
+                    decorated_line<< wordColor<< word<< NOCOLOR;
+                    word="";
+                }
+#endif
+            }};
+
+
+        for(auto c: _line) {
+            if      ( !sqtogle &&  c=='"' ) {
+                dqtogle= !dqtogle;
+            }
+            else if ( !dqtogle &&  c=='\'' ) {
+                sqtogle= !sqtogle;
+            }
+            auto sdqColor = sqtogle ?HMAGENTA
+                          : dqtogle ?HBLUE
+                          : NOCOLOR
+                          ;
+
+            if ( sqtogle || dqtogle ) {
+                decorated_line<< sdqColor<< c;
+                continue;
+            }
+
+            if ( strchr("({[",c) ) {
+                flush_word();
+                decorated_line<< HCYAN<< c<< NOCOLOR;
+                ++symmetry;
+                continue;
+            }
+            if ( strchr(")}]",c) ) {
+                flush_word();
+                decorated_line<< HCYAN<< c<< NOCOLOR;
+                --symmetry;
+                continue;
+            }
+            if ( strchr(",;%&*->.<+=|\\/?:`~!@#$\"'" ,c) ) {
+                flush_word();
+                decorated_line<< HYELLOW<< c<< NOCOLOR;
+                continue;
+            }
+            if ( isspace(c) ) {
+                flush_word();
+                decorated_line<< c;
+                continue;
+            }
+            word+= c;
+
+            //decorated_line<< c;
+        } // for c
+        flush_word();
+
+
+        auto return_value=decorated_line.str();
+        //INFO(VARVAL(return_value));
+        return return_value;
+    }};
+
+            template <
+            typename... _ArgsP
+        >
+        tu::state
+    invoke(std::tuple<_ArgsP...> const* _situ) override
+    {
+        Finally endWith{[&]()
+        {
+            signal::OneSlotConsumed(_situ);
+        }};
+        return ( outer->*_memfnL )( /* _situ:  expand tuple members with index sequence*/);
+    }
+
+if 0
+ #define REPEAT_MAKE(repeatArray,repeatChain) <?${#repeatArray}=explode("|",#repeatChain);?>
+ #define REPEAT_FOREACH(repeatArray,repeatIterator) <?foreach(${#repeatArray} as ${#repeatIterator}){?>
+ #define REPEAT_ITEM(repeatIterator) <?=${#repeatIterator}?>
+ #define REPEAT_ITEM_STRING(repeatIterator) <?='"'.${#repeatIterator}.'"'?>
+ #define REPEAT_END <?}?><?PHP_MARKSRCLINE?>
+ #define REPEAT_RUNTIME_RANGE(repeatArray,postfix) constexpr const char* repeatArray##postfix[]<?=C_initializerListFrom(${#repeatArray})?>;
+#endif
+
+                    {
+                    std::string included_file(get_line_from_source());
+                    unchanged_includes<< included_file;
+                    work_input<<
+                    }
+                    for(;;) {
+                        get_char_from_source();
+                        unchanged_includes.put(char_from_source);
+                        work_input.put(char_from_source);
+                        if ( char_from_source=='\n' ) {
+                            break;
+                        }
+                    }
+
+auto cpx_inner_source_name=STREAM2STR(HOME_Dir<<'/'<<CPX_RELATIVE_INCLUDES_DIRS<<"/cpx-"<<inner_souce_filename.generic_string());
+
+    char const* env_HOME_dir= getenv( ENV_HOME_DIR);
+        if ( /*unlikely*/ tu::Is_null(env_HOME_dir) ) {
+           ErrorMsg= STREAM2STR("Could not extract home directory from enviroment variable:"<<ENV_HOME_DIR);
+           tu::ThrowBreak(ErrorMsg.c_str(),tu::eBC_handled);
+        }
+        //otherwise
+        HOME_Dir=env_HOME_dir;
+
+        if ( /*unlikely*/ !fs::exists(HOME_Dir) ) {
+           ErrorMsg= STREAM2STR("HOME directory:'"<< HOME_Dir<< "' does not exits.");
+           tu::ThrowBreak(ErrorMsg.c_str(),tu::eBC_handled);
+        }
+        //otherwise
+
+
+if ( 0== inner_source_name.compare(0,2,"~/") ) {
+    // replace ~ with absolute HOME path
+    inner_source_name.replace(0,2, HOME_Dir+"/");
+}
+
+// depricated
+   int
+execute(std::string const& _program, int _argc, char const* _argv[], int _start = 0)
+{
+    std::vector<std::string> program_and_args_vec = { _program };
+    for (int i = _start; i < _argc; ++i) {
+        program_and_args_vec.emplace(program_and_args_vec.end(), _argv[i]);
+    }
+    return execute( program_and_args_vec);
+}
+
+    std::string
+CpxIncludesDir
+;
+    std::string
+CpxScriptsDir
+;
+// TODO: demangeled backtrace
+//HINTS
+//https://linux.die.net/man/3/backtrace_symbols_fd
+//http://www.boost.org/doc/libs/master/libs/core/doc/html/core/demangle.html#core.demangle.header_boost_core_demangle_hpp
+//http://www.boost.org/doc/libs/1_65_0/doc/html/stacktrace.html

@@ -1,0 +1,6 @@
+This file is not used as a resource. 
+Its intend is to force and trigger a rebuild, by
+touch touch_me.txt (or with directory navigation path in front when called
+from another directory). This will modify the date of this file which 
+affects a ls -l of the containing directory. This will modify the hash, 
+and so trigger a new build.

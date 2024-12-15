@@ -1,4 +1,4 @@
-#pragma once
+//#pragma once
 //cpx-common-impl.cpp
 #ifndef CPX_COMMON_IMPL_CPP
 #  define CPX_COMMON_IMPL_CPP 1
@@ -10,16 +10,269 @@
  * ( Usage: #+common-impl.cpp )
  */
 
-
-namespace fs = std::experimental::filesystem;
-
-namespace cpx {
+    namespace
+fs = std::filesystem
+;
+    namespace
+cpx {
 // #include ...
 // global functions and classes
 
 
+//_____________________________________________________________________________________________________________________
+    class
+ScopeDecoratorLines
+{
+    // Simple decoration helper, allows fast inspection of a cpx script executing well, without need to
+    // read from screen. Cpx reorts compilation failure in red. So if all is OK, you just look for geen
+    // or red. The cpx script output is in between the scope decorator lines.
+    // Usage:
+    // {
+    //    WITH_SCOPEDECORATORLINES;
+    //    ....
+    // }
+  public:
+        static void
+    Line(char const* _color=GREEN, char _ch='-', size_t _repeat=120)
+    {
+        std::cout<< _color<< string(_repeat,_ch)<< RESET<< std::endl;
+    }
+CPP_MARKSRCLINE
+  public:
+    ScopeDecoratorLines()    { Line(GREEN,'<'); }
+    ~ScopeDecoratorLines()   { Line(GREEN,'>'); }
+};
 
+#define WITH_SCOPE_DECORATOR_LINES cpx::ScopeDecoratorLines AUTO_ID
+
+//_____________________________________________________________________________________________________________________
+#ifdef CPX_VALIDATION_HASH
+
+#ifndef CPX_VALIDATION_HASH
+# error CPX_VALIDATION_HASH is not defined
+#endif
+    class
+ApplicationValidator
+{
+        enum class
+    validation_policy : int
+    // Could be FindIndex result, can't be set but behavior is kept deterministic.
+    {   notfound = 0
+    // For runtime testing ApplicationValidator.
+    ,   failtest
+    // Be more strict then normal, enforce correct behavior and warn for legal but unrecommended or corner cases.
+    ,   strict
+    // Disable it at runtime, there will be no validation checks.
+    ,   disabled
+    // Will not abort execution when CPX_VALIDATION_POLICY wasn't found in runtime environment, the message becomes a warning instead.
+    ,   relaxed
+    // Standard behavior, cpx apps can not run without CPX_VALIDATION_HASH environment varaiable matching.
+    ,   normal
+    }
+    ;
+        char const*
+    m_policyNames[6]=
+    {static_cast<char const*>(nullptr) /* <-- set on each call*/
+        ,"failtest"
+        ,"strict"
+        ,"disabled"
+        ,"relaxed"
+        ,"normal"
+    }
+    ;
+        validation_policy
+    m_myValidationPolicy = validation_policy::notfound;
+    ;
+        char const*
+    m_compiletimeValidationHash = nullptr
+    ;
+        char const*
+    m_runtimeValidationHash = nullptr
+    ;
+        void
+    cstr2validationPolicy(char const* _validation_policy)
+    {
+        int policyAsIndex=/*number of*/ITEMS_IN(m_policyNames);
+        m_policyNames[0]=_validation_policy;
+        FindIndex( &policyAsIndex , m_policyNames);
+        if ( !policyAsIndex ) {
+            INFO(HRED);
+            INFO("Error:",VARVAL(_validation_policy),
+                 "is not matching any policy and is ignored. "
+                 "Try one of: 'disabled','relaxed','normal','strict' or 'failtest'"
+                );
+            INFO(NOCOLOR);
+            return;
+        }
+        m_myValidationPolicy = static_cast<validation_policy>(policyAsIndex);
+    }
+  public:
+    ApplicationValidator(char const *_compiletimeValidationHash) noexcept
+    : m_compiletimeValidationHash(_compiletimeValidationHash)
+    , m_runtimeValidationHash(getenv(ENV_CPX_VALIDATION_HASH))
+    {
+    }
+  protected:
+        void
+    get_optional_runtime_policy()
+    {
+        if ( m_myValidationPolicy== validation_policy::disabled ) {
+            return;
+        }
+        char* cpx_validation_policy=getenv(ENV_CPX_VALIDATION_POLICY);
+
+        if ( cpx_validation_policy== NULL ) {
+            // I hope you did not misspell it (see ENV_CPX_VALIDATION_POLICY) because setting it is optional and the
+            // hardcoded will be used otherwise. There is a bit of rescue for developers if they recompile with
+            // m_myValidationPolicy== validation_policy::strict.
+            if ( m_myValidationPolicy== validation_policy::strict ) {
+                INFO(HYELLOW);
+                INFO("Warning:",VARVAL(ENV_CPX_VALIDATION_POLICY),"not retrieved from environment.");
+                vector<const char*> valid_policies;
+                for(const char* cstrl:m_policyNames){
+                    if (cstrl) {
+                        valid_policies.push_back(cstrl);
+                    }
+                }
+                INFO("         Posible values",VARVALS(valid_policies));
+                INFO(NOCOLOR);
+            }
+            return;
+        }
+        //else
+        // dont use the default but whats retrieved here.
+        cstr2validationPolicy( cpx_validation_policy);
+    }
+        bool
+    fields_are_set() const
+    {
+        bool returnValue = true;
+        if ( !m_compiletimeValidationHash ) {
+            INFO(HRED);
+            INFO("No usable compiletime validation hash, check ...ApplicationValidator instantiation.");
+            INFO(NOCOLOR);
+            returnValue = false;
+        }
+        if ( !m_runtimeValidationHash ) {
+            INFO( ( m_myValidationPolicy== validation_policy::relaxed ) ?HYELLOW :HRED);
+            INFO("Failed at runtime to retrieve enviromment variable:",VARVAL(ENV_CPX_VALIDATION_HASH),',');
+            INFO("  it usually is defined when the cpx app is started via cpx or as executable source (starting with #!...cpx)");
+            INFO("Resolve or set/export",ENV_CPX_VALIDATION_POLICY "=disabled");
+            INFO("When building in release mode (for unrelated free binary executable), use cpx -C release ...");
+            INFO(" runtime validation checking is omitted from the source and no special environment variables are required.");
+            returnValue = false;
+            INFO(NOCOLOR);
+        }
+        switch ( m_myValidationPolicy ) {
+            case validation_policy::failtest:
+                INFO(GREEN,"failtest: OK. cpx app was forced to fail the validation.",NOCOLOR);
+                return false;
+            case validation_policy::disabled:
+                return true;
+            case validation_policy::relaxed:
+                if ( !m_runtimeValidationHash ) {
+                    return true;
+                }
+                [[fallthrough]];
+            case validation_policy::normal:
+                break;
+            case validation_policy::strict:
+                break;
+            default: // could be notfound
+                INFO( HYELLOW "WARNING: Unchecked validation policy!" NOCOLOR, VARVALS(static_cast<int>(m_myValidationPolicy)));
+        }
+        return returnValue;
+    }
+        int
+    isValidationHashMismatching() const // returns non zero int when mismatching
+    {
+        switch ( m_myValidationPolicy ) {
+            case validation_policy::failtest:
+                return !0;
+            case validation_policy::disabled:
+                    return 0;
+            case validation_policy::relaxed:
+                if ( !m_runtimeValidationHash ) {
+                    return 0;
+                }
+                [[fallthrough]];
+            case validation_policy::normal:
+                [[fallthrough]];
+            case validation_policy::strict:
+                [[fallthrough]];
+            default:// could be _null
+                return strcmp( m_compiletimeValidationHash, m_runtimeValidationHash);
+        }
+    }
+//        operator
+//    bool() const  // returns true if mathing otherwise false
+//    {
+//        return isValidationHashMismatching()? false: true;
+//    }
+
+public:
+        void
+    handle_validationHash_checking(ostream* pOs_=nullptr)
+    {
+        if ( m_myValidationPolicy == validation_policy::disabled ) {
+            return;
+        }
+        // otherwise
+        LOCAL_MODIFIED(INFO_STREAM_PTR);
+        INFO_TO(*pOs_);
+
+        get_optional_runtime_policy();
+        if ( m_myValidationPolicy == validation_policy::disabled ) {
+            return;
+        }
+        // otherwise
+        if ( !fields_are_set() ) {
+            tu::ThrowBreak("Missing application validation fields.");
+        }
+
+        // otherwise
+        //INFO(VARVALS(m_policyNames[static_cast<int>(m_myValidationPolicy)]));
+        if ( isValidationHashMismatching() ) {
+            if ( pOs_ ) {
+                char const* source = CPX_SOURCE_FILE;
+                INFO(HYELLOW);
+                INFO("No maching validation hashes!",VARVALS(source,m_compiletimeValidationHash,m_runtimeValidationHash));
+                INFO("CPX found a matching hash executable in its cache and asumed that it could use it, skipping compiling the source.");
+                INFO("The validation Hashes are there to ensure that only the correct binary that belonged to the source is executed.");
+                INFO("This excutable, does not match, it is from another source and therefor had to stop executing.");
+            }
+            if ( m_myValidationPolicy == validation_policy::relaxed ) {
+                INFO(NOCOLOR);
+                return;
+            }
+            // otherwise
+            INFO(HRED);
+            INFO("Execution is halted");
+            tu::ThrowBreak("Executable, has same binary hash, but the validation Hashes (to verify it is the correct executable) do not match.");
+        }
+#if !NO_SMILIE
+        else {
+            if ( m_myValidationPolicy!= validation_policy::strict ) {
+                // Show a green emoji indication that the runtime validation succeeded.
+                std::clog<< HGREEN "😇" NOCOLOR <<std::endl;
+            }
+            // in production, the validation_policy should be strict and the validation happens silently.
+        }
+#endif
+    }
+} //class ApplicationValidator
+;
 //_______________________________________________________________________________________
+
+ PHP_BEGIN
+    $CompileTimeValidationHash = getenv_or_die('CPX_VALIDATION_HASH',
+        'Php transformation terminated because the compiletime requirement was not met.');
+ PHP_END
+
+# define CPX_VALIDATE_WITH_SOURCE (cpx::ApplicationValidator("<?= $CompileTimeValidationHash ?>").handle_validationHash_checking(&cerr ))
+#else
+# define CPX_VALIDATE_WITH_SOURCE
+#endif // CPX_VALIDATION_HASH
 
 } // namespace cpx
 

@@ -4,11 +4,29 @@
 # example CPX-build-app cppstripws
 #         builds executable ../../build/cpx_apps/cppstripws  from cppstripws.cpp in current directory.
 
+#PRJ PARENT DIR and CPX INCLUDES DIR set in $HOME/.tosics_custom
+  CPX_SCRIPTS_DIR="$PRJ_PARENT_DIR/cpx/scripts"
+   source "$CPX_SCRIPTS_DIR/CPX-common.sh"
+  CPX_APPSRC_DIR="${PRJ_PARENT_DIR}/cpx/apps/"
+  CPX_APPS_DIR="${PRJ_PARENT_DIR}/build_cpx_apps/"
 
 APPNAME=$1
-CPX_APPS_DIR="../../build/cpx_apps/"
  BIN_NAME="${CPX_APPS_DIR}$APPNAME"
  SOURCE_NAME="${APPNAME}.cpp"
 
-cpx -o "$BIN_NAME" $SOURCE_NAME
+MULTIBACKUP_MAX=9
+
+dumpvars '' "0    PRJ_PARENT_DIR    CPX_SCRIPTS_DIR    CPX_APPSRC_DIR    CPX_APPS_DIR \
+             BIN_NAME    SOURCE_NAME    MULTIBACKUP_MAX"
+
+# make backups
+multibackup "$BIN_NAME"
+
+cd "${CPX_APPSRC_DIR}"
+
+cpx -C release -o "$BIN_NAME" $SOURCE_NAME
+
+# apps, part of the cpx build process my block strip. However release buils are already stripped, so it s not realy needed.
+# aka sourcelines.cpp
 strip "$BIN_NAME"
+ls -lrth "$BIN_NAME"

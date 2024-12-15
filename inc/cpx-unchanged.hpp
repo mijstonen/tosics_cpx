@@ -10,6 +10,9 @@
 // when makeing changes to the util library, build the util library first
 // cpx will detect date changes in linked util library.
 
-#include "cpx-file-begin.hpp"
+#define DEBUG 1
+#include <tosics_util.hpp>
+#include "cpx-config.h"
+
 
 #endif // CPX_UNCHANGED_HPP_

@@ -20,7 +20,8 @@ add_definitions(
 add_compile_options(
     -march=native
     -save-temps
-    -std=c++1z
+    -std=gnu++26
+    -fcoroutines
     -fconcepts
     -ggdb
     -I${INCLUDE_PATH}
@@ -47,6 +48,8 @@ target_link_libraries(
     stdc++fs
     pthread
     dl
+    atomic
+    stdc++exp
 )
 
 #____________________________________________________________________________________

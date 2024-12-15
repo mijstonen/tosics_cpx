@@ -12,14 +12,19 @@ CPX_COMMOM_ERROR=240  # aka -16
 NOCOLOR="\033[00m"
 RED="\033[00;31m"
 GREEN="\033[00;32m"
+CYAN="\033[00;36m"
 YELLOW="\033[00;33m"
 BLUE="\033[00;34m"
 WHITE="\033[00;37m"
+
 HRED="\033[01;31m"
 HGREEN="\033[01;32m"
+HCYAN="\033[01;36m"
 HYELLOW="\033[01;33m"
 HBLUE="\033[01;34m"
 HWHITE="\033[01;37m"
+
+RESET="\033[00m"
 
 is_empty_var () {
     eval "test -z \"\$$1\""
@@ -38,7 +43,7 @@ heal_DIR () {
     local varname="$1"   # must be a environment variable name
     warn_if_var_is_empty $varname
     local cmd
-    
+
     cmd="
     if [ '$PATH_SEPARATOR' != \"\${$varname: -1}\" ];
     then export $varname=\"\${$varname}/\" ;
@@ -52,12 +57,12 @@ heal_DIR () {
                 "(aka: The root directory) is considered invalid.${NOCOLOR}" >&2
         exit "$CPX_COMMOM_ERROR"
     fi
-    
+
     if [ ! -d "$val_DIR" ]
     then echo -e "${HRED}ERROR in $0: heal_DIR: missing directory '${val_DIR}' ${NOCOLOR}" >&2
         exit "$CPX_COMMOM_ERROR"
     fi
-    
+
     echo "$val_DIR"
 }
 
