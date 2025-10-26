@@ -14,17 +14,20 @@ CPX_WORK_DIR=$(heal_DIR CPX_WORK_DIR)
 HISTSIZE=1000
 
 reduce_watch () {
-    if test -f
+  # while the runner log is opened, its size is reduced in the background.
+  (
+    usleep 20000
+    if test -f "$FILE"
     then
-        mv "$FILE" "$TEMPFILE"
-        tail -n $HISTSIZE "$TEMPFILE" > "$FILE"
+        nice 19 tail -n $HISTSIZE "$FILE" > "$TEMPFILE"
+        nice mv "$TEMPFILE" "$FILE"
     else
         # create empty file to be able to open it
         > "$FILE"
     fi
-    sync
-    //echo "You got 1 second to abort with ^C"
-    //sleep 1
+  )&
+    #echo "You got 1 second to abort with ^C"
+    #sleep 1
     # open file and start watching it.
     # By pressing :q  less is terminated,
     # $FILE is reduced and less is opening for watching again

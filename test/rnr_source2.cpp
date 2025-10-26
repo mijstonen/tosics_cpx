@@ -1,5 +1,5 @@
 #!/usr/bin/env cpx
-________________________________________________________________________________________________________________________
+_____________________________________________________________________
 #!
     // This is a mini feature tester of cpx.
     // However it also has become a super fast tester for STATEREPORT.
@@ -16,18 +16,16 @@ ________________________________________________________________________________
     Info_ProgramArguments();
     cout<< DateTime();
     if ( ProgramArguments.size() < 2 ) {
- PHP_BEGIN
-    foreach( repeat(10) as $index) if($index&1)
+ <?>foreach( repeat(10) as $index) if($index&1)
         echo "cout << \"PHP $index\"<< endl;\n";
- PHP_END
+ <;>
         INFO(FUNC_MSG("can't run without arguments 1"));
- PHP_BEGIN
-    foreach( repeat(10) as $index ) {
+ <?>foreach( repeat(10) as $index ) {
         if ( !($index & 1) ) {
             echo "cout << \"PHP $index\"<< endl;\n";
         }
     }
- PHP_END
+ <;>
         INFO(FUNC_MSG("can't run without arguments 2"));
         cerr<< "Provide return value as argument 1 ."<<endl;
         return EXIT_FAILURE;

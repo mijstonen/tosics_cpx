@@ -38,13 +38,15 @@ done
 echo "PHASE 2 remove old gzipped"
 # remove large compressed intermediate files that do pile up  only most recent onces remain
 files_to_remove="$(CPX_prior ii 1) $(CPX_prior s 1) $(CPX_prior beautified 3) $(CPX_prior sourcelines 3) $(CPX_prior errors 3) $(CPX_prior prehash 3)"
-echo "files_to_remove: $files_to_remove"
-[ -n "$files_to_remove" ] && rm -v $files_to_remove
+echo "files_to_remove: '$files_to_remove'"
+# Only call rm when awk detects more the 0 fields, otherwise files_to_remove only contains spaces.
+# alternative to bash pattern matching which I do not fully trust: # [[ ! "$files_to_remove" =~ ^[[:space:]]*$ ]]
+echo "$files_to_remove" | awk '{exit!$NF}' && rm -v $files_to_remove
 
 echo "PHASE 3 remove days old executable"
 # remove older executable(s) created more then a few days ago to better remain below the ramdisk threshold.
-Old_Xs=$(find . -type f -name "CPX-*.cpp.x" -mtime +3)
-[ -n "$Old_Xs" ] && rm -v "$Old_Xs"  # remove multiple files, asuming the file names do not contain spaces.
+Old_Xs=$(find $CPX_WORK_DIR -type f -name "CPX-*.cpp.x" -mtime +1)
+[ -n "$Old_Xs" ] && rm -v $Old_Xs  # remove multiple files, asuming the file names do not contain spaces.
 
 echo "PHASE 4 remove oldest executable as long exceeding allowed occupation"
 # Normally we want to keep executables as long as possible, but...

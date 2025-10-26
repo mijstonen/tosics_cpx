@@ -25,6 +25,14 @@
 
 #define PHP_BEGIN <?php PHP_MARKSRCLINE
 #define PHP_END PHP_MARKSRCLINE ?>
+
+// begin a source code block handled by PHP controlflow ( the PHP variant on #if but also forms like:for, while e.g.)
+// if uPP source use <{> . use this macro where only PHP preprocessing is working
+#define PHP_SOURCEBLOCK_BEGIN { PHP_MARKSRCLINE ?>
+// end a source code block handled by PHP controlflow ( the PHP variant on #endif if but also forms like:for, while e.g.)
+// if uPP source use <}> . use this macro where only PHP preprocessing is working
+#define PHP_SOURCEBLOCK_END <?php } PHP_MARKSRCLINE ?>
+
 #define PHP_VARDUMP_COMMENT(var) var_dump_comment($##var,#var)
 
 // simple VARVAL variant to be used with primitive debugging output to string

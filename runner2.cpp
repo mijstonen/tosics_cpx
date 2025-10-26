@@ -689,8 +689,8 @@ runner()
             auto
         throwIfEndOfSourceFile= [&]() -> void
         {
-            if (!(*psource)) {
-                chars+=col_nr;
+            if ( !( *psource ) ) {
+                chars+= col_nr;
                 tu::ThrowEvent(EndOfSourceFileEvent());
             }
         };
@@ -712,30 +712,36 @@ runner()
                     psource->get(char_from_source );
                 };
 
-                // think char_from_source is char a
+                // think char_from_source is char a ( is '<' ), b and c are always read together.
                 char  b='\0'; psource->get(b );
                 char  c='\0'; psource->get(c );
 
                 if ( c== '>' ) {
                     switch (b) {
+                      case '?':  //  <?>
+                        // enter line marked PHP code region
+                        instead_inject(" PHP_BEGIN "); //  (" <?php PHP_MARKSRCLINE ");
+                        goto skip;
                       case '{':  //  <{>
                         // leave line marked PHP code region
                         // enter PHP controlled (C/C++) code block
-                        instead_inject(" { PHP_MARKSRCLINE ?> ");
+                        instead_inject(" PHP_SOURCEBLOCK_BEGIN ");//(" { PHP_MARKSRCLINE ?> ");
                         goto skip;
                       case '}':  //  <}>
                         // leave PHP controlled (C/C++) code block
                         // enter and leave line marked PHP code region
-                        instead_inject(" <?php } PHP_MARKSRCLINE ?> ");
+                        instead_inject(" PHP_SOURCEBLOCK_END ");//(" <?php } PHP_MARKSRCLINE ?> ");
                         goto skip;
-                      case '?':  //  <?>
-                        // enter line marked PHP code region
-                        instead_inject(" <?php PHP_MARKSRCLINE ");
+                      case ';':  //  <;>
+                        // leave line marked PHP code region
+                        instead_inject(" PHP_END "); //  (" <?php PHP_MARKSRCLINE ");
                         goto skip;
                       // case !
-                      // case ;
+                      // default: should do nothing
                     } // switch b
                 } // if c
+                // else maybe Traits::eof();
+                // HERE: we arrive when there where no matches for be and/or c and whe unget them together
                 psource->unget(); // undo c
                 psource->unget(); // undo b
                 //{                    const char abc[]={char_from_source,b,c,'\0'};
@@ -1106,7 +1112,7 @@ runner()
 
                 // NEW: This won;t be needed anymore, since any executed uPP command will trigger source line maring and
                 // '__' can be used for this instead.
-                // These reason this is still here is that there are scripts that use it.
+                // The reason this is still here is that there are scripts that use it.
                 break;
 
               case '|': // replace by preprogrammed file begin

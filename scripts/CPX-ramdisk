@@ -50,9 +50,9 @@ setup_precompiled()
         else echo "INFO: Asume local file '$PRECOMPILED_FILE' (useually when no ramdisk was used)"
             cp -v "$PRECOMPILED_FILE" "backup_$PRECOMPILED_FILE" # for use next time
             cp -v "$PRECOMPILED_FILE" "$TMPFS_USR_DIR/precompiled/$PRECOMPILED_FILE"
-            [[ -s "$PRECOMPILE_LOG" ]] && ln -sf "$(pwd)/$PRECOMPILE_LOG" "$TMPFS_USR_DIR/precompiled/$PRECOMPILE_LOG"
             ln --backup -s "$TMPFS_USR_DIR/precompiled/$PRECOMPILED_FILE" $PRECOMPILED_FILE
         fi
+        [[ -s "$PRECOMPILE_LOG" ]] && ln -vsf "$(pwd)/$PRECOMPILE_LOG" "$TMPFS_USR_DIR/precompiled/$PRECOMPILE_LOG"
     else
         echo "ERROR: missing $PRECOMPILED_FILE, run ...util/rebuild-stdinc  and (when succeeded), source CPX-ramdisk again."
     fi
